@@ -20,6 +20,7 @@ final typesToGenerate = [
   // 'Windows.Globalization.ICalendar',
   'Windows.Foundation.IPropertyValue',
   'Windows.Foundation.IAsyncInfo',
+  // 'Windows.Foundation.IAsyncOperation`1',
   'Windows.Foundation.IClosable',
   'Windows.Foundation.IStringable',
 ];
