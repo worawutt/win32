@@ -5,9 +5,19 @@
 // File Open Picker from Dart
 
 import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
+import 'package:win32/src/generated/IAsyncOperation.dart';
 import 'package:win32/win32.dart';
 
-void main() {
+typedef asyncOperationCompletedHandler_Native = Void Function(
+    IntPtr asyncInfo, Int32 asyncStatus);
+
+void asyncOperationCompletedHandler(int asyncInfo, int asyncStatus) {
+  print('completed');
+}
+
+void main() async {
   winrtInitialize();
 
   final object = CreateObject(
@@ -16,9 +26,17 @@ void main() {
   final picker = IFileOpenPicker(object.cast());
   picker.ViewMode = PickerViewMode.Thumbnail;
 
+  final operation = allocate<IntPtr>();
   // Need to add the results of the async operation
-  picker.PickSingleFileAsync(nullptr);
+  picker.PickSingleFileAsync(operation);
+  // final iao = IAsyncOperation(operation.cast());
+  // iao.Completed = Pointer.fromFunction<asyncOperationCompletedHandler_Native>(
+  //         asyncOperationCompletedHandler)
+  //     .address;
+  while (true) {
+    await Future<void>.delayed(const Duration(seconds: 2));
+    print("Dart: 2 seconds passed");
+  }
 
   winrtUninitialize();
-  print('Complete');
 }
