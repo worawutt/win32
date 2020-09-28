@@ -10,34 +10,40 @@
 // https://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf
 
 import 'dart:io';
+import 'package:args/args.dart';
 
 import 'md_store.dart';
 import 'type_builder.dart';
 import 'type_printer.dart';
 
-final typesToGenerate = [
+const typesToGenerate = [
   // 'Windows.Storage.Pickers.IFileOpenPicker',
   // 'Windows.Globalization.ICalendar',
-  'Windows.Foundation.IPropertyValue',
+  // 'Windows.Foundation.IAsyncAction',
   'Windows.Foundation.IAsyncInfo',
   // 'Windows.Foundation.IAsyncOperation`1',
   'Windows.Foundation.IClosable',
+  'Windows.Foundation.IPropertyValue',
   'Windows.Foundation.IStringable',
+  // 'Windows.Media.SpeechSynthesis.SpeechSynthesizer'
 ];
 
 void main(List<String> args) {
-  final outputDirectory = (args.length == 1)
-      ? Directory(args.first)
-      : Directory('lib/src/generated');
+  final parser = ArgParser()
+    ..addOption('output', abbr: 'o', defaultsTo: 'lib/src/generated')
+    ..addMultiOption('types', abbr: 't', defaultsTo: typesToGenerate);
+  final argResults = parser.parse(args);
 
-  for (final type in typesToGenerate) {
+  final outputDirectory = argResults['output'] as String;
+  print(outputDirectory);
+
+  for (final type in argResults['types'] as List<String>) {
     final mdTypeDef = WinmdStore.getMetadataForType(type);
     final projection = TypeBuilder.projectWinMdType(mdTypeDef);
     final dartClass = TypePrinter.printType(projection);
 
     final outputFilename = type.split('.').last;
-    final outputFile =
-        File('${outputDirectory.uri.toFilePath()}$outputFilename.dart');
+    final outputFile = File('$outputDirectory/$outputFilename.dart');
 
     print('Writing:    ${outputFile.path}');
     outputFile.writeAsStringSync(dartClass);
