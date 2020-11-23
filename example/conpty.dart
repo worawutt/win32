@@ -11,10 +11,10 @@ import 'package:win32/win32.dart';
 
 import 'console.dart';
 
-Pointer<IntPtr> pseudoConsoleHandle;
-Pointer attributeListPtr;
-Pointer<IntPtr> inputReadSideHandle, inputWriteSideHandle;
-Pointer<IntPtr> outputReadSideHandle, outputWriteSideHandle;
+late Pointer<IntPtr> pseudoConsoleHandle;
+late Pointer attributeListPtr;
+late Pointer<IntPtr> inputReadSideHandle, inputWriteSideHandle;
+late Pointer<IntPtr> outputReadSideHandle, outputWriteSideHandle;
 
 final stdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 final stdIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -34,7 +34,7 @@ void initPseudoConsole() {
   }
 
   pseudoConsoleHandle = allocate<IntPtr>();
-  final size = (25 << 16) /* Y */ + 80; /* X */
+  const size = (25 << 16) /* Y */ + 80; /* X */
   final hr = CreatePseudoConsole(size, inputReadSideHandle.value,
       outputWriteSideHandle.value, 0, pseudoConsoleHandle);
   if (FAILED(hr)) {
@@ -97,7 +97,7 @@ void setupPseudoConsole() {
 void doStuff() {
   // Input "echo Hello, World!", press enter to have cmd process the command,
   // input an up arrow (to get the previous command), and enter again to execute.
-  final echoString = 'echo Hello, World!\n\x1b[A\n';
+  const echoString = 'echo Hello, World!\n\x1b[A\n';
   final echoStringPtr = toCString(echoString);
   final dwCharsWritten = allocate<Uint32>();
   if (WriteFile(
@@ -108,7 +108,7 @@ void doStuff() {
 }
 
 void getStuff() {
-  final bufferSize = 10;
+  const bufferSize = 10;
   final buffer = allocate<Uint8>(count: bufferSize);
   final bytesRead = allocate<Uint32>();
   if (ReadFile(
@@ -129,7 +129,7 @@ void closePseudoConsole() {
 void pty() {
   final consoleMode = allocate<Uint32>();
   GetConsoleMode(stdOut, consoleMode);
-  var hr = SetConsoleMode(
+  final hr = SetConsoleMode(
       stdOut, consoleMode.value | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
   if (FAILED(hr)) {
     throw WindowsException(hr);
@@ -147,7 +147,7 @@ void pty() {
 
 void test() {
   // input an up arrow (to get the previous command), and enter again to execute.
-  final echoString = 'echo Hello, World!\n';
+  const echoString = 'echo Hello, World!\n';
   final echoStringPtr = toCString(echoString);
   final dwCharsWritten = allocate<Uint32>();
   print(echoString.length);

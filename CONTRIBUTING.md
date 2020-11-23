@@ -62,5 +62,5 @@ relevant class in the `\lib\src\generated` directory.
   taken to the COM APIs, but using IDL instead of header files.
 
 - Asynchronous APIs (the majority) are not yet supported. I'm currently
-  investigating interrogating the metadata APIs directly, rather than manually
+  working on interrogating the metadata APIs directly, rather than manually
   parsing the IDL files, to generate Windows Runtime mappings.
