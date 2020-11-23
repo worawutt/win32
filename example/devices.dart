@@ -1,4 +1,6 @@
-// devices.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Finds physical volumes on the system
 
@@ -8,7 +10,7 @@ import 'package:win32/win32.dart';
 
 final volumeHandles = <int, String>{};
 
-void DisplayVolumePaths(String volumeName) {
+void displayVolumePaths(String volumeName) {
   var error = 0;
 
   // Could be arbitrarily long, but 4*MAX_PATH is a reasonable default.
@@ -21,7 +23,7 @@ void DisplayVolumePaths(String volumeName) {
 
   if (error != 0) {
     if (charCount.value > 1) {
-      for (var path in pathNamePtr.unpackStringArray(charCount.value)) {
+      for (final path in pathNamePtr.unpackStringArray(charCount.value)) {
         print(path);
       }
     } else {
@@ -38,9 +40,9 @@ void DisplayVolumePaths(String volumeName) {
 
 void main() {
   var error = 0;
-  var volumeNamePtr = allocate<Uint16>(count: MAX_PATH).cast<Utf16>();
+  final volumeNamePtr = allocate<Uint16>(count: MAX_PATH).cast<Utf16>();
 
-  var hFindVolume = FindFirstVolume(volumeNamePtr, MAX_PATH);
+  final hFindVolume = FindFirstVolume(volumeNamePtr, MAX_PATH);
   if (hFindVolume == INVALID_HANDLE_VALUE) {
     error = GetLastError();
     print('FindFirstVolume failed with error code $error');
@@ -48,14 +50,14 @@ void main() {
   }
 
   while (true) {
-    var volumeName = volumeNamePtr.unpackString(MAX_PATH);
+    final volumeName = volumeNamePtr.unpackString(MAX_PATH);
 
     //  Skip the \\?\ prefix and remove the trailing backslash.
     final shortVolumeName = volumeName.substring(4, volumeName.length - 1);
     final shortVolumeNamePtr = TEXT(shortVolumeName);
 
-    var deviceName = allocate<Uint16>(count: MAX_PATH).cast<Utf16>();
-    var charCount = QueryDosDevice(shortVolumeNamePtr, deviceName, MAX_PATH);
+    final deviceName = allocate<Uint16>(count: MAX_PATH).cast<Utf16>();
+    final charCount = QueryDosDevice(shortVolumeNamePtr, deviceName, MAX_PATH);
 
     if (charCount == 0) {
       error = GetLastError();
@@ -66,7 +68,7 @@ void main() {
     print('\nFound a device:\n${deviceName.unpackString(MAX_PATH)}');
     print('Volume name: $volumeName');
     print('Paths:');
-    DisplayVolumePaths(volumeName);
+    displayVolumePaths(volumeName);
 
     final success = FindNextVolume(hFindVolume, volumeNamePtr, MAX_PATH);
     if (success == 0) {

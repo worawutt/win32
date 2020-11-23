@@ -1,4 +1,6 @@
-// wallpaper.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Shows retrieval of various information from the IDesktopWallpaper interface.
 
@@ -7,7 +9,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
-DesktopWallpaper wallpaper;
+late DesktopWallpaper wallpaper;
 
 void printWallpaper() {
   final pathPtr = allocate<IntPtr>();
@@ -42,7 +44,7 @@ void printBackgroundColor() {
   try {
     final hr = wallpaper.GetBackgroundColor(colorPtr);
 
-    if (hr == S_OK) {
+    if (SUCCEEDED(hr)) {
       final color = colorPtr.value;
       print('Background color is: RGB(${GetRValue(color)}, '
           '${GetGValue(color)}, ${GetBValue(color)})');
@@ -55,7 +57,7 @@ void printBackgroundColor() {
 }
 
 void main() {
-  var hr = CoInitializeEx(
+  final hr = CoInitializeEx(
       nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
   if (FAILED(hr)) {

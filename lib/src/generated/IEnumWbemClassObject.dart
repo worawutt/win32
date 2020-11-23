@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -45,10 +46,7 @@ typedef _Skip_Dart = int Function(Pointer obj, int lTimeout, int nCount);
 class IEnumWbemClassObject extends IUnknown {
   // vtable begins at 3, ends at 7
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IEnumWbemClassObject(this.ptr) : super(ptr);
+  IEnumWbemClassObject(Pointer<COMObject> ptr) : super(ptr);
 
   int Reset() => Pointer<NativeFunction<_Reset_Native>>.fromAddress(
           ptr.ref.vtable.elementAt(3).value)

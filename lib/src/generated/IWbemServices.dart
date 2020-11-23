@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -318,10 +319,7 @@ typedef _ExecMethodAsync_Dart = int Function(
 class IWbemServices extends IUnknown {
   // vtable begins at 3, ends at 25
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IWbemServices(this.ptr) : super(ptr);
+  IWbemServices(Pointer<COMObject> ptr) : super(ptr);
 
   int OpenNamespace(
           Pointer<Utf16> strNamespace,

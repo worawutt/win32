@@ -1,4 +1,6 @@
 import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import 'piece.dart';
@@ -39,7 +41,7 @@ class DrawEngine {
   }
 
   void drawBlock(int x, int y, int color) {
-    var hBrush = CreateSolidBrush(color);
+    final hBrush = CreateSolidBrush(color);
     rect.left = x;
     rect.right = x + 1;
     rect.top = y;
@@ -55,7 +57,7 @@ class DrawEngine {
   }
 
   void drawInterface() {
-    var hBrush = CreateSolidBrush(RGB(70, 70, 70));
+    final hBrush = CreateSolidBrush(RGB(70, 70, 70));
     rect.top = height;
     rect.left = width;
     rect.bottom = 0;
@@ -65,27 +67,39 @@ class DrawEngine {
   }
 
   void drawText(String text, int x, int y) {
-    TextOut(hdc, x, y, TEXT(text), text.length);
+    final textPtr = TEXT(text);
+    TextOut(hdc, x, y, textPtr, text.length);
+    free(textPtr);
   }
 
   void drawScore(int score, int x, int y) {
-    var scoreText = 'Score: $score';
+    final scoreText = 'Score: $score';
+    final scoreTextPtr = TEXT(scoreText);
+
     SetBkMode(hdc, OPAQUE);
-    TextOut(hdc, x, y, TEXT(scoreText), scoreText.length);
+    TextOut(hdc, x, y, scoreTextPtr, scoreText.length);
     SetBkMode(hdc, TRANSPARENT);
+
+    free(scoreTextPtr);
   }
 
   void drawSpeed(int speed, int x, int y) {
-    var speedText = 'Speed: $speed';
+    final speedText = 'Speed: $speed';
+    final speedTextPtr = TEXT(speedText);
+
     SetBkMode(hdc, OPAQUE);
-    TextOut(hdc, x, y, TEXT(speedText), speedText.length);
+    TextOut(hdc, x, y, speedTextPtr, speedText.length);
     SetBkMode(hdc, TRANSPARENT);
+
+    free(speedTextPtr);
   }
 
   void drawNextPiece(Piece piece, int x, int y) {
-    var nextText = 'Next:';
-    TextOut(hdc, x, y + 5, TEXT(nextText), nextText.length);
-    var color = piece.color;
+    const nextText = 'Next:';
+    final nextTextPtr = TEXT(nextText);
+
+    TextOut(hdc, x, y + 5, nextTextPtr, nextText.length);
+    final color = piece.color;
 
     // Draw the piece in a 4x4 square area
     for (var i = 0; i < 4; i++) {
@@ -97,5 +111,7 @@ class DrawEngine {
         }
       }
     }
+
+    free(nextTextPtr);
   }
 }

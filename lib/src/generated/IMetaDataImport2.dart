@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -122,10 +123,7 @@ typedef _EnumMethodSpecs_Dart = int Function(
 class IMetaDataImport2 extends IMetaDataImport {
   // vtable begins at 65, ends at 72
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IMetaDataImport2(this.ptr) : super(ptr);
+  IMetaDataImport2(Pointer<COMObject> ptr) : super(ptr);
 
   int EnumGenericParams(
           Pointer<IntPtr> phEnum,

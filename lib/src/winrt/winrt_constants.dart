@@ -1,6 +1,10 @@
-// winrt_constants.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Enums and constants used by WinRT
+
+// ignore_for_file: camel_case_types
 
 // RoInitialize enum
 /// {@category Enum}
@@ -58,9 +62,9 @@ class CorOpenFlags {
 /// {@category Enum}
 class AsyncStatus {
   static const Started = 0;
-  static const Completed = (Started + 1);
-  static const Canceled = (Completed + 1);
-  static const Error = (Canceled + 1);
+  static const Completed = Started + 1;
+  static const Canceled = Completed + 1;
+  static const Error = Canceled + 1;
 }
 
 /// Windows.Storage.Pickers.PickerViewMode

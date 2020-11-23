@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -149,10 +150,7 @@ typedef _SetControlItemText_Dart = int Function(
 class IFileDialogCustomize extends IUnknown {
   // vtable begins at 3, ends at 29
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IFileDialogCustomize(this.ptr) : super(ptr);
+  IFileDialogCustomize(Pointer<COMObject> ptr) : super(ptr);
 
   int EnableOpenDropDown(int dwIDCtl) =>
       Pointer<NativeFunction<_EnableOpenDropDown_Native>>.fromAddress(

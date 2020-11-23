@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -76,10 +77,7 @@ typedef _PickMultipleFilesAsync_Dart = int Function(
 class IFileOpenPicker extends IInspectable {
   // vtable begins at 6, ends at 16
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IFileOpenPicker(this.ptr) : super(ptr);
+  IFileOpenPicker(Pointer<COMObject> ptr) : super(ptr);
 
   int get ViewMode {
     final retValuePtr = allocate<Int32>();

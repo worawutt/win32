@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -59,10 +60,7 @@ typedef _GetDomainType_Dart = int Function(
 class INetworkConnection extends IDispatch {
   // vtable begins at 7, ends at 13
 
-  @override
-  Pointer<COMObject> ptr;
-
-  INetworkConnection(this.ptr) : super(ptr);
+  INetworkConnection(Pointer<COMObject> ptr) : super(ptr);
 
   int GetNetwork(Pointer<IntPtr> ppNetwork) =>
       Pointer<NativeFunction<_GetNetwork_Native>>.fromAddress(

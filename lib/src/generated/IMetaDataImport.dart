@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -802,10 +803,7 @@ typedef _IsGlobal_Dart = int Function(
 class IMetaDataImport extends IUnknown {
   // vtable begins at 3, ends at 64
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IMetaDataImport(this.ptr) : super(ptr);
+  IMetaDataImport(Pointer<COMObject> ptr) : super(ptr);
 
   int CloseEnum(int hEnum) =>
       Pointer<NativeFunction<_CloseEnum_Native>>.fromAddress(

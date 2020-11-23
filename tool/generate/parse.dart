@@ -69,14 +69,14 @@ Method parseIdlMethod(String line, int lineIndex) {
 
       // convert IDL type to Dart
       if (typeMappings.containsKey(dartTypePrimitive)) {
-        dartTypePrimitive = typeMappings[dartTypePrimitive];
+        dartTypePrimitive = typeMappings[dartTypePrimitive]!;
       }
 
       // deal with pointers
-      if ((typePrimitive.contains('*') ||
+      if (typePrimitive.contains('*') ||
           (items[1].contains('*')) &&
               (!typePrimitive.contains('Pointer')) &&
-              (!(['LPWSTR', 'LPCWSTR'].contains(typePrimitive))))) {
+              (!['LPWSTR', 'LPCWSTR'].contains(typePrimitive))) {
         // double pointers
         if (typePrimitive.contains('**')) {
           typePrimitive = 'Pointer<IntPtr>';
@@ -102,7 +102,7 @@ Interface loadSource(File file) {
   var isInMethod = false;
   final interface = Interface();
   interface.methods = [];
-  Method method;
+  Method? method;
 
   if (file.path.endsWith('.h')) {
     interface.sourceType = SourceType.header;
@@ -112,7 +112,7 @@ Interface loadSource(File file) {
     interface.sourceType = SourceType.unknown;
   }
 
-  var lines = file.readAsLinesSync();
+  final lines = file.readAsLinesSync();
   var lineIndex = 0;
 
   for (var line in lines) {
@@ -175,6 +175,12 @@ Interface loadSource(File file) {
             method.name = method.name.substring(0, method.name.length - 1);
             interface.methods.add(method);
             isInMethod = false;
+          } else if (line.contains('(void) = 0;')) {
+            method.name = keywords[
+                keywords.indexWhere((keyword) => keyword.contains('(void)'))];
+            method.name = method.name.substring(0, method.name.length - 6);
+            interface.methods.add(method);
+            isInMethod = false;
           }
         } else if (interface.sourceType == SourceType.idl) {
           final method = parseIdlMethod(line, lineIndex);
@@ -189,15 +195,15 @@ Interface loadSource(File file) {
       if (!(line.startsWith('/*') && line.endsWith('*/'))) {
         var keywords = line.split(' ');
         final parameter = Parameter();
-        String win32Keyword;
+        late String win32Keyword;
 
         if (line.contains('/* broken(struct_by_value) */')) {
           parameter.supported = false;
         }
 
         // don't know which field contains the return param, so we just search
-        for (var type in typeMappings.entries) {
-          for (var keyword in keywords) {
+        for (final type in typeMappings.entries) {
+          for (final keyword in keywords) {
             if (keyword == type.key) {
               win32Keyword = keyword;
               parameter.type = type.value;
@@ -206,12 +212,12 @@ Interface loadSource(File file) {
           }
         }
         if (parameter.type == null) {
-          throw Exception('Can\'t find type in line $lineIndex.');
+          throw Exception("Can't find type in line $lineIndex.");
         }
         if ((line.contains('*', line.indexOf(win32Keyword)) ||
                 (line.contains('[  ]', line.indexOf(win32Keyword)))) &&
-            (!parameter.type.contains('Pointer')) &&
-            (!(['LPWSTR', 'LPCWSTR'].contains(parameter.type)))) {
+            (!parameter.type!.contains('Pointer')) &&
+            (!['LPWSTR', 'LPCWSTR'].contains(parameter.type))) {
           parameter.type = 'Pointer<${parameter.type}>';
 
           // resplit the keywords
@@ -225,19 +231,19 @@ Interface loadSource(File file) {
           parameter.name =
               parameterKeyword.substring(0, parameterKeyword.length - 1);
           trimPointer(parameter);
-          method.parameters.add(parameter);
+          method!.parameters.add(parameter);
         } else if (line.contains(';')) {
           // parameter is third keyword from last, minus trailing parenthesis
           final parameterKeyword = keywords[keywords.length - 3];
           parameter.name =
               parameterKeyword.substring(0, parameterKeyword.length - 1);
           trimPointer(parameter);
-          method.parameters.add(parameter);
+          method!.parameters.add(parameter);
           interface.methods.add(method);
           isInMethod = false;
         } else {
           print('Line: $lineIndex');
-          throw Exception('Can\'t find parameter name');
+          throw Exception("Can't find parameter name");
         } // end param processing
       } // end no-comment line processing
     } // end method processing
@@ -247,13 +253,13 @@ Interface loadSource(File file) {
 }
 
 void trimPointer(Parameter parameter) {
-  if (parameter.name.startsWith('**')) {
+  if (parameter.name!.startsWith('**')) {
     // double pointer
     parameter.type = 'Pointer<IntPtr>';
-    parameter.name = parameter.name.substring(2);
+    parameter.name = parameter.name!.substring(2);
   }
-  if (parameter.name.startsWith('*')) {
+  if (parameter.name!.startsWith('*')) {
     // pointer
-    parameter.name = parameter.name.substring(1);
+    parameter.name = parameter.name!.substring(1);
   }
 }

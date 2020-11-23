@@ -18,17 +18,15 @@ class NotepadEditor {
   final int _hwnd;
   final int _hwndEdit;
 
-  NotepadFile file;
-  NotepadFont font;
+  late NotepadFile file;
+  late NotepadFont font;
 
   NotepadEditor(this._hwnd, this._hwndEdit) {
-    file = NotepadFile(_hwnd);
+    file = NotepadFile(_hwnd, '', '');
   }
 
-  void Dispose() {
-    if (font != null) {
-      font.Dispose();
-    }
+  void dispose() {
+    font.dispose();
   }
 
   /// Does the current file in memory contain unsaved changes?
@@ -42,7 +40,7 @@ class NotepadEditor {
 
     SendMessage(_hwndEdit, EM_GETSEL, iSelBeg.address, iSelEnd.address);
 
-    result = (iSelBeg.value != iSelEnd.value);
+    result = iSelBeg.value != iSelEnd.value;
 
     free(iSelBeg);
     free(iSelEnd);
@@ -50,41 +48,41 @@ class NotepadEditor {
     return result;
   }
 
-  void NewFile() {
-    file.title = null;
-    file.path = null;
+  void newFile() {
+    file.title = '';
+    file.path = '';
     isFileDirty = false;
-    UpdateWindowTitle();
+    updateWindowTitle();
   }
 
-  void OpenFile() {
-    if (isFileDirty && OfferSave() == IDCANCEL) {
+  void openFile() {
+    if (isFileDirty && offerSave() == IDCANCEL) {
       return;
     }
 
-    if (file.ShowOpenDialog(_hwnd)) {
-      file.ReadFileIntoEditControl(_hwndEdit);
+    if (file.showOpenDialog(_hwnd)) {
+      file.readFileIntoEditControl(_hwndEdit);
     }
 
-    UpdateWindowTitle();
+    updateWindowTitle();
     isFileDirty = false;
   }
 
-  bool SaveFile() {
-    if (file.path != null) {
-      file.WriteFileFromEditControl(_hwndEdit);
+  bool saveFile() {
+    if (file.path.isNotEmpty) {
+      file.writeFileFromEditControl(_hwndEdit);
       isFileDirty = false;
       return true;
     }
 
-    return SaveAsFile();
+    return saveAsFile();
   }
 
-  bool SaveAsFile() {
-    if (file.ShowSaveDialog(_hwnd)) {
-      UpdateWindowTitle();
+  bool saveAsFile() {
+    if (file.showSaveDialog(_hwnd)) {
+      updateWindowTitle();
 
-      file.WriteFileFromEditControl(_hwndEdit);
+      file.writeFileFromEditControl(_hwndEdit);
       isFileDirty = false;
       return true;
     }
@@ -92,26 +90,27 @@ class NotepadEditor {
     return false;
   }
 
-  void SetFont() {
-    font ??= NotepadFont(_hwnd);
+  void setFont() {
+    font = NotepadFont(_hwnd);
 
-    if (font.NotepadChooseFont(_hwnd)) {
-      font.NotepadSetFont(_hwndEdit);
+    if (font.notepadChooseFont(_hwnd)) {
+      font.notepadSetFont(_hwndEdit);
     }
   }
 
-  void UpdateWindowTitle() {
-    final caption = '$APP_NAME - ${file.title ?? '(untitled)'}';
+  void updateWindowTitle() {
+    final caption =
+        '$APP_NAME - ${file.title.isNotEmpty ? file.title : '(untitled)'}';
     SetWindowText(_hwnd, TEXT(caption));
   }
 
-  void ShowMessage(String szMessage) {
+  void showMessage(String szMessage) {
     MessageBox(
         _hwnd, TEXT(szMessage), TEXT(APP_NAME), MB_OK | MB_ICONEXCLAMATION);
   }
 
-  int OfferSave() {
-    final buffer = TEXT(file.title != null
+  int offerSave() {
+    final buffer = TEXT(file.title.isNotEmpty
         ? 'Save current changes in ${file.title}?'
         : 'Save changes to file?');
     final res = MessageBox(

@@ -18,20 +18,32 @@ dartdoc:
       markdown: doc/ole32.md
     "oleaut32":
       markdown: doc/oleaut32.md
+    "powrprof":
+      markdown: doc/powrprof.md
     "psapi":
       markdown: doc/psapi.md
+    "shcore":
+      markdown: doc/shcore.md
     "shell32":
       markdown: doc/shell32.md
     "user32":
       markdown: doc/user32.md
+    "version":
+      markdown: doc/version.md
+    "winmm":
+      markdown: doc/winmm.md
     "com":
       name: "COM-based APIs"
       markdown: doc/com.md
     "winrt":
       name: "WinRT APIs"
       markdown: doc/winrt.md
-  categoryOrder: ["kernel32", "user32", "gdi32", "shell32", "ole32", "oleaut32", "comctl32", "comdlg32", "psapi", "com", "winrt"]
+    "examples":
+      name: "Sample apps"
+      markdown: doc/examples.md
+  categoryOrder: ["kernel32", "user32", "gdi32", "shell32", "ole32", "oleaut32", "comctl32", "comdlg32", "shcore", "psapi", "version", "advapi32", "bthprops", "powrprof", "dxva2", "winmm", "com", "winrt", "examples"]
   showUndocumentedCategories: true
+  nodoc: ['lib/src/constants_nodoc.dart']
   ignore:
     - broken-link
     - missing-from-search-index

@@ -7,14 +7,12 @@ import 'package:test/test.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
-import 'version.dart';
-
 const testString = "If my grandmother had wheels, she'd be a motorbike";
 
 // String arrays are delimited with NUL characters, and ended with a double NUL.
 // Since the TEXT macro null-terminates all input, we only add one NUL character
 // to the end of the string here.
-final testStringArray =
+const testStringArray =
     'apples\x00hazelnuts\x00bananas\x00raisins\x00coconuts\x00sultanas\x00';
 
 const TEST_RUNS = 500;
@@ -67,11 +65,11 @@ void main() {
     });
   });
 
-  if (isWindows10OrGreater()) {
+  if (isWindowsRuntimeAvailable()) {
     group('HSTRING tests', () {
       test('String to HSTRING conversion', () {
         for (var i = 0; i < TEST_RUNS; i++) {
-          final string = 'This is a string to convert.\n';
+          const string = 'This is a string to convert.\n';
           final hstring = convertToHString(string);
 
           final string2 = convertFromHString(hstring);
@@ -83,7 +81,7 @@ void main() {
       });
       test('String to HSTRING conversion -- more complex', () {
         for (var i = 0; i < TEST_RUNS; i++) {
-          final string = '''
+          const string = '''
 Some emojis: 💼📃👩🏾‍💻🛀🏼🤗
 Some Hangul: 이력서
 Some accented text: Résumé

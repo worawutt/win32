@@ -1,4 +1,6 @@
-// winmd.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Parse the WinMD file and interpret its metadata
 
@@ -37,7 +39,7 @@ File metadataFileContainingType(String typeName) {
 
   // RoGetMetaDataFile can only be used for Windows Runtime classes in an app
   // that is not a Windows Store app.
-  var hr = RoGetMetaDataFile(hstrTypeName.value, nullptr,
+  final hr = RoGetMetaDataFile(hstrTypeName.value, nullptr,
       hstrMetaDataFilePath.address, spMetaDataImport, typeDef);
   if (SUCCEEDED(hr)) {
     path = File(convertFromHString(hstrMetaDataFilePath));
@@ -103,10 +105,10 @@ WindowsRuntimeType ProcessToken(IMetaDataImport reader, int token) {
   final baseClassToken = allocate<Uint32>();
   final typeName = allocate<Uint16>(count: 256).cast<Utf16>();
 
-  var hr = reader.GetTypeDefProps(
+  final hr = reader.GetTypeDefProps(
       token, typeName, 256, nRead, tdFlags, baseClassToken);
 
-  if (hr == S_OK) {
+  if (SUCCEEDED(hr)) {
     type = WindowsRuntimeType(token, typeName.unpackString(nRead.value),
         tdFlags.value, baseClassToken.value);
 
@@ -126,21 +128,17 @@ WindowsRuntimeType ProcessToken(IMetaDataImport reader, int token) {
 ///   dart winmd.dart Windows.Storage.Pickers.FileOpenPicker
 /// ```
 void main(List<String> args) {
-  if (args.isEmpty || args.length != 1) {
-    args = ['Windows.Globalization.Calendar'];
-  }
-  final winmdFile = metadataFileContainingType(args.first);
+  final winmdFile = metadataFileContainingType(
+      args.length == 1 ? args.first : 'Windows.Globalization.Calendar');
 
-  if (winmdFile != null) {
-    print('Type ${args.first} can be found in ${winmdFile.path}.');
+  print('Type ${args.first} can be found in ${winmdFile.path}.');
 
-    print('\nLooking for other types in the same file...\n');
+  print('\nLooking for other types in the same file...\n');
 
-    final types = metadataTypesInFile(winmdFile);
-    print('Found ${types.length} types:');
-    for (var type in types) {
-      print(
-          '[${toHex(type.token)}] ${type.typeName} (baseType: ${toHex(type.baseTypeToken)})');
-    }
+  final types = metadataTypesInFile(winmdFile);
+  print('Found ${types.length} types:');
+  for (final type in types) {
+    print(
+        '[${toHex(type.token)}] ${type.typeName} (baseType: ${toHex(type.baseTypeToken)})');
   }
 }

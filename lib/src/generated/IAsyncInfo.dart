@@ -22,16 +22,15 @@ import 'IInspectable.dart';
 /// @nodoc
 const IID_IAsyncInfo = '{00000036-0000-0000-C000-000000000046}';
 
-typedef _get_Id_Native = Int32 Function(Pointer obj, Pointer<Uint32> id);
-typedef _get_Id_Dart = int Function(Pointer obj, Pointer<Uint32> id);
+typedef _get_Id_Native = Int32 Function(Pointer obj, Pointer<Uint32> value);
+typedef _get_Id_Dart = int Function(Pointer obj, Pointer<Uint32> value);
 
-typedef _get_Status_Native = Int32 Function(Pointer obj, Pointer<Int32> status);
-typedef _get_Status_Dart = int Function(Pointer obj, Pointer<Int32> status);
+typedef _get_Status_Native = Int32 Function(Pointer obj, Pointer<Int32> value);
+typedef _get_Status_Dart = int Function(Pointer obj, Pointer<Int32> value);
 
 typedef _get_ErrorCode_Native = Int32 Function(
-    Pointer obj, Pointer<Uint32> errorCode);
-typedef _get_ErrorCode_Dart = int Function(
-    Pointer obj, Pointer<Uint32> errorCode);
+    Pointer obj, Pointer<Uint32> value);
+typedef _get_ErrorCode_Dart = int Function(Pointer obj, Pointer<Uint32> value);
 
 typedef _Cancel_Native = Int32 Function(Pointer obj);
 typedef _Cancel_Dart = int Function(Pointer obj);
@@ -44,10 +43,7 @@ typedef _Close_Dart = int Function(Pointer obj);
 class IAsyncInfo extends IInspectable {
   // vtable begins at 6, ends at 10
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IAsyncInfo(this.ptr) : super(ptr);
+  IAsyncInfo(Pointer<COMObject> ptr) : super(ptr);
 
   int get Id {
     final retValuePtr = allocate<Uint32>();

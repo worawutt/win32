@@ -1,4 +1,6 @@
-// combase.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Foundational COM classes
 
@@ -9,15 +11,15 @@ import 'package:ffi/ffi.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
-import '../string.dart';
 import '../structs.dart';
+import '../utils.dart';
 
 /// A representation of a generic COM object. All Dart COM objects inherit from
 /// this class.
 ///
 /// {@category com}
 class COMObject extends Struct {
-  Pointer<IntPtr> lpVtbl;
+  external Pointer<IntPtr> lpVtbl;
 
   Pointer<IntPtr> get vtable => Pointer.fromAddress(lpVtbl.value);
 

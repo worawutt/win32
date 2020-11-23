@@ -12,27 +12,16 @@ import 'dart:io';
 import 'parse.dart';
 
 void main(List<String> args) {
-  if (args.length != 2) {
-    args = <String>['input', 'output'];
-  }
-  final inputDirectory = Directory(args[0]);
-  final outputDirectory = Directory(args[1]);
+  final inputDirectory = Directory(args.length == 2 ? args[0] : 'input');
+  final outputDirectory = Directory(args.length == 2 ? args[1] : 'output');
 
-  for (var inputFile in inputDirectory.listSync()) {
+  for (final inputFile in inputDirectory.listSync()) {
     if (inputFile is File) {
-      print('Parsing:    ${inputFile.path}');
+      print('Converting:    ${inputFile.path}');
       final parsedFile = loadSource(inputFile);
-
       final outputFile =
           File('${outputDirectory.uri.toFilePath()}${parsedFile.name}.dart');
-      print('Writing:    ${outputFile.path}');
       outputFile.writeAsStringSync(parsedFile.toString());
-
-      print('Formatting: ${outputFile.path}');
-      Process.runSync('dartfmt', ['--overwrite', '--fix', outputFile.path],
-          runInShell: true);
-
-      print('');
     }
   }
 }

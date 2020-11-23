@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -434,10 +435,7 @@ typedef _get_IsDaylightSavingTime_Dart = int Function(
 class ICalendar extends IInspectable {
   // vtable begins at 6, ends at 103
 
-  @override
-  Pointer<COMObject> ptr;
-
-  ICalendar(this.ptr) : super(ptr);
+  ICalendar(Pointer<COMObject> ptr) : super(ptr);
 
   int Clone(Pointer<IntPtr> value) =>
       Pointer<NativeFunction<_Clone_Native>>.fromAddress(

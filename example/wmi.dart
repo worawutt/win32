@@ -1,4 +1,6 @@
-// wmi.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Demonstrates getting information from the Windows Management
 // Instrumentation (WMI) API
@@ -152,12 +154,14 @@ void main() {
       // A VARIANT is a union struct, which can't be directly represented by
       // FFI yet. In this case we know that the VARIANT can only contain a BSTR
       // so we are able to use a specialized variant.
-      final vtProp = VARIANT_POINTER.allocate();
+      final vtProp = VARIANT.allocate();
       hr = clsObj.Get(TEXT('Name'), 0, vtProp.addressOf, nullptr, nullptr);
       if (SUCCEEDED(hr)) {
         print('Process: ${vtProp.ptr.cast<Utf16>().unpackString(256)}');
       }
+      // Free BSTRs in the returned variants
       VariantClear(vtProp.addressOf);
+      free(vtProp.addressOf);
 
       clsObj.Release();
     }

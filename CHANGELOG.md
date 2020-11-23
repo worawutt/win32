@@ -1,6 +1,102 @@
+## 2.0.0-nullsafety.5
+
+- Add dialog box example and supporting extension methods
+
+## 2.0.0-nullsafety.4
+
+- Add remaining Win32 dialog calls
+
+## 2.0.0-nullsafety.3
+
+- Add button and dialog style constants
+- Add DLGTEMPLATE and DLGITEMTEMPLATE
+
+## 2.0.0-nullsafety.2
+
+- Add extended window style constants (WM_EX_*)
+
+## 2.0.0-nullsafety.1
+
+- Add a number of GDI calls
+- Rework API wrapper to use functions instead of properties
+- Convert API tests support reworked API wrapper
+- High-fidelity INPUT struct that demonstrates an approach for union structs in
+  Dart FFI
+- Document some more constants
+
+## 2.0.0-nullsafety.0
+
+- Enable sound null safety
+
+## 1.7.5
+
+- WinMM: Add PlaySound (thanks @Hexer10)
+
+## 1.7.4
+
+- Add SysAllocString, SysFreeString, SysStringByteLen, SysStringLen,
+  SHCreateItemFromParsingName
+- Rename VARIANT_POINTER to VARIANT
+
+## 1.7.3
+
+- Expand Win32 API documentation.
+- New APIs:
+  - User32: ClipCursor, CopyIcon, DestroyIcon, DrawIcon, GetCursor,
+    GetCursorPos, GetSystemMenu, SetMenuInfo, SetMenuItemInfo, ShowCursor
+
+## 1.7.2
+
+- Add Win32 API documentation and a couple of minor APIs.
+
+## 1.7.1
+
+- Add version information APIs and example.
+
+## 1.7.0
+
+- Changed how the C-style APIs are generated. This should result in far better
+  code smarts in your editor, as well as major improvements to the
+  auto-generated documentation.
+- Added many new APIs, including GetCurrentProcess and GetModuleFileName
+
+## 1.6.10
+
+- New APIs
+  - Shell: LockWorkstation, SHEmptyRecycleBin, SHGetDiskFreeSpaceEx,
+    SHGetDriveMedia, SHQueryRecycleBin, InitCommonControlsEx, DrawStatusText
+  - Add high-precision timing APIs: QueryPerformanceFrequency,
+    QueryPerformanceCounter
+  - User32: SetParent, CreateWindow macro, MonitorFromPoint, SetWindowsLongPtr
+  - Kernel: Add SystemParametersInfo and related constants
+  - Kernel: Add EnumProcessModulesEx (thanks @Hexer10)
+- Samples
+  - Add example of using app manifests to declare support for UAC permissions
+    and Windows 10 opt-in behavior
+- Windows Runtime metadata
+  - Greatly expand WinMD utility to generate APIs directly from Windows Metadata
+  - Autogenerate all Windows Runtime classes except ICalendar and
+    IFileOpenPicker from metadata
+- Code tidy up
+  - Add more tests
+  - Go through all the code with a stricter linter
+  - Update README with screenshots and examples
+  - Update Flutter Windows examples to the v4 template
+
+## 1.6.9
+
+- Add credential management APIs (thanks @hpoul)
+- Add battery and power management APIs
+- Overhaul HRESULTs and add more tests
+
+## 1.6.8
+
+- Add font enumeration example
+- Experiment with hosting documentation on GitHub
+
 ## 1.6.7
 
-- Add basic registry cheks
+- Add basic registry checks
 - Add initial Bluetooth discovery support
 - Add a system information sample
 - Guard tests so that they work on Windows 7

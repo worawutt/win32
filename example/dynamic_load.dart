@@ -1,4 +1,6 @@
-// dynamic_load.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Demonstrates how to use GetProcAddress to retrieve a raw function pointer and
 // call it.
@@ -16,8 +18,10 @@ typedef getNativeSystemInfoDart = void Function(
 void main() {
   final systemInfo = SYSTEM_INFO.allocate();
 
-  final hModule = GetModuleHandle(TEXT('kernel32.dll'));
+  final kernel32 = TEXT('kernel32.dll');
+  final hModule = GetModuleHandle(kernel32);
   if (hModule == NULL) throw Exception('Could not load kernel32.dll');
+  free(kernel32);
 
   final ansi = convertToANSIString('GetNativeSystemInfo');
   final pGetNativeSystemInfo = GetProcAddress(hModule, ansi);

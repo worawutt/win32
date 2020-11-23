@@ -1,4 +1,6 @@
-// hello.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Basic Petzoldian "hello world" Win32 app
 
@@ -9,7 +11,7 @@ import 'package:win32/win32.dart';
 
 final hInstance = GetModuleHandle(nullptr);
 
-int MainWindowProc(int hWnd, int uMsg, int wParam, int lParam) {
+int mainWindowProc(int hWnd, int uMsg, int wParam, int lParam) {
   switch (uMsg) {
     case WM_DESTROY:
       PostQuitMessage(0);
@@ -37,14 +39,13 @@ int MainWindowProc(int hWnd, int uMsg, int wParam, int lParam) {
 
 void main() {
   // Register the window class.
-
-  final CLASS_NAME = TEXT('Sample Window Class');
+  final className = TEXT('Sample Window Class');
 
   final wc = WNDCLASS.allocate();
   wc.style = CS_HREDRAW | CS_VREDRAW;
-  wc.lpfnWndProc = Pointer.fromFunction<WindowProc>(MainWindowProc, 0);
+  wc.lpfnWndProc = Pointer.fromFunction<WindowProc>(mainWindowProc, 0);
   wc.hInstance = hInstance;
-  wc.lpszClassName = CLASS_NAME;
+  wc.lpszClassName = className;
   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
   wc.hbrBackground = GetStockObject(WHITE_BRUSH);
   RegisterClass(wc.addressOf);
@@ -53,7 +54,7 @@ void main() {
 
   final hWnd = CreateWindowEx(
       0, // Optional window styles.
-      CLASS_NAME, // Window class
+      className, // Window class
       TEXT('Dart Native Win32 window'), // Window caption
       WS_OVERLAPPEDWINDOW, // Window style
 

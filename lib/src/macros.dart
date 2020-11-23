@@ -1,8 +1,22 @@
-// macros.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Dart representations of Win32 C macros
 
+import 'dart:ffi';
+
 import 'constants.dart';
+import 'structs.dart';
+import 'user32.dart';
+
+// #define MAKEWORD(a, b)   ((WORD)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) |
+//                          ((WORD)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8))
+int MAKEWORD(int a, int b) => a & 0xff | (b & 0xff << 8);
+
+// #define MAKELONG(a, b)   ((LONG)(((WORD)(((DWORD_PTR)(a)) & 0xffff)) |
+//                          ((DWORD)((WORD)(((DWORD_PTR)(b)) & 0xffff))) << 16))
+int MAKELONG(int a, int b) => a & 0xffff | (b & 0xffff << 16);
 
 // #define LOWORD(l)           ((WORD)(((DWORD_PTR)(l)) & 0xffff))
 int LOWORD(int l) => l & 0xffff;
@@ -29,13 +43,33 @@ int GetGValue(int rgb) => LOBYTE(rgb >> 8);
 int GetBValue(int rgb) => LOBYTE(rgb >> 16);
 
 // #define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
-bool SUCCEEDED(int result) => (result >= 0);
+bool SUCCEEDED(int result) => result >= 0;
 
 // #define FAILED(hr) (((HRESULT)(hr)) < 0)
-bool FAILED(int result) => (result < 0);
+bool FAILED(int result) => result < 0;
 
 // #define __HRESULT_FROM_WIN32(x) ((HRESULT)(x) <= 0 ? ((HRESULT)(x)) :
 //       ((HRESULT) (((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000)))
 int HRESULT_FROM_WIN32(int x) =>
-    ((x <= 0 ? x : (x & 0x0000FFFF | (FACILITY_WIN32 << 16) | 0x80000000))
-        .toSigned(32));
+    (x <= 0 ? x : (x & 0x0000FFFF | (FACILITY_WIN32 << 16) | 0x80000000))
+        .toSigned(32);
+
+/// Creates a modal dialog box from a dialog box template in memory.
+/// DialogBoxIndirect does not return control until the specified callback
+/// function terminates the modal dialog box by calling the EndDialog function.
+///
+/// DialogBoxIndirect is implemented as a call to the DialogBoxIndirectParam
+/// function.
+///
+/// ```c
+/// void DialogBoxIndirectW(
+///    hInstance,
+///    lpTemplate,
+///    hWndParent,
+///    lpDialogFunc
+/// );
+/// ```
+/// {@category user32}
+void DialogBoxIndirect(int hInstance, Pointer<DLGTEMPLATE> lpTemplate,
+        int hWndParent, Pointer<NativeFunction> lpDialogFunc) =>
+    DialogBoxIndirectParam(hInstance, lpTemplate, hWndParent, lpDialogFunc, 0);

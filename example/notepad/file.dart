@@ -17,9 +17,9 @@ class NotepadFile {
   /// The filename and extension of the current working file (e.g. `myfile.txt`)
   String title;
 
-  OPENFILENAME ofn;
+  late OPENFILENAME ofn;
 
-  NotepadFile(int hwnd) {
+  NotepadFile(int hwnd, this.path, this.title) {
     ofn = OPENFILENAME.allocate();
     ofn.lStructSize = sizeOf<OPENFILENAME>();
     ofn.hwndOwner = hwnd;
@@ -48,14 +48,14 @@ class NotepadFile {
   ///
   /// Returns `true` if the the user selects a file and the common dialog
   /// is successful.
-  bool ShowOpenDialog(int hwnd) {
+  bool showOpenDialog(int hwnd) {
     final strFile =
-        path != null ? Utf16String.fromString(path) : Utf16String(MAX_PATH);
+        path.isNotEmpty ? Utf16String.fromString(path) : Utf16String(MAX_PATH);
 
-    final strFileTitle =
-        title != null ? Utf16String.fromString(title) : Utf16String(MAX_PATH);
+    final strFileTitle = title.isNotEmpty
+        ? Utf16String.fromString(title)
+        : Utf16String(MAX_PATH);
 
-    ofn.hwndOwner = hwnd;
     ofn.lpstrFile = strFile.pointer;
     ofn.lpstrFileTitle = strFileTitle.pointer;
     ofn.Flags = OFN_HIDEREADONLY | OFN_CREATEPROMPT;
@@ -75,14 +75,14 @@ class NotepadFile {
   ///
   /// Returns `true` if the the user selects a file and the common dialog
   /// is successful.
-  bool ShowSaveDialog(int hwnd) {
+  bool showSaveDialog(int hwnd) {
     final strFile =
-        path != null ? Utf16String.fromString(path) : Utf16String(MAX_PATH);
+        path.isNotEmpty ? Utf16String.fromString(path) : Utf16String(MAX_PATH);
 
-    final strFileTitle =
-        title != null ? Utf16String.fromString(title) : Utf16String(MAX_PATH);
+    final strFileTitle = title.isNotEmpty
+        ? Utf16String.fromString(title)
+        : Utf16String(MAX_PATH);
 
-    ofn.hwndOwner = hwnd;
     ofn.lpstrFile = strFile.pointer;
     ofn.lpstrFileTitle = strFileTitle.pointer;
     ofn.Flags = OFN_OVERWRITEPROMPT;
@@ -97,7 +97,7 @@ class NotepadFile {
     }
   }
 
-  void ReadFileIntoEditControl(int hwndEdit) {
+  void readFileIntoEditControl(int hwndEdit) {
     // Fairly naive implementation that doesn't account for
     // string encoding. That's fine -- this is a toy app!
     final file = File(path);
@@ -106,7 +106,7 @@ class NotepadFile {
     SetWindowText(hwndEdit, TEXT(contents));
   }
 
-  void WriteFileFromEditControl(int hwndEdit) {
+  void writeFileFromEditControl(int hwndEdit) {
     final file = File(path);
     final iLength = GetWindowTextLength(hwndEdit);
     final buffer = Utf16String(iLength);

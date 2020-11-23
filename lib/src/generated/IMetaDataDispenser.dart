@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -50,10 +51,7 @@ typedef _OpenScopeOnMemory_Dart = int Function(
 class IMetaDataDispenser extends IUnknown {
   // vtable begins at 3, ends at 5
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IMetaDataDispenser(this.ptr) : super(ptr);
+  IMetaDataDispenser(Pointer<COMObject> ptr) : super(ptr);
 
   int DefineScope(Pointer<GUID> rclsid, int dwCreateFlags, Pointer<GUID> riid,
           Pointer<IntPtr> ppIUnk) =>

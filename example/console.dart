@@ -1,4 +1,6 @@
-// console.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Shows usage of console APIs. For more console examples and a high-level API
 // to the underlying Win32 console API, see
@@ -20,7 +22,7 @@ const echoOffPrompt = 'Type any key, or q to quit: ';
 final stdin = GetStdHandle(STD_INPUT_HANDLE);
 final stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+late CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
 
 /// Convert a byte array pointer into a Dart string
 String fromCString(Pointer<Uint8> buffer, int maxLength) =>

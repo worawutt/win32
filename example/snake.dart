@@ -1,4 +1,6 @@
-// snake.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // The classic Snake game, as popularized by the Nokia phones of the 1990s.
 
@@ -17,7 +19,8 @@ import 'package:win32/win32.dart';
 
 // Win32-specific vars
 final hInstance = GetModuleHandle(nullptr);
-int hWnd;
+
+late int hWnd;
 const IDT_TIMER1 = 1;
 const IDT_TIMER2 = 2;
 
@@ -26,8 +29,8 @@ final rng = Random();
 final bitmapInfo = BITMAPINFO.allocate();
 
 Pointer<Void> bitmapMemory = nullptr;
-int bitmapWidth;
-int bitmapHeight;
+late int bitmapWidth;
+late int bitmapHeight;
 const bytesPerPixel = 4;
 
 bool isRunning = false;
@@ -150,8 +153,6 @@ void moveSnake() {
 
   // set
   for (var i = 0; i < snakePoints.length; i++) {
-    //std::cout << snakePoints[i].x << ", " << snakePoints[i].y << std::endl;
-
     final tempX = snakePoints[i].x;
     final tempY = snakePoints[i].y;
 
@@ -287,11 +288,6 @@ void setVectorToMemory() {
 
         ptr.elementAt(pixelOffset).value = 0;
         pixelOffset++;
-        // move along
-        //++Pixel;
-        //++Pixel;
-        //++Pixel;
-        //++Pixel;
       }
       vecX = (x / 10).floor();
     }
@@ -460,7 +456,7 @@ void gameTick() {
   setVectorToMemory();
 }
 
-int MainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
+int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
   var result = 0;
 
   switch (uMsg) {
@@ -471,6 +467,7 @@ int MainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
       final height = rect.bottom - rect.top;
 
       init(width, height);
+
       free(rect.addressOf);
       break;
 
@@ -559,18 +556,18 @@ int MainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
 void main() {
   // Register the window class.
 
-  final CLASS_NAME = TEXT('WinSnakeWindowClass');
+  final className = TEXT('WinSnakeWindowClass');
 
   final wc = WNDCLASS.allocate();
-  wc.lpfnWndProc = Pointer.fromFunction<WindowProc>(MainWindowProc, 0);
+  wc.lpfnWndProc = Pointer.fromFunction<WindowProc>(mainWindowProc, 0);
   wc.hInstance = hInstance;
-  wc.lpszClassName = CLASS_NAME;
+  wc.lpszClassName = className;
   if (RegisterClass(wc.addressOf) != 0) {
     // Create the window.
 
     hWnd = CreateWindowEx(
         0, // Optional window styles.
-        CLASS_NAME, // Window class
+        className, // Window class
         TEXT('Dart WinSnake'), // Window caption
         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
 
@@ -604,11 +601,16 @@ void main() {
 
         final dc = GetDC(hWnd);
         final rect = RECT.allocate();
+
         GetClientRect(hWnd, rect.addressOf);
+
         final windowWidth = rect.right - rect.left;
         final windowHeight = rect.bottom - rect.top;
+
         draw(dc, rect, 0, 0, windowWidth, windowHeight);
+
         ReleaseDC(hWnd, dc);
+        free(rect.addressOf);
       }
     } else {
       MessageBox(0, TEXT('Failed to create window'), TEXT('Error'),

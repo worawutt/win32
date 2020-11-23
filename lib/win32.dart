@@ -78,12 +78,20 @@
 library win32;
 
 // Core Win32 APIs, constants and macros
+export 'src/callbacks.dart';
 export 'src/constants.dart';
+export 'src/constants_nodoc.dart';
 export 'src/exceptions.dart';
 export 'src/macros.dart';
 export 'src/structs.dart';
-export 'src/string.dart';
-export 'src/callbacks.dart';
+export 'src/utils.dart';
+
+// Useful extension methods
+export 'src/extensions/dialogs.dart';
+export 'src/extensions/int_to_hexstring.dart';
+export 'src/extensions/list_to_blob.dart';
+export 'src/extensions/set_string.dart';
+export 'src/extensions/unpack_utf16.dart';
 
 // Traditional C-style Windows APIs
 export 'src/advapi32.dart';
@@ -95,9 +103,13 @@ export 'src/gdi32.dart';
 export 'src/kernel32.dart';
 export 'src/ole32.dart';
 export 'src/oleaut32.dart';
+export 'src/powrprof.dart';
 export 'src/psapi.dart';
+export 'src/shcore.dart';
 export 'src/shell32.dart';
 export 'src/user32.dart';
+export 'src/version.dart';
+export 'src/winmm.dart';
 
 // COM foundational exports
 export 'src/com/combase.dart';

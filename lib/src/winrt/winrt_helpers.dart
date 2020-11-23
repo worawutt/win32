@@ -1,4 +1,6 @@
-// winrt_helpers.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Helper functions to minimize ceremony when calling WinRT APIs.
 
@@ -7,11 +9,13 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 
 import '../exceptions.dart';
+import '../extensions/unpack_utf16.dart';
 import '../generated/IInspectable.dart';
 import '../macros.dart';
 import '../ole32.dart';
-import '../string.dart';
 import '../structs.dart';
+import '../utils.dart';
+
 import 'winrt_constants.dart';
 import 'winrt_prototypes.dart';
 
@@ -46,7 +50,7 @@ Pointer<IntPtr> convertToHString(String string) {
   final hString = allocate<IntPtr>();
 
   // Create a HSTRING representing the object
-  var hr = WindowsCreateString(Utf16.toUtf16(string), string.length, hString);
+  final hr = WindowsCreateString(Utf16.toUtf16(string), string.length, hString);
   if (FAILED(hr)) {
     throw WindowsException(hr);
   } else {

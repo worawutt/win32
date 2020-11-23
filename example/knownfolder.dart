@@ -1,4 +1,6 @@
-// knownfolder.dart
+// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 // Shows usage of shell APIs to retrieve user's home dir
 
@@ -30,7 +32,7 @@ String getTemporaryPath() {
 
 /// Get the path for a known Windows folder, using the classic (deprecated) API
 String getFolderPath() {
-  var path = allocate<Uint16>(count: MAX_PATH).cast<Utf16>();
+  final path = allocate<Uint16>(count: MAX_PATH).cast<Utf16>();
 
   final result = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, 0, path);
 
@@ -45,21 +47,26 @@ String getFolderPath() {
 String getKnownFolderPath() {
   final knownFolderID = GUID.fromString(FOLDERID_Documents);
   final pathPtrPtr = allocate<IntPtr>();
+  Pointer<Utf16> pathPtr = nullptr;
 
-  final hr = SHGetKnownFolderPath(
-      knownFolderID.addressOf, KF_FLAG_DEFAULT, NULL, pathPtrPtr);
+  try {
+    final hr = SHGetKnownFolderPath(
+        knownFolderID.addressOf, KF_FLAG_DEFAULT, NULL, pathPtrPtr);
 
-  if (FAILED(hr)) {
-    throw WindowsException(hr);
+    if (FAILED(hr)) {
+      throw WindowsException(hr);
+    }
+
+    pathPtr = Pointer<Utf16>.fromAddress(pathPtrPtr.value);
+    final path = pathPtr.unpackString(MAX_PATH);
+    return path;
+  } finally {
+    if (pathPtr != nullptr) {
+      CoTaskMemFree(pathPtr);
+    }
+    free(knownFolderID.addressOf);
+    free(pathPtrPtr);
   }
-
-  final pathPtr = Pointer<Utf16>.fromAddress(pathPtrPtr.value);
-  final path = pathPtr.unpackString(MAX_PATH);
-
-  CoTaskMemFree(pathPtr.cast());
-  free(pathPtrPtr);
-
-  return path;
 }
 
 void main() {

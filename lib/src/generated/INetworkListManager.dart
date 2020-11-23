@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -61,10 +62,7 @@ typedef _ClearSimulatedProfileInfo_Dart = int Function(Pointer obj);
 class INetworkListManager extends IDispatch {
   // vtable begins at 7, ends at 15
 
-  @override
-  Pointer<COMObject> ptr;
-
-  INetworkListManager(this.ptr) : super(ptr);
+  INetworkListManager(Pointer<COMObject> ptr) : super(ptr);
 
   int GetNetworks(int Flags, Pointer<IntPtr> ppEnumNetwork) =>
       Pointer<NativeFunction<_GetNetworks_Native>>.fromAddress(
@@ -125,22 +123,19 @@ class INetworkListManager extends IDispatch {
 
 /// {@category com}
 class NetworkListManager extends INetworkListManager {
-  @override
-  Pointer<COMObject> ptr;
+  NetworkListManager(Pointer<COMObject> ptr) : super(ptr);
 
   factory NetworkListManager.createInstance() {
     final ptr = COMObject.allocate().addressOf;
 
-    var hr = CoCreateInstance(
+    final hr = CoCreateInstance(
         GUID.fromString(CLSID_NetworkListManager).addressOf,
         nullptr,
         CLSCTX_ALL,
         GUID.fromString(IID_INetworkListManager).addressOf,
-        ptr.cast());
+        ptr);
 
-    if (!SUCCEEDED(hr)) throw WindowsException(hr);
+    if (FAILED(hr)) throw WindowsException(hr);
     return NetworkListManager(ptr);
   }
-
-  NetworkListManager(this.ptr) : super(ptr);
 }

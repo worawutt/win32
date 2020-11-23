@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -34,10 +35,7 @@ typedef _GetEnumFlagsForItem_Dart = int Function(
 class IShellItemFilter extends IUnknown {
   // vtable begins at 3, ends at 4
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IShellItemFilter(this.ptr) : super(ptr);
+  IShellItemFilter(Pointer<COMObject> ptr) : super(ptr);
 
   int IncludeItem(Pointer<COMObject> psi) =>
       Pointer<NativeFunction<_IncludeItem_Native>>.fromAddress(

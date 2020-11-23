@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -28,10 +29,7 @@ typedef _Show_Dart = int Function(Pointer obj, int hwndOwner);
 class IModalWindow extends IUnknown {
   // vtable begins at 3, ends at 3
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IModalWindow(this.ptr) : super(ptr);
+  IModalWindow(Pointer<COMObject> ptr) : super(ptr);
 
   int Show(int hwndOwner) => Pointer<NativeFunction<_Show_Native>>.fromAddress(
           ptr.ref.vtable.elementAt(3).value)

@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -52,10 +53,7 @@ typedef _Compare_Dart = int Function(
 class IShellItem extends IUnknown {
   // vtable begins at 3, ends at 7
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IShellItem(this.ptr) : super(ptr);
+  IShellItem(Pointer<COMObject> ptr) : super(ptr);
 
   int BindToHandler(Pointer<COMObject> pbc, Pointer<GUID> bhid,
           Pointer<GUID> riid, Pointer<IntPtr> ppv) =>

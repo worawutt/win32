@@ -10,6 +10,7 @@ import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
 import '../constants.dart';
+import '../constants_nodoc.dart';
 import '../exceptions.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -60,10 +61,7 @@ typedef _ApplyProperties_Dart = int Function(
 class IFileSaveDialog extends IFileDialog {
   // vtable begins at 27, ends at 31
 
-  @override
-  Pointer<COMObject> ptr;
-
-  IFileSaveDialog(this.ptr) : super(ptr);
+  IFileSaveDialog(Pointer<COMObject> ptr) : super(ptr);
 
   int SetSaveAsItem(Pointer<COMObject> psi) =>
       Pointer<NativeFunction<_SetSaveAsItem_Native>>.fromAddress(
@@ -96,22 +94,19 @@ class IFileSaveDialog extends IFileDialog {
 
 /// {@category com}
 class FileSaveDialog extends IFileSaveDialog {
-  @override
-  Pointer<COMObject> ptr;
+  FileSaveDialog(Pointer<COMObject> ptr) : super(ptr);
 
   factory FileSaveDialog.createInstance() {
     final ptr = COMObject.allocate().addressOf;
 
-    var hr = CoCreateInstance(
+    final hr = CoCreateInstance(
         GUID.fromString(CLSID_FileSaveDialog).addressOf,
         nullptr,
         CLSCTX_ALL,
         GUID.fromString(IID_IFileSaveDialog).addressOf,
-        ptr.cast());
+        ptr);
 
-    if (!SUCCEEDED(hr)) throw WindowsException(hr);
+    if (FAILED(hr)) throw WindowsException(hr);
     return FileSaveDialog(ptr);
   }
-
-  FileSaveDialog(this.ptr) : super(ptr);
 }
