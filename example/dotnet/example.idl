@@ -1,0 +1,49 @@
+// Generated .IDL file (by the OLE/COM Object Viewer)
+// 
+// typelib filename: <could not determine filename>
+
+[
+  uuid(6AFE06B4-FA44-4AD8-B357-0CBFA7875137),
+  version(1.0),
+  custom(90883F05-3D28-11D2-8F17-00A0C9A6186D, "library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
+
+]
+library library
+{
+    // TLib : mscorlib.dll : {BED7F4EA-1A96-11D2-8F08-00A0C9A6186D}
+    importlib("mscorlib.tlb");
+    // TLib : OLE Automation : {00020430-0000-0000-C000-000000000046}
+    importlib("stdole2.tlb");
+
+    // Forward declare all types defined in this typelib
+    dispinterface IExample;
+
+    [
+      uuid(40A9DD52-84CD-4018-9A03-62DB6B9B5DE2),
+      version(1.0),
+      custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "DotNetLibrary.Example")
+    ]
+    coclass Example {
+        interface _Object;
+        [default] dispinterface IExample;
+    };
+
+    [
+      uuid(F79383CD-6FD8-4B64-ADED-B1762BD7CD1A),
+      version(1.0),
+      custom(0F21F359-AB84-41E8-9A78-36D110E6D2F9, "DotNetLibrary.IExample")    
+
+    ]
+    dispinterface IExample {
+        properties:
+        methods:
+            [id(0x60020000)]
+            void SayHello();
+            [id(0x60020001)]
+            BSTR What();
+            [id(0x60020002), propget]
+            long Counter();
+            [id(0x60020002), propput]
+            void Counter([in] long rhs);
+    };
+};

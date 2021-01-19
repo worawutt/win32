@@ -2288,20 +2288,6 @@ int OffsetRect(Pointer<RECT> lprc, int dx, int dy) {
   return _OffsetRect(lprc, dx, dy);
 }
 
-/// Opens the clipboard for examination and prevents other applications
-/// from modifying the clipboard content.
-///
-/// ```c
-/// BOOL OpenClipboard(  HWND hWndNewOwner);
-/// ```
-/// {@category user32}
-int OpenClipboard(int hWndNewOwner) {
-  final _OpenClipboard = _user32.lookupFunction<
-      Int32 Function(IntPtr hWndNewOwner),
-      int Function(int hWndNewOwner)>('OpenClipboard');
-  return _OpenClipboard(hWndNewOwner);
-}
-
 /// Restores a minimized (iconic) window to its previous size and position;
 /// it then activates the window.
 ///

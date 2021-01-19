@@ -4388,7 +4388,26 @@ class VARENUM {
 }
 
 // -----------------------------------------------------------------------------
-/// Monitor Configuration constants & enumerations
+// IDispatch::Invoke flags
+// -----------------------------------------------------------------------------
+
+/// The member is invoked as a method. If a property has the same name, both
+/// this and the DISPATCH_PROPERTYGET flag can be set.
+const DISPATCH_METHOD = 0x1;
+
+/// The member is retrieved as a property or data member.
+const DISPATCH_PROPERTYGET = 0x2;
+
+/// The member is changed as a property or data member.
+const DISPATCH_PROPERTYPUT = 0x4;
+
+/// The member is changed by a reference assignment, rather than a value
+/// assignment. This flag is valid only when the property accepts a reference to
+/// an object.
+const DISPATCH_PROPERTYPUTREF = 0x8;
+
+// -----------------------------------------------------------------------------
+// Monitor Configuration constants & enumerations
 // -----------------------------------------------------------------------------
 
 /// If the point is not contained within any display monitor, return NULL.

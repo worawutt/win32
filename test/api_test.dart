@@ -1086,6 +1086,29 @@ void main() {
           int Function(int hHandle, int dwMilliseconds)>('WaitForSingleObject');
       expect(WaitForSingleObject, isA<Function>());
     });
+    test('Can instantiate WideCharToMultiByte', () {
+      final kernel32 = DynamicLibrary.open('kernel32.dll');
+      final WideCharToMultiByte = kernel32.lookupFunction<
+          Int32 Function(
+              Uint32 CodePage,
+              Uint32 dwFlags,
+              Pointer<Utf16> lpWideCharStr,
+              Int32 cchWideChar,
+              Pointer<Uint8> lpMultiByteStr,
+              Int32 cbMultiByte,
+              Pointer<Uint8> lpDefaultChar,
+              Pointer<Uint32> lpUsedDefaultChar),
+          int Function(
+              int CodePage,
+              int dwFlags,
+              Pointer<Utf16> lpWideCharStr,
+              int cchWideChar,
+              Pointer<Uint8> lpMultiByteStr,
+              int cbMultiByte,
+              Pointer<Uint8> lpDefaultChar,
+              Pointer<Uint32> lpUsedDefaultChar)>('WideCharToMultiByte');
+      expect(WideCharToMultiByte, isA<Function>());
+    });
     test('Can instantiate Wow64SuspendThread', () {
       final kernel32 = DynamicLibrary.open('kernel32.dll');
       final Wow64SuspendThread = kernel32.lookupFunction<
@@ -2101,13 +2124,6 @@ void main() {
           Int32 Function(Pointer<RECT> lprc, Int32 dx, Int32 dy),
           int Function(Pointer<RECT> lprc, int dx, int dy)>('OffsetRect');
       expect(OffsetRect, isA<Function>());
-    });
-    test('Can instantiate OpenClipboard', () {
-      final user32 = DynamicLibrary.open('user32.dll');
-      final OpenClipboard = user32.lookupFunction<
-          Int32 Function(IntPtr hWndNewOwner),
-          int Function(int hWndNewOwner)>('OpenClipboard');
-      expect(OpenClipboard, isA<Function>());
     });
     test('Can instantiate OpenIcon', () {
       final user32 = DynamicLibrary.open('user32.dll');
@@ -3384,6 +3400,22 @@ void main() {
   });
 
   group('Test ole32 functions', () {
+    test('Can instantiate CLSIDFromProgID', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final CLSIDFromProgID = ole32.lookupFunction<
+          Int32 Function(Pointer<Utf16> lpszProgID, Pointer<GUID> lpclsid),
+          int Function(Pointer<Utf16> lpszProgID,
+              Pointer<GUID> lpclsid)>('CLSIDFromProgID');
+      expect(CLSIDFromProgID, isA<Function>());
+    });
+    test('Can instantiate CLSIDFromProgIDEx', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final CLSIDFromProgIDEx = ole32.lookupFunction<
+          Int32 Function(Pointer<Utf16> lpszProgID, Pointer<GUID> lpclsid),
+          int Function(Pointer<Utf16> lpszProgID,
+              Pointer<GUID> lpclsid)>('CLSIDFromProgIDEx');
+      expect(CLSIDFromProgIDEx, isA<Function>());
+    });
     test('Can instantiate CLSIDFromString', () {
       final ole32 = DynamicLibrary.open('ole32.dll');
       final CLSIDFromString = ole32.lookupFunction<
@@ -3391,6 +3423,13 @@ void main() {
           int Function(
               Pointer<Utf16> lpsz, Pointer<GUID> pclsid)>('CLSIDFromString');
       expect(CLSIDFromString, isA<Function>());
+    });
+    test('Can instantiate CoAddRefServerProcess', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final CoAddRefServerProcess =
+          ole32.lookupFunction<Uint32 Function(), int Function()>(
+              'CoAddRefServerProcess');
+      expect(CoAddRefServerProcess, isA<Function>());
     });
     test('Can instantiate CoCreateGuid', () {
       final ole32 = DynamicLibrary.open('ole32.dll');
@@ -3424,6 +3463,13 @@ void main() {
               Pointer<GUID> riid,
               Pointer<Pointer> ppv)>('CoGetClassObject');
       expect(CoGetClassObject, isA<Function>());
+    });
+    test('Can instantiate CoGetCurrentProcess', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final CoGetCurrentProcess =
+          ole32.lookupFunction<Uint32 Function(), int Function()>(
+              'CoGetCurrentProcess');
+      expect(CoGetCurrentProcess, isA<Function>());
     });
     test('Can instantiate CoInitializeEx', () {
       final ole32 = DynamicLibrary.open('ole32.dll');
@@ -3499,6 +3545,53 @@ void main() {
           int Function(
               Pointer<Utf16> lpsz, Pointer<GUID> lpiid)>('IIDFromString');
       expect(IIDFromString, isA<Function>());
+    });
+    test('Can instantiate OleInitialize', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final OleInitialize = ole32.lookupFunction<
+          Int32 Function(Pointer pvReserved),
+          int Function(Pointer pvReserved)>('OleInitialize');
+      expect(OleInitialize, isA<Function>());
+    });
+    test('Can instantiate OleUninitialize', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final OleUninitialize = ole32
+          .lookupFunction<Void Function(), void Function()>('OleUninitialize');
+      expect(OleUninitialize, isA<Function>());
+    });
+    test('Can instantiate ProgIDFromCLSID', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final ProgIDFromCLSID = ole32.lookupFunction<
+          Int32 Function(
+              Pointer<GUID> clsid, Pointer<Pointer<Utf16>> lplpszProgID),
+          int Function(Pointer<GUID> clsid,
+              Pointer<Pointer<Utf16>> lplpszProgID)>('ProgIDFromCLSID');
+      expect(ProgIDFromCLSID, isA<Function>());
+    });
+    test('Can instantiate StringFromCLSID', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final StringFromCLSID = ole32.lookupFunction<
+          Int32 Function(Pointer<GUID> rclsid, Pointer<Pointer<Utf16>> lplpsz),
+          int Function(Pointer<GUID> rclsid,
+              Pointer<Pointer<Utf16>> lplpsz)>('StringFromCLSID');
+      expect(StringFromCLSID, isA<Function>());
+    });
+    test('Can instantiate StringFromGUID2', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final StringFromGUID2 = ole32.lookupFunction<
+          Int32 Function(
+              Pointer<GUID> rguid, Pointer<Utf16> lpsz, Int32 cchMax),
+          int Function(Pointer<GUID> rguid, Pointer<Utf16> lpsz,
+              int cchMax)>('StringFromGUID2');
+      expect(StringFromGUID2, isA<Function>());
+    });
+    test('Can instantiate StringFromIID', () {
+      final ole32 = DynamicLibrary.open('ole32.dll');
+      final StringFromIID = ole32.lookupFunction<
+          Int32 Function(Pointer<GUID> rclsid, Pointer<Pointer<Utf16>> lplpsz),
+          int Function(Pointer<GUID> rclsid,
+              Pointer<Pointer<Utf16>> lplpsz)>('StringFromIID');
+      expect(StringFromIID, isA<Function>());
     });
   });
 
@@ -4059,6 +4152,59 @@ void main() {
     });
   });
 
+  group('Test oleaut32 functions', () {
+    test('Can instantiate GetActiveObject', () {
+      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
+      final GetActiveObject = oleaut32.lookupFunction<
+          Int32 Function(
+              Pointer<GUID> rclsid, Pointer pvReserved, Pointer<Pointer> ppunk),
+          int Function(Pointer<GUID> rclsid, Pointer pvReserved,
+              Pointer<Pointer> ppunk)>('GetActiveObject');
+      expect(GetActiveObject, isA<Function>());
+    });
+    test('Can instantiate SysAllocString', () {
+      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
+      final SysAllocString = oleaut32.lookupFunction<
+          Pointer Function(Pointer<Utf16> psz),
+          Pointer Function(Pointer<Utf16> psz)>('SysAllocString');
+      expect(SysAllocString, isA<Function>());
+    });
+    test('Can instantiate SysFreeString', () {
+      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
+      final SysFreeString = oleaut32.lookupFunction<
+          Void Function(Pointer bstrString),
+          void Function(Pointer bstrString)>('SysFreeString');
+      expect(SysFreeString, isA<Function>());
+    });
+    test('Can instantiate SysStringByteLen', () {
+      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
+      final SysStringByteLen = oleaut32.lookupFunction<
+          Uint32 Function(Pointer bstr),
+          int Function(Pointer bstr)>('SysStringByteLen');
+      expect(SysStringByteLen, isA<Function>());
+    });
+    test('Can instantiate SysStringLen', () {
+      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
+      final SysStringLen = oleaut32.lookupFunction<
+          Uint32 Function(Pointer pbstr),
+          int Function(Pointer pbstr)>('SysStringLen');
+      expect(SysStringLen, isA<Function>());
+    });
+    test('Can instantiate VariantClear', () {
+      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
+      final VariantClear = oleaut32.lookupFunction<
+          Int32 Function(Pointer pvarg),
+          int Function(Pointer pvarg)>('VariantClear');
+      expect(VariantClear, isA<Function>());
+    });
+    test('Can instantiate VariantInit', () {
+      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
+      final VariantInit = oleaut32.lookupFunction<Void Function(Pointer pvarg),
+          void Function(Pointer pvarg)>('VariantInit');
+      expect(VariantInit, isA<Function>());
+    });
+  });
+
   group('Test shcore functions', () {
     test('Can instantiate GetDpiForMonitor', () {
       final shcore = DynamicLibrary.open('shcore.dll');
@@ -4340,50 +4486,6 @@ void main() {
         expect(RoGetMetaDataFile, isA<Function>());
       });
     }
-  });
-
-  group('Test oleaut32 functions', () {
-    test('Can instantiate SysAllocString', () {
-      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
-      final SysAllocString = oleaut32.lookupFunction<
-          Pointer Function(Pointer<Utf16> psz),
-          Pointer Function(Pointer<Utf16> psz)>('SysAllocString');
-      expect(SysAllocString, isA<Function>());
-    });
-    test('Can instantiate SysFreeString', () {
-      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
-      final SysFreeString = oleaut32.lookupFunction<
-          Void Function(Pointer bstrString),
-          void Function(Pointer bstrString)>('SysFreeString');
-      expect(SysFreeString, isA<Function>());
-    });
-    test('Can instantiate SysStringByteLen', () {
-      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
-      final SysStringByteLen = oleaut32.lookupFunction<
-          Uint32 Function(Pointer bstr),
-          int Function(Pointer bstr)>('SysStringByteLen');
-      expect(SysStringByteLen, isA<Function>());
-    });
-    test('Can instantiate SysStringLen', () {
-      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
-      final SysStringLen = oleaut32.lookupFunction<
-          Uint32 Function(Pointer pbstr),
-          int Function(Pointer pbstr)>('SysStringLen');
-      expect(SysStringLen, isA<Function>());
-    });
-    test('Can instantiate VariantClear', () {
-      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
-      final VariantClear = oleaut32.lookupFunction<
-          Int32 Function(Pointer pvarg),
-          int Function(Pointer pvarg)>('VariantClear');
-      expect(VariantClear, isA<Function>());
-    });
-    test('Can instantiate VariantInit', () {
-      final oleaut32 = DynamicLibrary.open('oleaut32.dll');
-      final VariantInit = oleaut32.lookupFunction<Void Function(Pointer pvarg),
-          void Function(Pointer pvarg)>('VariantInit');
-      expect(VariantInit, isA<Function>());
-    });
   });
 
   group('Test api-ms-win-core-winrt-string-l1-1-0 functions', () {
