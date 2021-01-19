@@ -2125,6 +2125,13 @@ void main() {
           int Function(Pointer<RECT> lprc, int dx, int dy)>('OffsetRect');
       expect(OffsetRect, isA<Function>());
     });
+    test('Can instantiate OpenClipboard', () {
+      final user32 = DynamicLibrary.open('user32.dll');
+      final OpenClipboard = user32.lookupFunction<
+          Int32 Function(IntPtr hWndNewOwner),
+          int Function(int hWndNewOwner)>('OpenClipboard');
+      expect(OpenClipboard, isA<Function>());
+    });
     test('Can instantiate OpenIcon', () {
       final user32 = DynamicLibrary.open('user32.dll');
       final OpenIcon = user32.lookupFunction<Int32 Function(IntPtr hWnd),
