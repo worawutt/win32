@@ -10,9 +10,10 @@ import 'package:win32/win32.dart';
 const LOCALE_USER_DEFAULT = 0x400;
 const LOCALE_SYSTEM_DEFAULT = 0x0800;
 void main() {
-  var hr = OleInitialize(nullptr);
+  var hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
   if (FAILED(hr)) {
-    print('Failed at OleInitialize.');
+    print('Failed at CoInitializeEx.');
     throw WindowsException(hr);
   }
   // final clsid = calloc<GUID>()..setGUID(CLSID_Example);
@@ -39,7 +40,7 @@ void main() {
 
   // final clsid = calloc<GUID>()..setGUID(CLSID_FileSaveDialog);
   final pUnk = IUnknown(calloc<COMObject>());
-  final iidIUnknown = calloc<GUID>()..setGUID(IID_IUnknown);
+  final iidIUnknown = calloc<GUID>()..ref.setGUID(IID_IUnknown);
 
   hr = CoCreateInstance(
       excelClsId,
@@ -57,7 +58,7 @@ void main() {
   final pDisp = IDispatch(calloc<COMObject>());
   final ppv = calloc<Pointer>();
 
-  final iidIDispatch = calloc<GUID>()..setGUID(IID_IDispatch);
+  final iidIDispatch = calloc<GUID>()..ref.setGUID(IID_IDispatch);
   // hr = IIDFromString(TEXT('IDispatch'), iidIDispatch);
 
   hr = pUnk.QueryInterface(iidIDispatch, ppv.cast());
@@ -69,7 +70,7 @@ void main() {
 
   const CP_ACP = 0;
   final ptName = TEXT('Version');
-  final szName = calloc<Uint8>(count: 256);
+  final szName = calloc<Uint8>(256);
   WideCharToMultiByte(CP_ACP, 0, ptName, -1, szName, 256, nullptr, nullptr);
   final iidNull = calloc<GUID>();
 
