@@ -4,6 +4,11 @@
         "dllLibrary": "kernel32",
         "comment": "The ActivateActCtx function activates the specified activation context. It does this by pushing the specified activation context to the top of the activation stack. The specified activation context is thus associated with the current thread and any appropriate side-by-side API functions."
     },
+    "ActivateKeyboardLayout": {
+        "prototype": "HKL ActivateKeyboardLayout(\n  HKL  hkl,\n  UINT Flags\n);",
+        "dllLibrary": "user32",
+        "comment": "Sets the input locale identifier (formerly called the keyboard layout handle) for the calling thread or the current process. The input locale identifier specifies a locale as well as the physical layout of the keyboard."
+    },
     "AddClipboardFormatListener": {
         "prototype": "BOOL AddClipboardFormatListener(\n  HWND hwnd\n);",
         "dllLibrary": "user32",
@@ -88,6 +93,11 @@
         "prototype": "BOOL BitBlt(\n  HDC   hdc,\n  int   x,\n  int   y,\n  int   cx,\n  int   cy,\n  HDC   hdcSrc,\n  int   x1,\n  int   y1,\n  DWORD rop\n);",
         "dllLibrary": "gdi32",
         "comment": "The BitBlt function performs a bit-block transfer of the color data corresponding to a rectangle of pixels from the specified source device context into a destination device context."
+    },
+    "BlockInput": {
+        "prototype": "BOOL BlockInput(\n  BOOL fBlockIt);",
+        "dllLibrary": "user32",
+        "comment": "Blocks keyboard and mouse input events from reaching applications."
     },
     "BluetoothAuthenticateDeviceEx": {
         "prototype": "DWORD BluetoothAuthenticateDeviceEx(\n  HWND                        hwndParentIn,\n  HANDLE                      hRadioIn,\n  BLUETOOTH_DEVICE_INFO       *pbtdiInout,\n  PBLUETOOTH_OOB_DATA_INFO    pbtOobData,\n  AUTHENTICATION_REQUIREMENTS authenticationRequirement\n);",
@@ -325,10 +335,20 @@
         "dllLibrary": "kernel32",
         "comment": "Enables a debugger to continue a thread that previously reported a debugging event."
     },
+    "CopyAcceleratorTable": {
+        "prototype": "int CopyAcceleratorTableW(\n  HACCEL  hAccelSrc,\n  LPACCEL lpAccelDst,\n  int     cAccelEntries\n);",
+        "dllLibrary": "user32",
+        "comment": "Copies the specified accelerator table. This function is used to obtain the accelerator-table data that corresponds to an accelerator-table handle, or to determine the size of the accelerator-table data."
+    },
     "CopyIcon": {
         "prototype": "HICON CopyIcon(\n  HICON hIcon\n);",
         "dllLibrary": "user32",
         "comment": "Copies the specified icon from another module to the current module."
+    },
+    "CopyImage": {
+        "prototype": "HANDLE CopyImage(\n  HANDLE h,\n  UINT   type,\n  int    cx,\n  int    cy,\n  UINT   flags\n);",
+        "dllLibrary": "user32",
+        "comment": "Creates a new image (icon, cursor, or bitmap) and copies the attributes of the specified image to the new one. If necessary, the function stretches the bits to fit the desired size of the new image."
     },
     "CopyRect": {
         "prototype": "BOOL CopyRect(\n  LPRECT     lprcDst,\n  const RECT *lprcSrc\n);",
@@ -556,6 +576,16 @@
         "dllLibrary": "user32",
         "comment": "Dispatches a message to a window procedure. It is typically used to dispatch a message retrieved by the GetMessage function."
     },
+    "DosDateTimeToVariantTime": {
+        "prototype": "INT DosDateTimeToVariantTime(\n  USHORT wDosDate,\n  USHORT wDosTime,\n  DOUBLE *pvtime\n);",
+        "dllLibrary": "oleaut32",
+        "comment": "Converts the MS-DOS representation of time to the date and time representation stored in a variant."
+    },
+    "DragDetect": {
+        "prototype": "BOOL DragDetect(\n  HWND  hwnd,\n  POINT pt);",
+        "dllLibrary": "user32",
+        "comment": "Captures the mouse and tracks its movement until the user releases the left button, presses the ESC key, or moves the mouse outside the drag rectangle around the specified point."
+    },
     "DrawCaption": {
         "prototype": "BOOL DrawCaption(\n  HWND       hwnd,\n  HDC        hdc,\n  const RECT *lprect,\n  UINT       flags\n);",
         "dllLibrary": "user32",
@@ -600,6 +630,11 @@
         "prototype": "BOOL EnableMenuItem(\n  HMENU hMenu,\n  UINT  uIDEnableItem,\n  UINT  uEnable\n);",
         "dllLibrary": "user32",
         "comment": "Enables, disables, or grays the specified menu item."
+    },
+    "EnableWindow": {
+        "prototype": "BOOL EnableWindow(\n  HWND hWnd,\n  BOOL bEnable\n);",
+        "dllLibrary": "user32",
+        "comment": "Enables or disables mouse and keyboard input to the specified window or control. When input is disabled, the window does not receive input such as mouse clicks and key presses. When input is enabled, the window receives all input."
     },
     "EncryptFile": {
         "prototype": "BOOL EncryptFileW(\n  LPCWSTR lpFileName\n);",
@@ -821,10 +856,25 @@
         "dllLibrary": "oleaut32",
         "comment": "Retrieves a pointer to a running object that has been registered with OLE."
     },
+    "GetActiveWindow": {
+        "prototype": "HWND GetActiveWindow();",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the window handle to the active window attached to the calling thread's message queue."
+    },
     "GetAncestor": {
         "prototype": "HWND GetAncestor(\n  HWND hwnd,\n  UINT gaFlags\n);",
         "dllLibrary": "user32",
         "comment": "Retrieves the handle to the ancestor of the specified window."
+    },
+    "GetAsyncKeyState": {
+        "prototype": "SHORT GetAsyncKeyState(\n  int vKey\n);",
+        "dllLibrary": "user32",
+        "comment": "Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState."
+    },
+    "GetCapture": {
+        "prototype": "HWND GetCapture();",
+        "dllLibrary": "user32",
+        "comment": "Retrieves a handle to the window (if any) that has captured the mouse. Only one window at a time can capture the mouse; this window receives mouse input whether or not the cursor is within its borders."
     },
     "GetClientRect": {
         "prototype": "BOOL GetClientRect(\n  HWND   hWnd,\n  LPRECT lpRect\n);",
@@ -951,20 +1001,28 @@
         "dllLibrary": "user32",
         "comment": "Retrieves the title or text associated with a control in a dialog box."
     },
+    "GetDoubleClickTime": {
+        "prototype": "UINT GetDoubleClickTime();",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the current double-click time for the mouse. A double-click is a series of two clicks of the mouse button, the second occurring within a specified time after the first. The double-click time is the maximum number of milliseconds that may occur between the first and second click of a double-click. The maximum double-click time is 5000 milliseconds."
+    },
     "GetDpiForMonitor": {
         "prototype": "HRESULT GetDpiForMonitor(\n  HMONITOR         hmonitor,\n  MONITOR_DPI_TYPE dpiType,\n  UINT             *dpiX,\n  UINT             *dpiY\n  );",
         "dllLibrary": "shcore",
-        "comment": "Queries the dots per inch (dpi) of a display."
+        "comment": "Queries the dots per inch (dpi) of a display.",
+        "minimumWindowsVersion": "WIN81"
     },
     "GetDpiForSystem": {
         "prototype": "UINT GetDpiForSystem();",
         "dllLibrary": "user32",
-        "comment": "Returns the system DPI."
+        "comment": "Returns the system DPI.",
+        "minimumWindowsVersion": "WIN10_RS1"
     },
     "GetDpiForWindow": {
         "prototype": "UINT GetDpiForWindow(\n  HWND hwnd\n);",
         "dllLibrary": "user32",
-        "comment": "Returns the dots per inch (dpi) value for the associated window."
+        "comment": "Returns the dots per inch (dpi) value for the associated window.",
+        "minimumWindowsVersion": "WIN10_RS1"
     },
     "GetFileAttributesEx": {
         "prototype": "BOOL GetFileAttributesExW(\n  LPCWSTR                lpFileName,\n  GET_FILEEX_INFO_LEVELS fInfoLevelId,\n  LPVOID                 lpFileInformation\n);",
@@ -991,6 +1049,11 @@
         "dllLibrary": "version",
         "comment": "Determines whether the operating system can retrieve version information for a specified file. If version information is available, GetFileVersionInfoSizeEx returns the size, in bytes, of that information."
     },
+    "GetFocus": {
+        "prototype": "HWND GetFocus();",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the handle to the window that has the keyboard focus, if the window is attached to the calling thread's message queue."
+    },
     "GetForegroundWindow": {
         "prototype": "HWND GetForegroundWindow();",
         "dllLibrary": "user32",
@@ -1007,6 +1070,41 @@
         "comment": "Retrieves the best estimate of the diagonal size of the built-in screen, in inches.",
         "minimumWindowsVersion": "WIN10_TH1"
     },
+    "GetKeyboardLayout": {
+        "prototype": "HKL GetKeyboardLayout(\n  DWORD idThread\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the active input locale identifier (formerly called the keyboard layout)."
+    },
+    "GetKeyboardLayoutList": {
+        "prototype": "int GetKeyboardLayoutList(\n  int nBuff,\n  HKL *lpList\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the input locale identifiers (formerly called keyboard layout handles) corresponding to the current set of input locales in the system. The function copies the identifiers to the specified buffer."
+    },
+    "GetKeyboardLayoutName": {
+        "prototype": "BOOL GetKeyboardLayoutNameW(\n  LPWSTR pwszKLID\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the name of the active input locale identifier (formerly called the keyboard layout) for the system."
+    },
+    "GetKeyboardState": {
+        "prototype": "BOOL GetKeyboardState(\n  PBYTE lpKeyState\n);",
+        "dllLibrary": "user32",
+        "comment": "Copies the status of the 256 virtual keys to the specified buffer."
+    },
+    "GetKeyboardType": {
+        "prototype": "int GetKeyboardType(\n  int nTypeFlag\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves information about the current keyboard."
+    },
+    "GetKeyNameText": {
+        "prototype": "int GetKeyNameTextW(\n  LONG   lParam,\n  LPWSTR lpString,\n  int    cchSize\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves a string that represents the name of a key."
+    },
+    "GetKeyState": {
+        "prototype": "SHORT GetKeyState(\n  int nVirtKey\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the status of the specified virtual key. The status specifies whether the key is up, down, or toggled (on, off—alternating each time the key is pressed)."
+    },
     "GetLargestConsoleWindowSize": {
         "prototype": "COORD WINAPI GetLargestConsoleWindowSize(\n  _In_ HANDLE hConsoleOutput\n);",
         "dllLibrary": "kernel32",
@@ -1016,6 +1114,16 @@
         "prototype": "DWORD GetLastError();",
         "dllLibrary": "kernel32",
         "comment": "Retrieves the calling thread's last-error code value. The last-error code is maintained on a per-thread basis. Multiple threads do not overwrite each other's last-error code."
+    },
+    "GetLastInputInfo": {
+        "prototype": "BOOL GetLastInputInfo(\n  PLASTINPUTINFO plii\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves the time of the last input event."
+    },
+    "GetLocaleInfoEx": {
+        "prototype": "int GetLocaleInfoEx(\n  LPCWSTR lpLocaleName,\n  LCTYPE  LCType,\n  LPWSTR  lpLCData,\n  int     cchData\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves information about a locale specified by name."
     },
     "GetLocalTime": {
         "prototype": "void GetLocalTime(\n  LPSYSTEMTIME lpSystemTime\n);",
@@ -1112,6 +1220,11 @@
         "dllLibrary": "dxva2",
         "comment": "Retrieves the type of technology used by a monitor."
     },
+    "GetMouseMovePointsEx": {
+        "prototype": "int GetMouseMovePointsEx(\n  UINT             cbSize,\n  LPMOUSEMOVEPOINT lppt,\n  LPMOUSEMOVEPOINT lpptBuf,\n  int              nBufPoints,\n  DWORD            resolution\n);",
+        "dllLibrary": "user32",
+        "comment": "Retrieves a history of up to 64 previous coordinates of the mouse or pen."
+    },
     "GetNativeSystemInfo": {
         "prototype": "void GetNativeSystemInfo(\n  LPSYSTEM_INFO lpSystemInfo\n);",
         "dllLibrary": "kernel32",
@@ -1180,7 +1293,8 @@
     "GetProcessDpiAwareness": {
         "prototype": "HRESULT GetProcessDpiAwareness(\n  HANDLE                hprocess,\n  PROCESS_DPI_AWARENESS *value\n);",
         "dllLibrary": "shcore",
-        "comment": "Retrieves the dots per inch (dpi) awareness of the specified process."
+        "comment": "Retrieves the dots per inch (dpi) awareness of the specified process.",
+        "minimumWindowsVersion": "WIN81"
     },
     "GetProcessHeap": {
         "prototype": "HANDLE GetProcessHeap();",
@@ -1232,6 +1346,16 @@
         "dllLibrary": "user32",
         "comment": "The GetSysColorBrush function retrieves a handle identifying a logical brush that corresponds to the specified color index."
     },
+    "GetSystemDefaultLangID": {
+        "prototype": "LANGID GetSystemDefaultLangID();",
+        "dllLibrary": "kernel32",
+        "comment": "Returns the language identifier for the system locale."
+    },
+    "GetSystemDefaultLocaleName": {
+        "prototype": "int GetSystemDefaultLocaleName(\n  LPWSTR lpLocaleName,\n  int    cchLocaleName\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves the system default locale name."
+    },
     "GetSystemDirectory": {
         "prototype": "UINT GetSystemDirectoryW(\n  LPWSTR lpBuffer,\n  UINT   uSize\n);",
         "dllLibrary": "kernel32",
@@ -1261,7 +1385,8 @@
     "GetSystemMetricsForDpi": {
         "prototype": "int GetSystemMetricsForDpi(\n  int  nIndex,\n  UINT dpi\n);",
         "dllLibrary": "user32",
-        "comment": "Retrieves the specified system metric or system configuration setting taking into account a provided DPI."
+        "comment": "Retrieves the specified system metric or system configuration setting taking into account a provided DPI.",
+        "minimumWindowsVersion": "WIN10_RS1"
     },
     "GetSystemPowerStatus": {
         "prototype": "BOOL GetSystemPowerStatus(\n  LPSYSTEM_POWER_STATUS lpSystemPowerStatus\n);",
@@ -1288,6 +1413,16 @@
         "dllLibrary": "gdi32",
         "comment": "The GetTextMetrics function fills the specified buffer with the metrics for the currently selected font."
     },
+    "GetThreadLocale": {
+        "prototype": "LCID GetThreadLocale();",
+        "dllLibrary": "kernel32",
+        "comment": "Returns the locale identifier of the current locale for the calling thread."
+    },
+    "GetThreadUILanguage": {
+        "prototype": "LANGID GetThreadUILanguage();",
+        "dllLibrary": "kernel32",
+        "comment": "Returns the language identifier of the first user interface language for the current thread."
+    },
     "GetTopWindow": {
         "prototype": "HWND GetTopWindow(\n  HWND hWnd\n);",
         "dllLibrary": "user32",
@@ -1307,6 +1442,16 @@
         "prototype": "int GetUpdateRgn(\n  HWND hWnd,\n  HRGN hRgn,\n  BOOL bErase\n);",
         "dllLibrary": "user32",
         "comment": "The GetUpdateRgn function retrieves the update region of a window by copying it into the specified region. The coordinates of the update region are relative to the upper-left corner of the window (that is, they are client coordinates)."
+    },
+    "GetUserDefaultLangID": {
+        "prototype": "LANGID GetUserDefaultLangID();",
+        "dllLibrary": "kernel32",
+        "comment": "Returns the language identifier of the Region Format setting for the current user."
+    },
+    "GetUserDefaultLocaleName": {
+        "prototype": "int GetUserDefaultLocaleName(\n  LPWSTR lpLocaleName,\n  int    cchLocaleName\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves the user default locale name."
     },
     "GetVersionEx": {
         "prototype": "BOOL GetVersionExW(\n  LPOSVERSIONINFOW lpVersionInformation\n);",
@@ -1423,6 +1568,16 @@
         "dllLibrary": "advapi32",
         "comment": "Initiates a shutdown and restart of the specified computer, and restarts any applications that have been registered for restart."
     },
+    "InsertMenu": {
+        "prototype": "BOOL InsertMenuW(\n  HMENU    hMenu,\n  UINT     uPosition,\n  UINT     uFlags,\n  UINT_PTR uIDNewItem,\n  LPCWSTR  lpNewItem\n);",
+        "dllLibrary": "user32",
+        "comment": "Inserts a new menu item into a menu, moving other items down the menu."
+    },
+    "InsertMenuItem": {
+        "prototype": "BOOL InsertMenuItemW(\n  HMENU            hmenu,\n  UINT             item,\n  BOOL             fByPosition,\n  LPCMENUITEMINFOW lpmi\n);",
+        "dllLibrary": "user32",
+        "comment": "Inserts a new menu item at the specified position in a menu."
+    },
     "IntersectRect": {
         "prototype": "BOOL IntersectRect(\n  LPRECT     lprcDst,\n  const RECT *lprcSrc1,\n  const RECT *lprcSrc2\n);",
         "dllLibrary": "user32",
@@ -1468,6 +1623,16 @@
         "dllLibrary": "user32",
         "comment": "The IsRectEmpty function determines whether the specified rectangle is empty. An empty rectangle is one that has no area; that is, the coordinate of the right side is less than or equal to the coordinate of the left side, or the coordinate of the bottom side is less than or equal to the coordinate of the top side."
     },
+    "IsValidLocaleName": {
+        "prototype": "BOOL IsValidLocaleName(\n  LPCWSTR lpLocaleName\n  );",
+        "dllLibrary": "kernel32",
+        "comment": "Determines if the specified locale name is valid for a locale that is installed or supported on the operating system."
+    },
+    "IsWindowEnabled": {
+        "prototype": "BOOL IsWindowEnabled(\n  HWND hWnd\n);",
+        "dllLibrary": "user32",
+        "comment": "Determines whether the specified window is enabled for mouse and keyboard input."
+    },
     "IsWindowVisible": {
         "prototype": "BOOL IsWindowVisible(\n  HWND hWnd\n);",
         "dllLibrary": "user32",
@@ -1509,6 +1674,11 @@
         "dllLibrary": "user32",
         "comment": "Loads an icon, cursor, animated cursor, or bitmap."
     },
+    "LoadKeyboardLayout": {
+        "prototype": "HKL LoadKeyboardLayoutW(\n  LPCWSTR pwszKLID,\n  UINT    Flags\n);",
+        "dllLibrary": "user32",
+        "comment": "Loads a new input locale identifier (formerly called the keyboard layout) into the system."
+    },
     "LoadLibrary": {
         "prototype": "HMODULE LoadLibraryW(\n  LPCWSTR lpLibFileName\n);",
         "dllLibrary": "kernel32",
@@ -1543,6 +1713,11 @@
         "prototype": "BOOL MapDialogRect(\n  HWND   hDlg,\n  LPRECT lpRect\n);",
         "dllLibrary": "user32",
         "comment": "Converts the specified dialog box units to screen units (pixels). The function replaces the coordinates in the specified RECT structure with the converted coordinates, which allows the structure to be used to create a dialog box or position a control within a dialog box."
+    },
+    "MapVirtualKey": {
+        "prototype": "UINT MapVirtualKeyW(\n  UINT uCode,\n  UINT uMapType\n);",
+        "dllLibrary": "user32",
+        "comment": "Translates (maps) a virtual-key code into a scan code or character value, or translates a scan code into a virtual-key code."
     },
     "MapWindowPoints": {
         "prototype": "int MapWindowPoints(\n  HWND    hWndFrom,\n  HWND    hWndTo,\n  LPPOINT lpPoints,\n  UINT    cPoints\n);",
@@ -1821,6 +1996,16 @@
         "dllLibrary": "user32",
         "comment": "Registers a new clipboard format. This format can then be used as a valid clipboard format."
     },
+    "RegisterHotKey": {
+        "prototype": "BOOL RegisterHotKey(\n  HWND hWnd,\n  int  id,\n  UINT fsModifiers,\n  UINT vk\n);",
+        "dllLibrary": "user32",
+        "comment": "Defines a system-wide hot key."
+    },
+    "RegisterPowerSettingNotification": {
+        "prototype": "HPOWERNOTIFY RegisterPowerSettingNotification(\n  HANDLE  hRecipient,\n  LPCGUID PowerSettingGuid,\n  DWORD   Flags\n);",
+        "dllLibrary": "user32",
+        "comment": "Registers the application to receive power setting notifications for the specific power setting event."
+    },
     "RegisterWindowMessage": {
         "prototype": "UINT RegisterWindowMessageW(\n  LPCWSTR lpString\n);",
         "dllLibrary": "user32",
@@ -1845,6 +2030,11 @@
         "prototype": "void ReleaseActCtx(\n  HANDLE hActCtx\n);",
         "dllLibrary": "kernel32",
         "comment": "The ReleaseActCtx function decrements the reference count of the specified activation context."
+    },
+    "ReleaseCapture": {
+        "prototype": "BOOL ReleaseCapture();",
+        "dllLibrary": "user32",
+        "comment": "Releases the mouse capture from a window in the current thread and restores normal mouse input processing. A window that has captured the mouse receives all mouse input, regardless of the position of the cursor, except when a mouse button is clicked while the cursor hot spot is in the window of another thread."
     },
     "ReleaseDC": {
         "prototype": "int ReleaseDC(\n  HWND hWnd,\n  HDC  hDC\n);",
@@ -1955,6 +2145,11 @@
         "dllLibrary": "user32",
         "comment": "Sends the specified message to a window or windows. The SendMessage function calls the window procedure for the specified window and does not return until the window procedure has processed the message."
     },
+    "SetActiveWindow": {
+        "prototype": "HWND SetActiveWindow(\n  HWND hWnd\n);",
+        "dllLibrary": "user32",
+        "comment": "Activates a window. The window must be attached to the calling thread's message queue."
+    },
     "SetBkColor": {
         "prototype": "COLORREF SetBkColor(\n  HDC      hdc,\n  COLORREF color\n);",
         "dllLibrary": "gdi32",
@@ -1964,6 +2159,11 @@
         "prototype": "int SetBkMode(\n  HDC hdc,\n  int mode\n);",
         "dllLibrary": "gdi32",
         "comment": "The SetBkMode function sets the background mix mode of the specified device context. The background mix mode is used with text, hatched brushes, and pen styles that are not solid lines."
+    },
+    "SetCapture": {
+        "prototype": "HWND SetCapture(\n  HWND hWnd\n);",
+        "dllLibrary": "user32",
+        "comment": "Sets the mouse capture to the specified window belonging to the current thread. SetCapture captures mouse input either when the mouse is over the capturing window, or when the mouse button was pressed while the mouse was over the capturing window and the button is still down. Only one window at a time can capture the mouse."
     },
     "SetClipboardData": {
         "prototype": "HANDLE SetClipboardData(\n  UINT   uFormat,\n  HANDLE hMem\n);",
@@ -2030,6 +2230,11 @@
         "dllLibrary": "user32",
         "comment": "Sets the title or text of a control in a dialog box."
     },
+    "SetDoubleClickTime": {
+        "prototype": "BOOL SetDoubleClickTime(\n  UINT Arg1\n);",
+        "dllLibrary": "user32",
+        "comment": "Sets the double-click time for the mouse. A double-click is a series of two clicks of a mouse button, the second occurring within a specified time after the first. The double-click time is the maximum number of milliseconds that may occur between the first and second clicks of a double-click."
+    },
     "SetFilePointer": {
         "prototype": "DWORD SetFilePointer(\n  HANDLE hFile,\n  LONG   lDistanceToMove,\n  PLONG  lpDistanceToMoveHigh,\n  DWORD  dwMoveMethod\n);",
         "dllLibrary": "kernel32",
@@ -2049,6 +2254,11 @@
         "prototype": "BOOL SetForegroundWindow(\n  HWND hWnd\n);",
         "dllLibrary": "user32",
         "comment": "Brings the thread that created the specified window into the foreground and activates the window. Keyboard input is directed to the window, and various visual cues are changed for the user. The system assigns a slightly higher priority to the thread that created the foreground window than it does to other threads."
+    },
+    "SetKeyboardState": {
+        "prototype": "BOOL SetKeyboardState(\n  LPBYTE lpKeyState\n);",
+        "dllLibrary": "user32",
+        "comment": "Copies an array of keyboard key states into the calling thread's keyboard input-state table. This is the same table accessed by the GetKeyboardState and GetKeyState functions. Changes made to this table do not affect keyboard input to any other thread."
     },
     "SetMapMode": {
         "prototype": "int SetMapMode(\n  HDC hdc,\n  int iMode\n);",
@@ -2118,7 +2328,8 @@
     "SetProcessDpiAwareness": {
         "prototype": "HRESULT SetProcessDpiAwareness(\n  PROCESS_DPI_AWARENESS value\n);",
         "dllLibrary": "shcore",
-        "comment": "Sets the process-default DPI awareness level. This is equivalent to calling SetProcessDpiAwarenessContext with the corresponding DPI_AWARENESS_CONTEXT value."
+        "comment": "Sets the process-default DPI awareness level. This is equivalent to calling SetProcessDpiAwarenessContext with the corresponding DPI_AWARENESS_CONTEXT value.",
+        "minimumWindowsVersion": "WIN81"
     },
     "SetRect": {
         "prototype": "BOOL SetRect(\n  LPRECT lprc,\n  int    xLeft,\n  int    yTop,\n  int    xRight,\n  int    yBottom\n);",
@@ -2159,6 +2370,11 @@
         "prototype": "EXECUTION_STATE SetThreadExecutionState(\n  EXECUTION_STATE esFlags\n  );",
         "dllLibrary": "kernel32",
         "comment": "Enables an application to inform the system that it is in use, thereby preventing the system from entering sleep or turning off the display while the application is running."
+    },
+    "SetThreadUILanguage": {
+        "prototype": "LANGID SetThreadUILanguage(\n  LANGID LangId\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Sets the user interface language for the current thread."
     },
     "SetTimer": {
         "prototype": "UINT_PTR SetTimer(\n  HWND      hWnd,\n  UINT_PTR  nIDEvent,\n  UINT      uElapse,\n  TIMERPROC lpTimerFunc\n);",
@@ -2315,6 +2531,11 @@
         "dllLibrary": "user32",
         "comment": "The SubtractRect function determines the coordinates of a rectangle formed by subtracting one rectangle from another."
     },
+    "SwapMouseButton": {
+        "prototype": "BOOL SwapMouseButton(\n  BOOL fSwap\n);",
+        "dllLibrary": "user32",
+        "comment": "Reverses or restores the meaning of the left and right mouse buttons."
+    },
     "SysAllocString": {
         "prototype": "BSTR SysAllocString(\n  const OLECHAR *psz\n);",
         "dllLibrary": "oleaut32",
@@ -2362,6 +2583,26 @@
         "dllLibrary": "gdi32",
         "comment": "The TextOut function writes a character string at the specified location, using the currently selected font, background color, and text color."
     },
+    "ToAscii": {
+        "prototype": "int ToAscii(\n  UINT       uVirtKey,\n  UINT       uScanCode,\n  const BYTE *lpKeyState,\n  LPWORD     lpChar,\n  UINT       uFlags\n);",
+        "dllLibrary": "user32",
+        "comment": "Translates the specified virtual-key code and keyboard state to the corresponding character or characters. The function translates the code using the input language and physical keyboard layout identified by the keyboard layout handle."
+    },
+    "ToAsciiEx": {
+        "prototype": "int ToAsciiEx(\n  UINT       uVirtKey,\n  UINT       uScanCode,\n  const BYTE *lpKeyState,\n  LPWORD     lpChar,\n  UINT       uFlags,\n  HKL        dwhkl\n);",
+        "dllLibrary": "user32",
+        "comment": "Translates the specified virtual-key code and keyboard state to the corresponding character or characters. The function translates the code using the input language and physical keyboard layout identified by the input locale identifier."
+    },
+    "ToUnicode": {
+        "prototype": "int ToUnicode(\n  UINT       wVirtKey,\n  UINT       wScanCode,\n  const BYTE *lpKeyState,\n  LPWSTR     pwszBuff,\n  int        cchBuff,\n  UINT       wFlags\n);",
+        "dllLibrary": "user32",
+        "comment": "Translates the specified virtual-key code and keyboard state to the corresponding Unicode character or characters."
+    },
+    "ToUnicodeEx": {
+        "prototype": "int ToUnicodeEx(\n  UINT       wVirtKey,\n  UINT       wScanCode,\n  const BYTE *lpKeyState,\n  LPWSTR     pwszBuff,\n  int        cchBuff,\n  UINT       wFlags,\n  HKL        dwhkl\n);",
+        "dllLibrary": "user32",
+        "comment": "Translates the specified virtual-key code and keyboard state to the corresponding Unicode character or characters."
+    },
     "TrackPopupMenuEx": {
         "prototype": "BOOL TrackPopupMenuEx(\n  HMENU hMenu,\n  UINT uFlags,\n  int x,\n  int y,\n  HWND hwnd,\n  TPMPARAMS *lptpm\n);",
         "dllLibrary": "user32",
@@ -2382,10 +2623,25 @@
         "dllLibrary": "user32",
         "comment": "The UnionRect function creates the union of two rectangles. The union is the smallest rectangle that contains both source rectangles."
     },
+    "UnloadKeyboardLayout": {
+        "prototype": "BOOL UnloadKeyboardLayout(\n  HKL hkl\n);",
+        "dllLibrary": "user32",
+        "comment": "Unloads an input locale identifier (formerly called a keyboard layout)."
+    },
     "UnregisterClass": {
         "prototype": "BOOL UnregisterClassW(\n  LPCWSTR   lpClassName,\n  HINSTANCE hInstance\n);",
         "dllLibrary": "user32",
         "comment": "Unregisters a window class, freeing the memory required for the class."
+    },
+    "UnregisterHotKey": {
+        "prototype": "BOOL UnregisterHotKey(\n  HWND hWnd,\n  int  id\n);",
+        "dllLibrary": "user32",
+        "comment": "Frees a hot key previously registered by the calling thread."
+    },
+    "UnregisterPowerSettingNotification": {
+        "prototype": "BOOL UnregisterPowerSettingNotification(\n  HPOWERNOTIFY Handle\n);",
+        "dllLibrary": "user32",
+        "comment": "Unregisters the power setting notification."
     },
     "UpdateProcThreadAttribute": {
         "prototype": "BOOL UpdateProcThreadAttribute(\n  LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList,\n  DWORD                        dwFlags,\n  DWORD_PTR                    Attribute,\n  PVOID                        lpValue,\n  SIZE_T                       cbSize,\n  PVOID                        lpPreviousValue,\n  PSIZE_T                      lpReturnSize\n);",
@@ -2412,15 +2668,35 @@
         "dllLibrary": "user32",
         "comment": "The ValidateRgn function validates the client area within a region by removing the region from the current update region of the specified window."
     },
+    "VariantChangeType": {
+        "prototype": "HRESULT VariantChangeType(\n  VARIANTARG       *pvargDest,\n  const VARIANTARG *pvarSrc,\n  USHORT           wFlags,\n  VARTYPE          vt\n);",
+        "dllLibrary": "oleaut32",
+        "comment": "Converts a variant from one type to another."
+    },
     "VariantClear": {
         "prototype": "HRESULT VariantClear(\n  VARIANTARG *pvarg\n);",
         "dllLibrary": "oleaut32",
         "comment": "Clears a variant."
     },
+    "VariantCopy": {
+        "prototype": "HRESULT VariantCopy(\n  VARIANTARG       *pvargDest,\n  const VARIANTARG *pvargSrc\n);",
+        "dllLibrary": "oleaut32",
+        "comment": "Frees the destination variant and makes a copy of the source variant."
+    },
     "VariantInit": {
         "prototype": "void VariantInit(\n  VARIANTARG *pvarg\n);",
         "dllLibrary": "oleaut32",
         "comment": "Initializes a variant."
+    },
+    "VariantTimeToDosDateTime": {
+        "prototype": "INT VariantTimeToDosDateTime(\n  DOUBLE vtime,\n  USHORT *pwDosDate,\n  USHORT *pwDosTime\n);",
+        "dllLibrary": "oleaut32",
+        "comment": "Converts the variant representation of a date and time to MS-DOS date and time values."
+    },
+    "VariantTimeToSystemTime": {
+        "prototype": "INT VariantTimeToSystemTime(\n  DOUBLE       vtime,\n  LPSYSTEMTIME lpSystemTime\n);",
+        "dllLibrary": "oleaut32",
+        "comment": "Converts the variant representation of time to system time values."
     },
     "VerFindFile": {
         "prototype": "DWORD VerFindFileW(\n  DWORD   uFlags,\n  LPCWSTR szFileName,\n  LPCWSTR szWinDir,\n  LPCWSTR szAppDir,\n  LPWSTR  szCurDir,\n  PUINT   puCurDirLen,\n  LPWSTR  szDestDir,\n  PUINT   puDestDirLen\n);",
@@ -2451,6 +2727,16 @@
         "prototype": "BOOL VirtualFree(\n  LPVOID lpAddress,\n  SIZE_T dwSize,\n  DWORD  dwFreeType\n);",
         "dllLibrary": "kernel32",
         "comment": "Releases, decommits, or releases and decommits a region of pages within the virtual address space of the calling process."
+    },
+    "VkKeyScan": {
+        "prototype": "SHORT VkKeyScanW(\n  WCHAR ch\n);",
+        "dllLibrary": "user32",
+        "comment": "Translates a character to the corresponding virtual-key code and shift state for the current keyboard."
+    },
+    "VkKeyScanEx": {
+        "prototype": "SHORT VkKeyScanExW(\n  WCHAR ch,\n  HKL   dwhkl\n);",
+        "dllLibrary": "user32",
+        "comment": "Translates a character to the corresponding virtual-key code and shift state. The function translates the character using the input language and physical keyboard layout identified by the input locale identifier."
     },
     "WaitForSingleObject": {
         "prototype": "DWORD WaitForSingleObject(\n  HANDLE hHandle,\n  DWORD  dwMilliseconds\n);",

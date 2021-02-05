@@ -50,6 +50,13 @@ void main() {
       expect(sizeOf<BIND_OPTS>(), equals(16));
     }
   });
+  test('Struct POWERBROADCAST_SETTING is the right size', () {
+    if (is64bitOS) {
+      expect(sizeOf<POWERBROADCAST_SETTING>(), equals(24));
+    } else {
+      expect(sizeOf<POWERBROADCAST_SETTING>(), equals(24));
+    }
+  });
   test('Struct SYSTEM_POWER_STATUS is the right size', () {
     if (is64bitOS) {
       expect(sizeOf<SYSTEM_POWER_STATUS>(), equals(12));
@@ -111,6 +118,20 @@ void main() {
       expect(sizeOf<ACCEL>(), equals(6));
     } else {
       expect(sizeOf<ACCEL>(), equals(6));
+    }
+  });
+  test('Struct LASTINPUTINFO is the right size', () {
+    if (is64bitOS) {
+      expect(sizeOf<LASTINPUTINFO>(), equals(8));
+    } else {
+      expect(sizeOf<LASTINPUTINFO>(), equals(8));
+    }
+  });
+  test('Struct MOUSEMOVEPOINT is the right size', () {
+    if (is64bitOS) {
+      expect(sizeOf<MOUSEMOVEPOINT>(), equals(24));
+    } else {
+      expect(sizeOf<MOUSEMOVEPOINT>(), equals(16));
     }
   });
   test('Struct MONITORINFO is the right size', () {

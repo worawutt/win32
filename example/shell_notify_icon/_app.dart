@@ -20,7 +20,7 @@ void exec() {
     TranslateMessage(msg);
     DispatchMessage(msg);
   }
-  free(msg);
+  calloc.free(msg);
 }
 
 int loadDartIcon() {
@@ -32,7 +32,7 @@ int loadDartIcon() {
 final _localWndProcs = <LocalWndProc>[];
 
 /// Use in iterateLocalWndProcs
-void registryWdnProc(LocalWndProc proc) => _localWndProcs.add(proc);
+void registerWndProc(LocalWndProc proc) => _localWndProcs.add(proc);
 
 void deregisterWndProc(LocalWndProc proc) {
   _localWndProcs.remove(proc);

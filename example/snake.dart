@@ -105,8 +105,8 @@ void setApple() {
   data[appleY][appleX] = 0;
 
   // get a random x, y coordinate on the gameboard
-  final x = randRange(0, (bitmapWidth / 10).floor());
-  final y = randRange(0, (bitmapHeight / 10).floor());
+  final x = randRange(0, (bitmapWidth ~/ 10));
+  final y = randRange(0, (bitmapHeight ~/ 10));
 
   // set to 1 to represent apple
   if (data[y][x] == 0) {
@@ -161,26 +161,26 @@ void moveSnake() {
       if (direction.x == 1) {
         // right
         snakePoints[i].x += 1;
-        if (snakePoints[i].x >= (bitmapWidth / 10).floor()) {
+        if (snakePoints[i].x >= (bitmapWidth ~/ 10)) {
           snakePoints[i].x = 0;
         }
       } else if (direction.x == -1) {
         // left
         snakePoints[i].x -= 1;
         if (snakePoints[i].x < 0) {
-          snakePoints[i].x = (bitmapWidth / 10).floor();
+          snakePoints[i].x = (bitmapWidth ~/ 10);
         }
       } else if (direction.y == 1) {
         // down
         snakePoints[i].y += 1;
-        if (snakePoints[i].y >= (bitmapHeight / 10).floor()) {
+        if (snakePoints[i].y >= (bitmapHeight ~/ 10)) {
           snakePoints[i].y = 0;
         }
       } else if (direction.y == -1) {
         // up
         snakePoints[i].y -= 1;
         if (snakePoints[i].y < 0) {
-          snakePoints[i].y = (bitmapHeight / 10).floor() - 1;
+          snakePoints[i].y = (bitmapHeight ~/ 10) - 1;
         }
       }
     } else {
@@ -289,10 +289,10 @@ void setVectorToMemory() {
         ptr.elementAt(pixelOffset).value = 0;
         pixelOffset++;
       }
-      vecX = (x / 10).floor();
+      vecX = x ~/ 10;
     }
     rowOffset += pitch;
-    vecY = (y / 10).floor();
+    vecY = y ~/ 10;
   }
 }
 
@@ -463,7 +463,7 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
 
       init(width, height);
 
-      free(rect);
+      calloc.free(rect);
       break;
 
     case WM_CLOSE:
@@ -489,8 +489,8 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
       draw(dc, rect.ref, x, y, width, height);
       EndPaint(hwnd, ps);
 
-      free(rect);
-      free(ps);
+      calloc.free(rect);
+      calloc.free(ps);
       break;
 
     case WM_KEYDOWN:
@@ -592,7 +592,7 @@ void main() {
           TranslateMessage(msg);
           DispatchMessage(msg);
         }
-        free(msg);
+        calloc.free(msg);
 
         final dc = GetDC(hWnd);
         final rect = calloc<RECT>();
@@ -605,7 +605,7 @@ void main() {
         draw(dc, rect.ref, 0, 0, windowWidth, windowHeight);
 
         ReleaseDC(hWnd, dc);
-        free(rect);
+        calloc.free(rect);
       }
     } else {
       MessageBox(0, TEXT('Failed to create window'), TEXT('Error'),

@@ -242,6 +242,23 @@ class BIND_OPTS extends Struct {
   external int dwTickCountDeadline;
 }
 
+// typedef struct {
+//   GUID  PowerSetting;
+//   DWORD DataLength;
+//   UCHAR Data[1];
+// } POWERBROADCAST_SETTING, *PPOWERBROADCAST_SETTING;
+
+/// Sent with a power setting event and contains data about the specific change.
+///
+/// {@category Struct}
+class POWERBROADCAST_SETTING extends Struct {
+  external GUID PowerSetting;
+  @Uint32()
+  external int DataLength;
+  @Uint8()
+  external int Data;
+}
+
 // typedef struct _SYSTEM_POWER_STATUS {
 //   BYTE  ACLineStatus;
 //   BYTE  BatteryFlag;
@@ -465,7 +482,7 @@ class VARIANT extends Struct {
   set lVal(int val) => _data = (val.toUnsigned(32) << 32);
 
   // BYTE => unsigned char => Uint8
-  int get bVal => (_data & 0xFF00000000000000) >> 56;
+  int get bVal => ((_data & 0xFF00000000000000) >> 56).toUnsigned(8);
   set bVal(int val) => _data = val << 56;
 
   // SHORT => short => Int16
@@ -522,7 +539,31 @@ class VARIANT extends Struct {
   Pointer get byref => Pointer.fromAddress(_data);
   set byref(Pointer val) => _data = val.address;
 
-  @IntPtr()
+  // CHAR -> char -> Int8
+  int get cVal => (_data & 0xFF00000000000000) >> 56.toSigned(8);
+  set cVal(int val) => _data = (val.toUnsigned(8) << 56);
+
+  // USHORT -> unsigned short -> Uint16
+  int get uiVal => ((_data & 0xFFFF000000000000) >> 48).toUnsigned(16);
+  set uiVal(int val) => _data = val << 48;
+
+  // ULONG -> unsigned long -> Uint32
+  int get ulVal => ((_data & 0xFFFFFFFF00000000) >> 32).toUnsigned(32);
+  set ulVal(int val) => _data = val << 32;
+
+  // ULONGLONG -> unsigned long long -> Uint64
+  int get ullVal => _data;
+  set ullVal(int val) => _data;
+
+  // INT -> int -> Int32
+  int get intVal => ((_data & 0xFFFFFFFF00000000) >> 32).toSigned(32);
+  set intVal(int val) => _data = (val.toUnsigned(32) << 32);
+
+  // UINT -> unsigned int -> Uint32
+  int get uintVal => ((_data & 0xFFFFFFFF00000000) >> 32).toUnsigned(32);
+  set uintVal(int val) => _data = val << 32;
+
+  @Uint64()
   external int _data;
   @IntPtr()
   external int _data2;
@@ -557,6 +598,42 @@ class ACCEL extends Struct {
   external int key;
   @Uint16()
   external int cmd;
+}
+
+// typedef struct tagLASTINPUTINFO {
+//   UINT  cbSize;
+//   DWORD dwTime;
+// } LASTINPUTINFO, *PLASTINPUTINFO;
+
+/// Contains the time of the last input.
+///
+/// {@category Struct}
+class LASTINPUTINFO extends Struct {
+  @Uint32()
+  external int cbSize;
+  @Uint32()
+  external int dwTime;
+}
+
+// typedef struct tagMOUSEMOVEPOINT {
+//   int       x;
+//   int       y;
+//   DWORD     time;
+//   ULONG_PTR dwExtraInfo;
+// } MOUSEMOVEPOINT, *PMOUSEMOVEPOINT, *LPMOUSEMOVEPOINT;
+
+/// Contains information about the mouse's location in screen coordinates.
+///
+/// {@category Struct}
+class MOUSEMOVEPOINT extends Struct {
+  @Int32()
+  external int x;
+  @Int32()
+  external int y;
+  @Uint32()
+  external int time;
+  @IntPtr()
+  external int dwExtraInfo;
 }
 
 // typedef struct tagMONITORINFO {

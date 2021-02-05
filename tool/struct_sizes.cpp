@@ -33,6 +33,7 @@ void main()
     printf("  'PROCESS_INFORMATION': %zu,\n", sizeof(PROCESS_INFORMATION));
     printf("  'STARTUPINFO': %zu,\n", sizeof(STARTUPINFO));
     printf("  'BIND_OPTS': %zu,\n", sizeof(BIND_OPTS));
+    printf("  'POWERBROADCAST_SETTING': %zu,\n", sizeof(POWERBROADCAST_SETTING));
     printf("  'SYSTEM_POWER_STATUS': %zu,\n", sizeof(SYSTEM_POWER_STATUS));
     printf("  'SYSTEM_BATTERY_STATE': %zu,\n", sizeof(SYSTEM_BATTERY_STATE));
     printf("  'STARTUPINFOEX': %zu,\n", sizeof(STARTUPINFOEX));
@@ -42,6 +43,8 @@ void main()
     printf("  'VARIANT': %zu,\n", sizeof(VARIANT));
     printf("  'COMDLG_FILTERSPEC': %zu,\n", sizeof(COMDLG_FILTERSPEC));
     printf("  'ACCEL': %zu,\n", sizeof(ACCEL));
+    printf("  'LASTINPUTINFO': %zu,\n", sizeof(LASTINPUTINFO));
+    printf("  'MOUSEMOVEPOINT': %zu,\n", sizeof(MOUSEMOVEPOINT));
     printf("  'MONITORINFO': %zu,\n", sizeof(MONITORINFO));
     printf("  'PHYSICAL_MONITOR': %zu,\n", sizeof(PHYSICAL_MONITOR));
     printf("  'CHOOSECOLOR': %zu,\n", sizeof(CHOOSECOLOR));

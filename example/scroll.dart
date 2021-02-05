@@ -64,7 +64,7 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
       final tm = calloc<TEXTMETRIC>();
       GetTextMetrics(hdc, tm);
       xChar = tm.ref.tmAveCharWidth;
-      xUpper = ((tm.ref.tmPitchAndFamily & 1 == 1 ? 3 : 2) * xChar / 2).floor();
+      xUpper = (tm.ref.tmPitchAndFamily & 1 == 1 ? 3 : 2) * xChar ~/ 2;
       yChar = tm.ref.tmHeight + tm.ref.tmExternalLeading;
 
       // Free the device context.
@@ -75,7 +75,7 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
       // lowercase letters and 12 uppercase letters.)
       xClientMax = 48 * xChar + 12 * xUpper;
 
-      free(tm);
+      calloc.free(tm);
 
       return 0;
 
@@ -91,18 +91,18 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
         ..ref.fMask = SIF_RANGE | SIF_PAGE
         ..ref.nMin = 0
         ..ref.nMax = abc.length - 1
-        ..ref.nPage = (yClient / yChar).floor();
+        ..ref.nPage = yClient ~/ yChar;
       SetScrollInfo(hwnd, SB_VERT, si, TRUE);
 
       // Set the horizontal scrolling range and page size.
       si.ref.cbSize = sizeOf<SCROLLINFO>();
       si.ref.fMask = SIF_RANGE | SIF_PAGE;
       si.ref.nMin = 0;
-      si.ref.nMax = 2 + (xClientMax / xChar).floor();
-      si.ref.nPage = (xClient / xChar).floor();
+      si.ref.nMax = 2 + xClientMax ~/ xChar;
+      si.ref.nPage = xClient ~/ xChar;
       SetScrollInfo(hwnd, SB_HORZ, si, TRUE);
 
-      free(si);
+      calloc.free(si);
 
       return 0;
 
@@ -157,7 +157,7 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
         ScrollWindow(hwnd, xChar * (xPos - si.ref.nPos), 0, nullptr, nullptr);
       }
 
-      free(si);
+      calloc.free(si);
       return 0;
 
     case WM_VSCROLL:
@@ -223,7 +223,7 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
         UpdateWindow(hwnd);
       }
 
-      free(si);
+      calloc.free(si);
       return 0;
 
     case WM_PAINT:
@@ -244,9 +244,9 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
       xPos = si.ref.nPos;
 
       // Find painting limits.
-      final firstLine = max(0, yPos + (ps.ref.rcPaint.top / yChar).floor());
+      final firstLine = max(0, yPos + (ps.ref.rcPaint.top ~/ yChar));
       final lastLine =
-          min(abc.length - 1, yPos + (ps.ref.rcPaint.bottom / yChar).floor());
+          min(abc.length - 1, yPos + (ps.ref.rcPaint.bottom ~/ yChar));
 
       for (var i = firstLine; i <= lastLine; i++) {
         final x = xChar * (1 - xPos);
@@ -258,8 +258,8 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
 
       // Indicate that painting is finished.
       EndPaint(hwnd, ps);
-      free(ps);
-      free(si);
+      calloc.free(ps);
+      calloc.free(si);
       return 0;
 
     case WM_DESTROY:

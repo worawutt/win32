@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:math' as math;
 
+import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '_app.dart' as app;
@@ -30,7 +31,7 @@ int createHidden() {
       NULL,
       app.hInst,
       nullptr);
-  app.registryWdnProc(_windowWndProc);
+  app.registerWndProc(_windowWndProc);
   return hWnd;
 }
 
