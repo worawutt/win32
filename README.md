@@ -5,7 +5,7 @@ them accessible to Dart code without requiring a C compiler or the Windows SDK.
 
 [![pub package](https://img.shields.io/pub/v/win32.svg)](https://pub.dev/packages/win32)
 [![Language](https://img.shields.io/badge/language-Dart-blue.svg)](https://dart.dev)
-![Build](https://github.com/timsneath/win32/workflows/Build/badge.svg)
+![[Build](https://github.com/timsneath/win32/workflows/Build/badge.svg)](https://github.com/timsneath/win32/actions?query=workflow%3ABuild)
 
 Perhaps of as much use as the APIs themselves, this package provides a variety
 of instructive examples for more complex FFI usage scenarios.
@@ -108,6 +108,7 @@ examples use the Win32 API for all UI display and do not require Flutter.
 | `notepad\notepad.dart` | Lightweight replica of the Windows notepad applet     |
 | `paint.dart`       | Demonstrates simple GDI drawing and min/max window sizing |
 | `play_sound.dart`  | Plays a WAV file through the Windows PlaySound API        |
+| `screenshot.dart`  | Takes a screenshot of the current desktop                 |
 | `scroll.dart`      | Example of horizontal and vertical scrolling text window  |
 | `sendinput.dart`   | Sends keyboard and mouse input to another window          |
 | `snake.dart`       | Snake game using various GDI features                     |

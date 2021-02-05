@@ -2,7 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// Struct sizes are a mapping of name to 32-bit and 64-bit sizes
+// Struct sizes are a mapping of name to 32-bit and 64-bit sizes. The easiest
+// way to generate the first two maps is by compiling and running
+// struct_sizes.cpp on both 32-bit and 64-bit architectures, and copying the
+// resultant output directly into this file.
+
 const structSize64 = {
   'WNDCLASS': 72,
   'SYSTEM_INFO': 48,
@@ -20,7 +24,6 @@ const structSize64 = {
   'ACCEL': 6,
   'MONITORINFO': 40,
   'PHYSICAL_MONITOR': 264,
-  'SYSTEMTIME': 16,
   'CHOOSECOLOR': 72,
   'FINDREPLACE': 80,
   'CHOOSEFONT': 104,
@@ -46,6 +49,7 @@ const structSize64 = {
   'CREDENTIAL': 80,
   'WINDOWINFO': 60,
   'BITMAPINFO': 44,
+  'RGBQUAD': 4,
   'BITMAP': 32,
   'BITMAPFILEHEADER': 14,
   'BITMAPINFOHEADER': 40,
@@ -68,11 +72,13 @@ const structSize64 = {
   'TASKDIALOG_BUTTON': 12,
   'DLLVERSIONINFO': 20,
   'OSVERSIONINFO': 276,
-  'BLUETOOTH_ADDRESS': 8,
+  'SYSTEMTIME': 16,
+  'BLUETOOTH_AUTHENTICATION_CALLBACK_PARAMS': 576,
   'BLUETOOTH_DEVICE_INFO': 560,
-  'BLUETOOTH_RADIO_INFO': 520,
   'BLUETOOTH_DEVICE_SEARCH_PARAMS': 40,
   'BLUETOOTH_FIND_RADIO_PARAMS': 4,
+  'BLUETOOTH_ADDRESS': 8,
+  'BLUETOOTH_RADIO_INFO': 520,
   'BLUETOOTH_PIN_INFO': 17,
   'BLUETOOTH_OOB_DATA_INFO': 32,
   'COR_FIELD_OFFSET': 8,
@@ -82,6 +88,13 @@ const structSize64 = {
   'MCI_SEEK_PARMS': 12,
   'MCI_STATUS_PARMS': 24,
   'LOGBRUSH': 16,
+  'OVERLAPPED': 32,
+  'ACTCTX': 56,
+  'WIN32_FIND_DATA': 592,
+  'WAVEOUTCAPS': 84,
+  'WAVEFORMATEX': 18,
+  'WAVEHDR': 48,
+  'MMTIME': 12,
   'EXCEPINFO': 64,
   'PROPERTYKEY': 20,
   'PROPVARIANT': 24,
@@ -89,6 +102,8 @@ const structSize64 = {
   'CLSID': 16,
   'STATSTG': 80,
   'NLM_SIMULATED_PROFILE_INFO': 524,
+  'NOTIFYICONDATA': 976,
+  'TPMPARAMS': 20,
 };
 
 const structSize32 = {
@@ -108,7 +123,6 @@ const structSize32 = {
   'ACCEL': 6,
   'MONITORINFO': 40,
   'PHYSICAL_MONITOR': 260,
-  'SYSTEMTIME': 16,
   'CHOOSECOLOR': 36,
   'FINDREPLACE': 40,
   'CHOOSEFONT': 60,
@@ -134,6 +148,7 @@ const structSize32 = {
   'CREDENTIAL': 52,
   'WINDOWINFO': 60,
   'BITMAPINFO': 44,
+  'RGBQUAD': 4,
   'BITMAP': 24,
   'BITMAPFILEHEADER': 14,
   'BITMAPINFOHEADER': 40,
@@ -156,11 +171,13 @@ const structSize32 = {
   'TASKDIALOG_BUTTON': 8,
   'DLLVERSIONINFO': 20,
   'OSVERSIONINFO': 276,
-  'BLUETOOTH_ADDRESS': 8,
+  'SYSTEMTIME': 16,
+  'BLUETOOTH_AUTHENTICATION_CALLBACK_PARAMS': 576,
   'BLUETOOTH_DEVICE_INFO': 560,
-  'BLUETOOTH_RADIO_INFO': 520,
   'BLUETOOTH_DEVICE_SEARCH_PARAMS': 32,
   'BLUETOOTH_FIND_RADIO_PARAMS': 4,
+  'BLUETOOTH_ADDRESS': 8,
+  'BLUETOOTH_RADIO_INFO': 520,
   'BLUETOOTH_PIN_INFO': 17,
   'BLUETOOTH_OOB_DATA_INFO': 32,
   'COR_FIELD_OFFSET': 8,
@@ -170,37 +187,29 @@ const structSize32 = {
   'MCI_SEEK_PARMS': 8,
   'MCI_STATUS_PARMS': 16,
   'LOGBRUSH': 12,
+  'OVERLAPPED': 20,
+  'ACTCTX': 32,
+  'WIN32_FIND_DATA': 592,
+  'WAVEOUTCAPS': 84,
+  'WAVEFORMATEX': 18,
+  'WAVEHDR': 32,
+  'MMTIME': 12,
   'EXCEPINFO': 32,
   'PROPERTYKEY': 20,
   'PROPVARIANT': 16,
   'SAFEARRAY': 24,
   'CLSID': 16,
   'STATSTG': 72,
-  'NLM_SIMULATED_PROFILE_INFO': 524
+  'NLM_SIMULATED_PROFILE_INFO': 524,
+  'NOTIFYICONDATA': 956,
+  'TPMPARAMS': 20,
 };
 
 const skipStructs = [
-  // sizeOf<ENUMLOGFONTEX> returns 352 because Dart over-allocates storage.
-  'ENUMLOGFONTEX',
-
-  // sizeOf<SHITEMID> returns 4 because Dart over-allocates storage.
-  'SHITEMID',
-
-  // sizeOf<OSVERSIONINFO> returns 280 because Dart over-allocates storage.
-  'OSVERSIONINFO',
-
-  // sizeOf<BLUETOOTH_PIN_INFO> returns 24 because Dart over-allocates storage.
-  'BLUETOOTH_PIN_INFO',
-
-  // Should be allocated manually, rather than using sizeOf
-  'DLGTEMPLATE', 'DLGITEMTEMPLATE',
-
-  // TODO: Packed structs
-  'MCI_OPEN_PARMS', 'MCI_SEEK_PARMS',
+  // Packed structs
   'TASKDIALOGCONFIG', 'TASKDIALOG_BUTTON',
-  'BITMAPFILEHEADER',
 
-  // TODO: These are not yet implemented
+  // Opaque types
   'EXCEPINFO',
   'PROPERTYKEY',
   'PROPVARIANT',

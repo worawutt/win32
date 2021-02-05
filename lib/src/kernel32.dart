@@ -121,8 +121,8 @@ int BeginUpdateResource(
 ///
 /// ```c
 /// BOOL CheckRemoteDebuggerPresent(
-///         HANDLE hProcess,
-///         PBOOL  pbDebuggerPresent
+///   HANDLE hProcess,
+///   PBOOL  pbDebuggerPresent
 ///       );
 /// ```
 /// {@category kernel32}
@@ -152,7 +152,7 @@ int CloseHandle(int hObject) {
 ///
 /// ```c
 /// void WINAPI ClosePseudoConsole(
-///     _In_ HPCON hPC
+///   _In_ HPCON hPC
 /// );
 /// ```
 /// {@category kernel32}
@@ -167,10 +167,10 @@ void ClosePseudoConsole(int hPC) {
 ///
 /// ```c
 /// BOOL ContinueDebugEvent(
-///         DWORD dwProcessId,
-///         DWORD dwThreadId,
-///         DWORD dwContinueStatus
-///       );
+///   DWORD dwProcessId,
+///   DWORD dwThreadId,
+///   DWORD dwContinueStatus
+/// );
 /// ```
 /// {@category kernel32}
 int ContinueDebugEvent(int dwProcessId, int dwThreadId, int dwContinueStatus) {
@@ -457,8 +457,8 @@ void DebugBreak() {
 ///
 /// ```c
 /// BOOL DebugBreakProcess(
-///         HANDLE Process
-///       );
+///   HANDLE Process
+/// );
 /// ```
 /// {@category kernel32}
 int DebugBreakProcess(int Process) {
@@ -472,8 +472,8 @@ int DebugBreakProcess(int Process) {
 ///
 /// ```c
 /// BOOL DebugSetProcessKillOnExit(
-///         BOOL KillOnExit
-///       );
+///   BOOL KillOnExit
+/// );
 /// ```
 /// {@category kernel32}
 int DebugSetProcessKillOnExit(int KillOnExit) {
@@ -1169,8 +1169,8 @@ void GetLocalTime(Pointer<SYSTEMTIME> lpSystemTime) {
 ///
 /// ```c
 /// DWORD GetLogicalDriveStringsW(
-///         DWORD  nBufferLength,
-///         LPWSTR lpBuffer
+///   DWORD  nBufferLength,
+///   LPWSTR lpBuffer
 /// );
 /// ```
 /// {@category kernel32}
@@ -1683,8 +1683,8 @@ Pointer LockResource(int hResData) {
 ///
 /// ```c
 /// BOOL MoveFileW(
-///         LPCWSTR lpExistingFileName,
-///         LPCWSTR lpNewFileName
+///   LPCWSTR lpExistingFileName,
+///   LPCWSTR lpNewFileName
 /// );
 /// ```
 /// {@category kernel32}
@@ -1720,8 +1720,8 @@ int OpenProcess(int dwDesiredAccess, int bInheritHandle, int dwProcessId) {
 ///
 /// ```c
 /// void OutputDebugStringW(
-///         LPCWSTR lpOutputString
-///       );
+///   LPCWSTR lpOutputString
+/// );
 /// ```
 /// {@category kernel32}
 void OutputDebugString(Pointer<Utf16> lpOutputString) {
@@ -1914,8 +1914,8 @@ int RemoveDirectory(Pointer<Utf16> lpPathName) {
 ///
 /// ```c
 /// HRESULT WINAPI ResizePseudoConsole(
-///     _In_ HPCON hPC ,
-///     _In_ COORD size
+///   _In_ HPCON hPC ,
+///   _In_ COORD size
 /// );
 /// ```
 /// {@category kernel32}
@@ -2179,6 +2179,23 @@ int SetStdHandle(int nStdHandle, int hHandle) {
       Int32 Function(Uint32 nStdHandle, IntPtr hHandle),
       int Function(int nStdHandle, int hHandle)>('SetStdHandle');
   return _SetStdHandle(nStdHandle, hHandle);
+}
+
+/// Enables an application to inform the system that it is in use, thereby
+/// preventing the system from entering sleep or turning off the display
+/// while the application is running.
+///
+/// ```c
+/// EXECUTION_STATE SetThreadExecutionState(
+///   EXECUTION_STATE esFlags
+///   );
+/// ```
+/// {@category kernel32}
+int SetThreadExecutionState(int esFlags) {
+  final _SetThreadExecutionState = _kernel32.lookupFunction<
+      Uint32 Function(Uint32 esFlags),
+      int Function(int esFlags)>('SetThreadExecutionState');
+  return _SetThreadExecutionState(esFlags);
 }
 
 /// Suspends the execution of the current thread until the time-out

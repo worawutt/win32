@@ -429,6 +429,21 @@ int DestroyIcon(int hIcon) {
   return _DestroyIcon(hIcon);
 }
 
+/// Destroys the specified menu and frees any memory that the menu
+/// occupies.
+///
+/// ```c
+/// BOOL DestroyMenu(
+///   HMENU hMenu
+/// );
+/// ```
+/// {@category user32}
+int DestroyMenu(int hMenu) {
+  final _DestroyMenu = _user32.lookupFunction<Int32 Function(IntPtr hMenu),
+      int Function(int hMenu)>('DestroyMenu');
+  return _DestroyMenu(hMenu);
+}
+
 /// Destroys the specified window. The function sends WM_DESTROY and
 /// WM_NCDESTROY messages to the window to deactivate it and remove the
 /// keyboard focus from it. The function also destroys the window's menu,
@@ -1357,6 +1372,23 @@ int GetShellWindow() {
   return _GetShellWindow();
 }
 
+/// Retrieves a handle to the drop-down menu or submenu activated by the
+/// specified menu item.
+///
+/// ```c
+/// HMENU GetSubMenu(
+///   HMENU hMenu,
+///   int nPos
+/// );
+/// ```
+/// {@category user32}
+int GetSubMenu(int hMenu, int nPos) {
+  final _GetSubMenu = _user32.lookupFunction<
+      IntPtr Function(IntPtr hMenu, Int32 nPos),
+      int Function(int hMenu, int nPos)>('GetSubMenu');
+  return _GetSubMenu(hMenu, nPos);
+}
+
 /// Retrieves the current color of the specified display element. Display
 /// elements are the parts of a window and the display that appear on the
 /// system display screen.
@@ -1972,7 +2004,7 @@ int IsWindowVisible(int hWnd) {
 ///
 /// ```c
 /// BOOL IsZoomed(
-///  HWND hWnd
+///   HWND hWnd
 /// );
 /// ```
 /// {@category user32}
@@ -2292,7 +2324,9 @@ int OffsetRect(Pointer<RECT> lprc, int dx, int dy) {
 /// from modifying the clipboard content.
 ///
 /// ```c
-/// BOOL OpenClipboard(  HWND hWndNewOwner);
+/// BOOL OpenClipboard(
+///   HWND hWndNewOwner
+/// );
 /// ```
 /// {@category user32}
 int OpenClipboard(int hWndNewOwner) {
@@ -3207,6 +3241,31 @@ int TabbedTextOut(int hdc, int x, int y, Pointer<Utf16> lpString, int chCount,
           int nTabOrigin)>('TabbedTextOutW');
   return _TabbedTextOut(hdc, x, y, lpString, chCount, nTabPositions,
       lpnTabStopPositions, nTabOrigin);
+}
+
+/// Displays a shortcut menu at the specified location and tracks the
+/// selection of items on the shortcut menu. The shortcut menu can appear
+/// anywhere on the screen.
+///
+/// ```c
+/// BOOL TrackPopupMenuEx(
+///   HMENU hMenu,
+///   UINT uFlags,
+///   int x,
+///   int y,
+///   HWND hwnd,
+///   TPMPARAMS *lptpm
+/// );
+/// ```
+/// {@category user32}
+int TrackPopupMenuEx(
+    int hMenu, int uFlags, int x, int y, int hwnd, Pointer<TPMPARAMS> lptpm) {
+  final _TrackPopupMenuEx = _user32.lookupFunction<
+      Int32 Function(IntPtr hMenu, Uint32 uFlags, Int32 x, Int32 y, IntPtr hwnd,
+          Pointer<TPMPARAMS> lptpm),
+      int Function(int hMenu, int uFlags, int x, int y, int hwnd,
+          Pointer<TPMPARAMS> lptpm)>('TrackPopupMenuEx');
+  return _TrackPopupMenuEx(hMenu, uFlags, x, y, hwnd, lptpm);
 }
 
 /// Processes accelerator keys for menu commands. The function translates a

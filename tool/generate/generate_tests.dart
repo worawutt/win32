@@ -21,6 +21,8 @@ String generateTests(Interface interface) {
 
 @TestOn('windows')
 
+import 'dart:ffi';
+
 import 'package:ffi/ffi.dart';
 import 'package:test/test.dart';
 
@@ -35,7 +37,6 @@ void main() {
   for (final method in interface.methods) {
     final className = interface.name!;
 
-    // TODO: Add tests for properties
     if (!method.name.startsWith('get_') && !method.name.startsWith('set_')) {
       buffer.write('''
     test('Can instantiate $className.${method.name}', () {

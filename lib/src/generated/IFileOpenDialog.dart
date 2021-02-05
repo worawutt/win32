@@ -9,6 +9,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
+import '../calloc.dart';
 import '../constants.dart';
 import '../constants_nodoc.dart';
 import '../exceptions.dart';
@@ -57,8 +58,8 @@ class FileOpenDialog extends IFileOpenDialog {
 
   factory FileOpenDialog.createInstance() {
     final ptr = calloc<COMObject>();
-    final clsid = calloc<GUID>()..setGUID(CLSID_FileOpenDialog);
-    final iid = calloc<GUID>()..setGUID(IID_IFileOpenDialog);
+    final clsid = calloc<GUID>()..ref.setGUID(CLSID_FileOpenDialog);
+    final iid = calloc<GUID>()..ref.setGUID(IID_IFileOpenDialog);
 
     try {
       final hr = CoCreateInstance(clsid, nullptr, CLSCTX_ALL, iid, ptr.cast());

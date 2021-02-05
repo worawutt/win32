@@ -49,6 +49,7 @@ import 'package:ffi/ffi.dart';
 
     buffer.writeln('''
 import '../com/combase.dart';
+import '../calloc.dart';
 import '../constants.dart';
 import '../constants_nodoc.dart';
 import '../exceptions.dart';
@@ -258,8 +259,8 @@ class $className extends $name {
 
   factory $className.createInstance() {
     final ptr = calloc<COMObject>();
-    final clsid = calloc<GUID>()..setGUID(CLSID_$className);
-    final iid = calloc<GUID>()..setGUID(IID_$name);
+    final clsid = calloc<GUID>()..ref.setGUID(CLSID_$className);
+    final iid = calloc<GUID>()..ref.setGUID(IID_$name);
 
     try {
       final hr = CoCreateInstance(clsid, nullptr, CLSCTX_ALL, iid, ptr.cast());

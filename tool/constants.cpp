@@ -6,7 +6,7 @@
 
 // constants.cpp
 
-// Development utility to confirm the width of various Win32 objects.
+// Development utility to confirm the width of various Win32 types.
 
 // This code not used by the package itself, but is just a helper to inspect
 // widths across x86 and x64 architectures.
@@ -16,17 +16,6 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <stdio.h>
-#include <ShlObj_core.h>
-#include <wbemidl.h>
-#include <netlistmgr.h>
-#include <highlevelmonitorconfigurationapi.h>
-#include <bluetoothapis.h>
-#include <VersionHelpers.h>
-#include <wincred.h>
-#include <sysinfoapi.h>
-#include <shellscalingapi.h>
-#include <processthreadsapi.h>
-#include <apiquery2.h>
 
 void main()
 {
@@ -35,6 +24,8 @@ void main()
     printf("sizeof(long) is %zu\n", sizeof(long));
     printf("sizeof(short) is %zu\n", sizeof(short));
     printf("sizeof(char) is %zu\n", sizeof(char));
+    printf("sizeof(float) is %zu\n", sizeof(float));
+    printf("sizeof(double) is %zu\n", sizeof(double));
 
     printf("sizeof(LPCSTR) is %zu\n", sizeof(LPCSTR));
     printf("sizeof(LPCWSTR) is %zu\n", sizeof(LPCWSTR));

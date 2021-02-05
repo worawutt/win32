@@ -10,6 +10,8 @@ import 'package:ffi/ffi.dart';
 
 import '../api-ms-win-core-winrt-l1-1-0.dart';
 import '../api-ms-win-core-winrt-string-l1-1-0.dart';
+import '../calloc.dart';
+import '../constants.dart';
 import '../exceptions.dart';
 import '../extensions/unpack_utf16.dart';
 import '../generated/IInspectable.dart';
@@ -17,12 +19,11 @@ import '../macros.dart';
 import '../ole32.dart';
 import '../structs.dart';
 import '../utils.dart';
-import 'winrt_constants.dart';
 
 /// Initializes the Windows Runtime on the current thread with a single-threaded
 /// concurrency model.
 /// {@category winrt}
-void winrtInitialize() => RoInitialize(RO_INIT_TYPE.RO_INIT_SINGLETHREADED);
+void winrtInitialize() => RoInitialize(RO_INIT_TYPE.RO_INIT_MULTITHREADED);
 
 /// Closes the Windows Runtime on the current thread.
 /// {@category winrt}
@@ -73,6 +74,7 @@ Pointer<IntPtr> CreateObject(String className, String iid) {
   final inspectablePtr = calloc<Pointer>();
   final riid = calloc<GUID>();
   final classPtr = calloc<IntPtr>();
+  final iidPtr = TEXT(iid);
 
   try {
     // Create a HSTRING representing the object
@@ -89,7 +91,7 @@ Pointer<IntPtr> CreateObject(String className, String iid) {
     }
 
     // Create an IID for the interface required
-    hr = IIDFromString(TEXT(iid), riid);
+    hr = IIDFromString(iidPtr, riid);
     if (FAILED(hr)) {
       throw WindowsException(hr);
     }
@@ -104,6 +106,7 @@ Pointer<IntPtr> CreateObject(String className, String iid) {
     // Return a pointer to the relevant class
     return classPtr;
   } finally {
+    free(iidPtr);
     free(riid);
     free(inspectablePtr);
     free(lpClassName);

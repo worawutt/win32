@@ -11,13 +11,9 @@
 
 import 'dart:io';
 
-import 'md_store.dart';
-import 'type_builder.dart';
-import 'type_printer.dart';
+import 'package:winmd/winmd.dart';
 
 final typesToGenerate = [
-  // 'Windows.Storage.Pickers.IFileOpenPicker',
-  // 'Windows.Globalization.ICalendar',
   'Windows.Foundation.IPropertyValue',
   'Windows.Foundation.IAsyncInfo',
   'Windows.Foundation.IClosable',

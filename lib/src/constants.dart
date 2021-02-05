@@ -411,6 +411,31 @@ const HEAP_REALLOC_IN_PLACE_ONLY = 0x00000010;
 const HEAP_CREATE_ENABLE_EXECUTE = 0x00040000;
 
 // -----------------------------------------------------------------------------
+// Thread execution states
+// -----------------------------------------------------------------------------
+
+/// Forces the system to be in the working state by resetting the system idle
+/// timer.
+const ES_SYSTEM_REQUIRED = 0x00000001;
+
+/// Forces the display to be on by resetting the display idle timer.
+
+const ES_DISPLAY_REQUIRED = 0x00000002;
+
+/// This value is not supported. If ES_USER_PRESENT is combined with other
+/// esFlags values, the call will fail and none of the specified states will be
+/// set.
+const ES_USER_PRESENT = 0x00000004;
+
+/// Enables away mode. This value must be specified with ES_CONTINUOUS.
+const ES_AWAYMODE_REQUIRED = 0x00000040;
+
+/// Informs the system that the state being set should remain in effect until
+/// the next call that uses ES_CONTINUOUS and one of the other state flags is
+/// cleared.
+const ES_CONTINUOUS = 0x80000000;
+
+// -----------------------------------------------------------------------------
 // Format message flags
 // -----------------------------------------------------------------------------
 
@@ -4407,6 +4432,61 @@ const DISPATCH_PROPERTYPUT = 0x4;
 const DISPATCH_PROPERTYPUTREF = 0x8;
 
 // -----------------------------------------------------------------------------
+// Multimedia constants
+// -----------------------------------------------------------------------------
+/// Time in milliseconds.
+const TIME_MS = 0x0001;
+
+/// Number of waveform-audio samples.
+const TIME_SAMPLES = 0x0002;
+
+/// Current byte offset from beginning of the file.
+const TIME_BYTES = 0x0004;
+
+/// SMPTE (Society of Motion Picture and Television Engineers) time.
+const TIME_SMPTE = 0x0008;
+
+/// MIDI time.
+const TIME_MIDI = 0x0010;
+
+/// Ticks within a MIDI stream.
+const TIME_TICKS = 0x0020;
+
+/// No callback mechanism. This is the default setting.
+const CALLBACK_NULL = 0x00000000;
+
+/// The dwCallback parameter is a window handle.
+const CALLBACK_WINDOW = 0x00010000;
+
+/// The dwCallback parameter is a thread identifier.
+const CALLBACK_THREAD = 0x00020000;
+
+/// The dwCallback parameter is a callback procedure address.
+const CALLBACK_FUNCTION = 0x00030000;
+
+/// The dwCallback parameter is an event handle.
+const CALLBACK_EVENT = 0x00050000;
+
+const WAVE_FORMAT_QUERY = 0x0001;
+
+/// If this flag is specified, a synchronous waveform-audio device can be
+/// opened. If this flag is not specified while opening a synchronous driver,
+/// the device will fail to open.
+const WAVE_ALLOWSYNC = 0x0002;
+
+/// If this flag is specified, the uDeviceID parameter specifies a
+/// waveform-audio device to be mapped to by the wave mapper.
+const WAVE_MAPPED = 0x0004;
+
+/// If this flag is specified, the ACM driver does not perform conversions on
+/// the audio data.
+const WAVE_FORMAT_DIRECT = 0x0008;
+
+/// If this flag is specified and the uDeviceID parameter is WAVE_MAPPER, the
+/// function opens the default communication device.
+const WAVE_MAPPED_DEFAULT_COMMUNICATION_DEVICE = 0x0010;
+
+// -----------------------------------------------------------------------------
 // Monitor Configuration constants & enumerations
 // -----------------------------------------------------------------------------
 
@@ -4718,3 +4798,354 @@ const SHUTDOWN_RESTARTAPPS = 0x0000080;
 /// SHUTDOWN_HYBRID flag with one or more of the flags in this table to specify
 /// options for the shutdown.
 const SHUTDOWN_HYBRID = 0x0000200;
+
+// -----------------------------------------------------------------------------
+// Shell_NotifyIcon uFlags constants
+// -----------------------------------------------------------------------------
+
+/// Adds an icon to the status area. The icon is given an identifier in the
+/// NOTIFYICONDATA structure pointed to by lpdata—either through its uID or
+/// guidItem member. This identifier is used in subsequent calls to
+/// Shell_NotifyIcon to perform later actions on the icon.
+const NIM_ADD = 0x00000000;
+
+/// Modifies an icon in the status area. NOTIFYICONDATA structure pointed to by
+/// lpdata uses the ID originally assigned to the icon when it was added to the
+/// notification area (NIM_ADD) to identify the icon to be modified.
+const NIM_MODIFY = 0x00000001;
+
+/// Deletes an icon from the status area. NOTIFYICONDATA structure
+/// pointed to by lpdata uses the ID originally assigned to the icon when it was
+/// added to the notification area (NIM_ADD) to identify the icon to be deleted.
+const NIM_DELETE = 0x00000002;
+
+/// Shell32.dll version 5.0 and later only. Returns focus to the
+/// taskbar notification area. Notification area icons should use this message
+/// when they have completed their UI operation. For example, if the icon
+/// displays a shortcut menu, but the user presses ESC to cancel it, use
+/// NIM_SETFOCUS to return focus to the notification area.
+const NIM_SETFOCUS = 0x00000003;
+
+/// Shell32.dll version 5.0 and later only. Instructs the notification area to
+/// behave according to the version number specified in the uVersion member of
+/// the structure pointed to by lpdata. The version number specifies which
+/// members are recognized. NIM_SETVERSION must be called every time a
+/// notification area icon is added (NIM_ADD)>. It does not need to be called
+/// with NIM_MOFIDY. The version setting is not persisted once a user logs off.
+const NIM_SETVERSION = 0x00000004;
+
+// -----------------------------------------------------------------------------
+// NOTIFYICONDATA::uVersion constants
+// Flags that either indicate which of the other members of the structure
+// contain valid data or provide additional information to the tooltip as to
+// how it should display. This member can be a combination of the following
+// values:
+// -----------------------------------------------------------------------------
+const NOTIFYICON_VERSION = 3;
+const NOTIFYICON_VERSION_4 = 4;
+
+// -----------------------------------------------------------------------------
+// NOTIFYICONDATA::uFlags constants
+// -----------------------------------------------------------------------------
+
+/// The uCallbackMessage member is valid.
+const NIF_MESSAGE = 0x00000001;
+
+/// The hIcon member is valid.
+const NIF_ICON = 0x00000002;
+
+/// The szTip member is valid.
+const NIF_TIP = 0x00000004;
+
+/// The dwState and dwStateMask members are valid.
+const NIF_STATE = 0x00000008;
+
+/// To display the balloon notification, specify NIF_INFO and provide
+/// text in szInfo.
+/// To remove a balloon notification, specify NIF_INFO and provide an empty
+/// string through szInfo.
+/// To add a notification area icon without displaying a notification,
+/// do not set the NIF_INFO flag.
+const NIF_INFO = 0x00000010;
+
+/// Windows 7 and later: The guidItem is valid.
+/// Windows Vista and earlier: Reserved.
+const NIF_GUID = 0x00000020;
+
+/// Windows Vista and later. If the balloon notification cannot be displayed
+/// immediately, discard it. Use this flag for notifications that represent
+/// real-time information which would be meaningless or misleading if displayed
+/// at a later time. For example, a message that states
+/// "Your telephone is ringing." NIF_REALTIME is meaningful only when combined
+/// with the NIF_INFO flag.
+const NIF_REALTIME = 0x00000040;
+
+/// Windows Vista and later. Use the standard tooltip. Normally, when uVersion
+/// is set to NOTIFYICON_VERSION_4, the standard tooltip is suppressed and
+/// can be replaced by the application-drawn, pop-up UI. If the application
+/// wants to show the standard tooltip with NOTIFYICON_VERSION_4, it can
+/// specify NIF_SHOWTIP to indicate the standard tooltip should still be shown.
+const NIF_SHOWTIP = 0x00000080;
+
+// -----------------------------------------------------------------------------
+// NOTIFYICONDATA::dwState constants
+// The state of the icon. One or both of the following values.
+// -----------------------------------------------------------------------------
+
+/// The icon is hidden.
+const NIS_HIDDEN = 0x00000001;
+
+/// The icon resource is shared between multiple icons.
+const NIS_SHAREDICON = 0x00000002;
+
+// -----------------------------------------------------------------------------
+// NOTIFYICONDATA::dwInfoFlags constants
+// Flags that can be set to modify the behavior and appearance of a balloon
+// notification. The icon is placed to the left of the title. If the szInfoTitle
+// member is zero-length, the icon is not shown.
+// -----------------------------------------------------------------------------
+
+/// No icon.
+const NIIF_NONE = 0x00000000;
+
+/// An information icon.
+const NIIF_INFO = 0x00000001;
+
+/// A warning icon.
+const NIIF_WARNING = 0x00000002;
+
+/// An error icon.
+const NIIF_ERROR = 0x00000003;
+
+/// Windows Vista and later: Use the icon identified in hBalloonIcon as the
+/// notification balloon's title icon.
+const NIIF_USER = 0x00000004;
+
+/// Windows XP and later. Reserved.
+const NIIF_ICON_MASK = 0x0000000F;
+
+/// Do not play the associated sound. Applies only to notifications.
+const NIIF_NOSOUND = 0x00000010;
+
+/// The large version of the icon should be used as the notification icon
+const NIIF_LARGE_ICON = 0x00000020;
+
+/// Do not display the balloon notification if the curr user is in "quiet time"
+const NIIF_RESPECT_QUIET_TIME = 0x00000080;
+
+/// Used to define private messages, usually of the form WM_APP+x, where x
+/// is an integer value.
+const WM_APP = 0x8000;
+
+// -----------------------------------------------------------------------------
+// Shell_NotifyIcon WndProc callback message contants
+// -----------------------------------------------------------------------------
+
+/// If a user selects a notify icon with the mouse and activates it with the
+/// ENTER key, the Shell now sends the associated application an NIN_SELECT
+/// notification. Earlier versions send WM_RBUTTONDOWN and WM_RBUTTONUP
+/// messages.
+const NIN_SELECT = WM_USER + 0;
+
+const NINF_KEY = 0x1;
+
+/// If a user selects a notify icon with the keyboard and activates it with
+/// the SPACEBAR or ENTER key, the version 5.0 Shell sends the associated
+/// application an NIN_KEYSELECT notification. Earlier versions send
+/// WM_RBUTTONDOWN and WM_RBUTTONUP messages.
+const NIN_KEYSELECT = NIN_SELECT | NINF_KEY;
+
+/// Sent when the balloon is shown (balloons are queued).
+const NIN_BALLOONSHOW = WM_USER + 2;
+
+/// Sent when the balloon disappears. For example, when the icon is deleted.
+/// This message is not sent if the balloon is dismissed because of a timeout or
+/// if the user clicks the mouse.
+/// As of Windows 7, NIN_BALLOONHIDE is also sent when a notification with
+/// the NIIF_RESPECT_QUIET_TIME flag set attempts to display during quiet time
+/// (a user's first hour on a new computer). In that case, the balloon is never
+/// displayed at all.
+const NIN_BALLOONHIDE = WM_USER + 3;
+
+/// Sent when the balloon is dismissed because of a timeout.
+const NIN_BALLOONTIMEOUT = WM_USER + 4;
+
+/// Sent when the balloon is dismissed because the user clicked the mouse.
+const NIN_BALLOONUSERCLICK = WM_USER + 5;
+
+/// Sent when the user hovers the cursor over an icon to indicate that the
+/// richer pop-up UI should be used in place of a standard textual tooltip.
+const NIN_POPUPOPEN = WM_USER + 6;
+
+/// Sent when a cursor no longer hovers over an icon to indicate that the rich
+/// pop-up UI should be closed.
+const NIN_POPUPCLOSE = WM_USER + 7;
+
+// -----------------------------------------------------------------------------
+// TrackPopupMenuEx constants
+// -----------------------------------------------------------------------------
+
+/// The user can select menu items with only the left mouse button.
+const TPM_LEFTBUTTON = 0x0000;
+
+/// The user can select menu items with both the left and right mouse buttons.
+const TPM_RIGHTBUTTON = 0x0002;
+
+/// Positions the shortcut menu so that its left side is aligned with the
+/// coordinate specified by the x parameter.
+const TPM_LEFTALIGN = 0x0000;
+
+/// Centers the shortcut menu horizontally relative to the coordinate specified
+/// by the x parameter.
+const TPM_CENTERALIGN = 0x0004;
+
+/// Positions the shortcut menu so that its right side is aligned with the
+/// coordinate specified by the x parameter.
+const TPM_RIGHTALIGN = 0x0008;
+
+/// Positions the shortcut menu so that its top side is aligned with the
+/// coordinate specified by the y parameter.
+const TPM_TOPALIGN = 0x0000;
+
+/// Centers the shortcut menu vertically relative to the coordinate specified by
+/// the y parameter.
+const TPM_VCENTERALIGN = 0x0010;
+
+/// Positions the shortcut menu so that its bottom side is aligned with the
+/// coordinate specified by the y parameter.
+const TPM_BOTTOMALIGN = 0x0020;
+
+/// If the menu cannot be shown at the specified location without overlapping
+/// the excluded rectangle, the system tries to accommodate the requested
+/// horizontal alignment before the requested vertical alignment.
+const TPM_HORIZONTAL = 0x0000;
+
+/// If the menu cannot be shown at the specified location without overlapping
+/// the excluded rectangle, the system tries to accommodate the requested
+/// vertical alignment before the requested horizontal alignment.
+const TPM_VERTICAL = 0x0040;
+
+/// The function does not send notification messages when the user clicks a menu
+/// item.
+const TPM_NONOTIFY = 0x0080;
+
+/// The function returns the menu item identifier of the user's selection in the
+/// return value.
+const TPM_RETURNCMD = 0x0100;
+
+/// Use the TPM_RECURSE flag to display a menu when another menu is already
+/// displayed. This is intended to support context menus within a menu.
+const TPM_RECURSE = 0x0001;
+
+/// Animates the menu from left to right.
+const TPM_HORPOSANIMATION = 0x0400;
+
+/// Animates the menu from right to left.
+const TPM_HORNEGANIMATION = 0x0800;
+
+/// Animates the menu from top to bottom.
+const TPM_VERPOSANIMATION = 0x1000;
+
+/// Animates the menu from bottom to top.
+const TPM_VERNEGANIMATION = 0x2000;
+
+/// Displays menu without animation.
+const TPM_NOANIMATION = 0x4000;
+
+/// For right-to-left text layout, use TPM_LAYOUTRTL. By default, the text
+/// layout is left-to-right.
+const TPM_LAYOUTRTL = 0x8000;
+
+/// Restricts the pop-up window to within the work area.
+const TPM_WORKAREA = 0x10000;
+
+// -----------------------------------------------------------------------------
+// LoadImage constants
+// -----------------------------------------------------------------------------
+
+/// Loads a bitmap.
+const IMAGE_BITMAP = 0;
+
+/// Loads an icon.
+const IMAGE_ICON = 1;
+
+/// Loads a cursor.
+const IMAGE_CURSOR = 2;
+
+/// Loads an enhanced metafile.
+const IMAGE_ENHMETAFILE = 3;
+
+// -----------------------------------------------------------------------------
+// LoadImage fuLoad constants
+// -----------------------------------------------------------------------------
+
+/// The default flag; it does nothing.
+const LR_DEFAULTCOLOR = 0x00000000;
+
+/// Loads the image in black and white.
+const LR_MONOCHROME = 0x00000001;
+
+/// Returns the original hImage if it satisfies the criteria for the copy—that
+/// is, correct dimensions and color depth—in which case the LR_COPYDELETEORG
+/// flag is ignored. If this flag is not specified, a new object is always
+/// created.
+const LR_COPYRETURNORG = 0x00000004;
+
+/// Deletes the original image after creating the copy.
+const LR_COPYDELETEORG = 0x00000008;
+
+/// Loads the stand-alone image from the file specified by lpszName (icon,
+/// cursor, or bitmap file).
+const LR_LOADFROMFILE = 0x00000010;
+
+/// Retrieves the color value of the first pixel in the image and replaces the
+/// corresponding entry in the color table with the default window color
+/// (COLOR_WINDOW). All pixels in the image that use that entry become the
+/// default window color. This value applies only to images that have
+/// corresponding color tables.
+const LR_LOADTRANSPARENT = 0x00000020;
+
+/// Uses the width or height specified by the system metric values for cursors
+/// or icons, if the cxDesired or cyDesired values are set to zero.
+const LR_DEFAULTSIZE = 0x00000040;
+
+/// Uses true VGA colors.
+const LR_VGACOLOR = 0x00000080;
+
+/// Searches the color table for the image and replaces shades of gray with the
+/// corresponding 3-D color.
+const LR_LOADMAP3DCOLORS = 0x00001000;
+
+/// Causes the function to return a DIB section bitmap rather than a compatible
+/// bitmap. This flag is useful for loading a bitmap without mapping it to the
+/// colors of the display device.
+const LR_CREATEDIBSECTION = 0x00002000;
+
+/// Tries to reload an icon or cursor resource from the original resource file
+/// rather than simply copying the current image. This is useful for creating a
+/// different-sized copy when the resource file contains multiple sizes of the
+/// resource. Without this flag, CopyImage stretches the original image to the
+/// new size. If this flag is set, CopyImage uses the size in the resource file
+/// closest to the desired size.
+const LR_COPYFROMRESOURCE = 0x00004000;
+
+/// Shares the image handle if the image is loaded multiple times. If LR_SHARED
+/// is not set, a second call to LoadImage for the same resource will load the
+/// image again and return a different handle.
+const LR_SHARED = 0x00008000;
+
+// -----------------------------------------------------------------------------
+// Windows Runtime constants
+// -----------------------------------------------------------------------------
+
+/// Determines the concurrency model used for incoming calls to the objects
+/// created by this thread.
+///
+/// {@category Enum}
+class RO_INIT_TYPE {
+  static const RO_INIT_SINGLETHREADED = 0;
+
+  /// Initializes the thread for multi-threaded concurrency. The current thread
+  /// is initialized in the MTA.
+  static const RO_INIT_MULTITHREADED = 1;
+}

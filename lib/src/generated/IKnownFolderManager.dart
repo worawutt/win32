@@ -9,6 +9,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
+import '../calloc.dart';
 import '../constants.dart';
 import '../constants_nodoc.dart';
 import '../exceptions.dart';
@@ -163,8 +164,8 @@ class KnownFolderManager extends IKnownFolderManager {
 
   factory KnownFolderManager.createInstance() {
     final ptr = calloc<COMObject>();
-    final clsid = calloc<GUID>()..setGUID(CLSID_KnownFolderManager);
-    final iid = calloc<GUID>()..setGUID(IID_IKnownFolderManager);
+    final clsid = calloc<GUID>()..ref.setGUID(CLSID_KnownFolderManager);
+    final iid = calloc<GUID>()..ref.setGUID(IID_IKnownFolderManager);
 
     try {
       final hr = CoCreateInstance(clsid, nullptr, CLSCTX_ALL, iid, ptr.cast());

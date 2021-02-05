@@ -9,6 +9,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 
 import '../com/combase.dart';
+import '../calloc.dart';
 import '../constants.dart';
 import '../constants_nodoc.dart';
 import '../exceptions.dart';
@@ -98,8 +99,8 @@ class FileSaveDialog extends IFileSaveDialog {
 
   factory FileSaveDialog.createInstance() {
     final ptr = calloc<COMObject>();
-    final clsid = calloc<GUID>()..setGUID(CLSID_FileSaveDialog);
-    final iid = calloc<GUID>()..setGUID(IID_IFileSaveDialog);
+    final clsid = calloc<GUID>()..ref.setGUID(CLSID_FileSaveDialog);
+    final iid = calloc<GUID>()..ref.setGUID(IID_IFileSaveDialog);
 
     try {
       final hr = CoCreateInstance(clsid, nullptr, CLSCTX_ALL, iid, ptr.cast());
