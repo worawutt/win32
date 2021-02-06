@@ -1,6 +1,6 @@
 import 'dart:ffi';
-// import 'dart:io';
 
+import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 // const CLSID_Example = '{6afe06b4-fa44-4ad8-b357-0cbfa7875137}';
@@ -16,8 +16,6 @@ void main() {
     print('Failed at CoInitializeEx.');
     throw WindowsException(hr);
   }
-  // final clsid = calloc<GUID>()..setGUID(CLSID_Example);
-  // final clsid = calloc<GUID>()..setGUID(CLSID_FileSaveDialog);
 
   final excelClsId = calloc<GUID>();
   hr = CLSIDFromProgID(TEXT('Excel.Application'), excelClsId);
@@ -25,57 +23,43 @@ void main() {
     print('Failed at CLSIDFromProgID.');
     throw WindowsException(hr);
   }
-  // final iidClassFactory = calloc<GUID>()..setGUID(IID_IClassFactory);
-  // hr = CoGetClassObject(
-  //     excelClsId,
-  //     CLSCTX_LOCAL_SERVER | CLSCTX_INPROC_SERVER | CLSCTX_REMOTE_SERVER,
-  //     nullptr,
-  //     iidClassFactory,
-  //     ptrFactory.cast());
-  // if (FAILED(hr)) {
-  //   print('Failed at CoGetClassObject.');
-  //   print('CLSID: ${excelClsId.ref.toString()}');
-  //   throw WindowsException(hr);
-  // }
 
-  // final clsid = calloc<GUID>()..setGUID(CLSID_FileSaveDialog);
-  final pUnk = IUnknown(calloc<COMObject>());
-  final iidIUnknown = calloc<GUID>()..ref.setGUID(IID_IUnknown);
+  final inst = calloc<COMObject>();
+  final iidIDispatch = calloc<GUID>()..ref.setGUID(IID_IDispatch);
 
   hr = CoCreateInstance(
       excelClsId,
       nullptr,
       CLSCTX_LOCAL_SERVER | CLSCTX_INPROC_SERVER | CLSCTX_REMOTE_SERVER,
-      iidIUnknown,
-      pUnk.ptr.cast());
+      iidIDispatch,
+      inst.cast());
   if (FAILED(hr)) {
     print('Failed at CoCreateInstance.');
     print('CLSID: ${excelClsId.ref.toString()}');
-    print('IID: ${iidIUnknown.ref.toString()}');
+    print('IID: ${iidIDispatch.ref.toString()}');
     throw WindowsException(hr);
   }
 
-  final pDisp = IDispatch(calloc<COMObject>());
-  final ppv = calloc<Pointer>();
-
-  final iidIDispatch = calloc<GUID>()..ref.setGUID(IID_IDispatch);
-  // hr = IIDFromString(TEXT('IDispatch'), iidIDispatch);
-
-  hr = pUnk.QueryInterface(iidIDispatch, ppv.cast());
-  if (FAILED(hr)) {
-    print('Failed at IUnknown::QueryInterface.');
-    print(iidIDispatch.ref.toString());
+  final pDisp = IDispatch(inst.cast());
+  print('calling GetTypeInfoCount');
+  final typeInfoCount = calloc<Uint32>();
+  hr = pDisp.GetTypeInfoCount(typeInfoCount);
+  if (SUCCEEDED(hr)) {
+    print('There are ${typeInfoCount.value} interfaces provided.');
+  } else {
+    print('Failed at IDispatch::GetTypeInfoCount.');
     throw WindowsException(hr);
   }
 
   const CP_ACP = 0;
-  final ptName = TEXT('Version');
+  final ptName = TEXT('Version\x00');
   final szName = calloc<Uint8>(256);
   WideCharToMultiByte(CP_ACP, 0, ptName, -1, szName, 256, nullptr, nullptr);
   final iidNull = calloc<GUID>();
+  print(iidNull.ref.toString());
 
-  final dispid = calloc<Int32>();
-  print('calling GetIds');
+  final dispid = calloc<Int32>(65535);
+  print('calling GetIDsOfNames');
   hr = pDisp.GetIDsOfNames(iidNull, ptName, 1, LOCALE_USER_DEFAULT, dispid);
   if (FAILED(hr)) {
     print('Failed at IDispatch::GetIDsOfNames.');
@@ -94,5 +78,5 @@ void main() {
   //   print('Succeeded. And here we are in Dart again.');
   // }
 
-  OleUninitialize();
+  CoUninitialize();
 }
