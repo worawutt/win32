@@ -18,6 +18,7 @@ final typesToGenerate = [
   'Windows.Foundation.IAsyncInfo',
   'Windows.Foundation.IClosable',
   'Windows.Foundation.IStringable',
+  'Windows.Gaming.Input.Gamepad',
   'Windows.Globalization.ICalendar',
   'Windows.Storage.Pickers.IFileOpenPicker'
 ];
