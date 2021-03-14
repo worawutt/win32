@@ -19,6 +19,7 @@ const interfacesToGenerate = <COMType>[
   COMType('Windows.Win32.Automation.IEnumVARIANT'),
   COMType('Windows.Win32.Automation.IErrorInfo'),
   COMType('Windows.Win32.Automation.ISupportErrorInfo'),
+  COMType('Windows.Win32.Automation.ITypeInfo'),
   COMType('Windows.Win32.Com.IBindCtx'),
   COMType('Windows.Win32.Com.IClassFactory'),
   COMType('Windows.Win32.Com.IConnectionPoint'),

@@ -45,12 +45,26 @@ void main() {
   final typeInfoCount = calloc<Uint32>();
   hr = pDisp.GetTypeInfoCount(typeInfoCount);
   if (SUCCEEDED(hr)) {
-    print('There are ${typeInfoCount.value} interfaces provided.');
+    print('There are ${typeInfoCount.value} type info interfaces provided.');
   } else {
     print('Failed at IDispatch::GetTypeInfoCount.');
     throw WindowsException(hr);
   }
 
+  final ppTypeInfo = calloc<COMObject>();
+  hr = pDisp.GetTypeInfo(0, 0, ppTypeInfo.cast());
+  if (FAILED(hr)) {
+    print('Failed at IDispatch::GetTypeInfo.');
+    throw WindowsException(hr);
+  }
+
+  final ppTypeAttr = calloc<IntPtr>();
+  final pTypeInfo = ITypeInfo(ppTypeInfo.cast());
+  hr = pTypeInfo.GetTypeAttr(ppTypeAttr.cast());
+  if (FAILED(hr)) {
+    print('Failed at ITypeInfo::GetTypeAttr.');
+    throw WindowsException(hr);
+  }
   const CP_ACP = 0;
   final ptName = TEXT('Version\x00');
   final szName = calloc<Uint8>(256).cast<Utf8>();

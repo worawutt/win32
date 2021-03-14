@@ -182,6 +182,7 @@ export 'src/generated/ISpellCheckerFactory.dart';
 export 'src/generated/ISpellingError.dart';
 export 'src/generated/IStream.dart';
 export 'src/generated/ISupportErrorInfo.dart';
+export 'src/generated/ITypeInfo.dart';
 export 'src/generated/IUnknown.dart';
 export 'src/generated/IWbemClassObject.dart';
 export 'src/generated/IWbemContext.dart';

@@ -5011,3 +5011,156 @@ class TPMPARAMS extends Struct {
 
   external RECT rcExclude;
 }
+// -----------------------------------------------------------------------------
+// Automation structs
+// -----------------------------------------------------------------------------
+
+//  typedef struct tagTYPEATTR {
+//   GUID     guid;
+//   LCID     lcid;
+//   DWORD    dwReserved;
+//   MEMBERID memidConstructor;
+//   MEMBERID memidDestructor;
+//   LPOLESTR lpstrSchema;
+//   ULONG    cbSizeInstance;
+//   TYPEKIND typekind;
+//   WORD     cFuncs;
+//   WORD     cVars;
+//   WORD     cImplTypes;
+//   WORD     cbSizeVft;
+//   WORD     cbAlignment;
+//   WORD     wTypeFlags;
+//   WORD     wMajorVerNum;
+//   WORD     wMinorVerNum;
+//   TYPEDESC tdescAlias;
+//   IDLDESC  idldescType;
+// } TYPEATTR, *LPTYPEATTR;
+
+/// Contains attributes of a type.
+///
+/// {@category Struct}
+class TYPEATTR extends Struct {
+  external GUID guid;
+  @Uint32()
+  external int lcid;
+  @Int32()
+  external int memidConstructor;
+  @Int32()
+  external int memidDestructor;
+  external Pointer<Utf16> lpstrSchema;
+  @Uint32()
+  external int cbSizeInstance;
+  @Uint32()
+  external int typekind;
+  @Uint16()
+  external int cFuncs;
+  @Uint16()
+  external int cVars;
+  @Uint16()
+  external int cImplTypes;
+  @Uint16()
+  external int cbSizeVft;
+  @Uint16()
+  external int cbAlignment;
+  @Uint16()
+  external int wTypeFlags;
+  @Uint16()
+  external int wMajorVerNum;
+  @Uint16()
+  external int wMinorVerNum;
+  external TYPEDESC tdescAlias;
+  external IDLDESC idldescType;
+}
+
+// typedef struct tagTYPEDESC {
+//   union {
+//     struct tagTYPEDESC  *lptdesc;
+//     struct tagARRAYDESC *lpadesc;
+//     HREFTYPE            hreftype;
+//   } DUMMYUNIONNAME;
+//   VARTYPE vt;
+// } TYPEDESC;
+
+/// Describes the type of a variable, the return type of a function, or the type
+/// of a function parameter.
+///
+/// {@category Struct}
+class TYPEDESC extends Struct {
+  external Pointer<TYPEDESC> lptdesc;
+}
+
+// typedef struct tagFUNCDESC {
+//   MEMBERID   memid;
+//   SCODE      *lprgscode;
+//   ELEMDESC   *lprgelemdescParam;
+//   FUNCKIND   funckind;
+//   INVOKEKIND invkind;
+//   CALLCONV   callconv;
+//   SHORT      cParams;
+//   SHORT      cParamsOpt;
+//   SHORT      oVft;
+//   SHORT      cScodes;
+//   ELEMDESC   elemdescFunc;
+//   WORD       wFuncFlags;
+// } FUNCDESC, *LPFUNCDESC;
+
+/// Describes a function.
+///
+/// {@category Struct}
+class FUNCDESC extends Struct {
+  @Int32()
+  external int memid;
+}
+
+// typedef struct tagVARDESC {
+//   MEMBERID memid;
+//   LPOLESTR lpstrSchema;
+//   union {
+//     ULONG   oInst;
+//     VARIANT *lpvarValue;
+//   } DUMMYUNIONNAME;
+//   ELEMDESC elemdescVar;
+//   WORD     wVarFlags;
+//   VARKIND  varkind;
+// } VARDESC, *LPVARDESC;
+
+/// Describes a variable, constant, or data member.
+///
+/// {@category Struct}
+class VARDESC extends Struct {
+  @Int32()
+  external int memid;
+  external Pointer<Utf16> lpstrSchema;
+  external Pointer<VARIANT> lpvarValue;
+}
+
+// typedef struct tagELEMDESC {
+//   TYPEDESC tdesc;
+//   union {
+//     IDLDESC   idldesc;
+//     PARAMDESC paramdesc;
+//   } DUMMYUNIONNAME;
+// } ELEMDESC, *LPELEMDESC;
+
+/// Contains the type description and process-transfer information for a
+/// variable, a function, or a function parameter.
+///
+/// {@category Struct}
+class ELEMDESC extends Struct {
+  external TYPEDESC idldesc;
+}
+
+// typedef struct tagIDLDESC
+//     {
+//     ULONG_PTR dwReserved;
+//     USHORT wIDLFlags;
+//     } 	IDLDESC;
+
+/// This structure is used for holding information needed for transferring a
+/// structure element, parameter, or function return value between processes.
+///
+/// {@category Struct}
+class IDLDESC extends Struct {
+  @IntPtr()
+  external int dwReserved;
+}
