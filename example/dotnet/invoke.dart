@@ -53,19 +53,19 @@ void main() {
 
   const CP_ACP = 0;
   final ptName = TEXT('Version\x00');
-  final szName = calloc<Uint8>(256);
+  final szName = calloc<Uint8>(256).cast<Utf8>();
   WideCharToMultiByte(CP_ACP, 0, ptName, -1, szName, 256, nullptr, nullptr);
   final iidNull = calloc<GUID>();
   print(iidNull.ref.toString());
 
-  final dispid = calloc<Int32>(65535);
-  print('calling GetIDsOfNames');
-  hr = pDisp.GetIDsOfNames(iidNull, ptName, 1, LOCALE_USER_DEFAULT, dispid);
-  if (FAILED(hr)) {
-    print('Failed at IDispatch::GetIDsOfNames.');
-    throw WindowsException(hr);
-  }
-  print('Got ID from Excel');
+  // final dispid = calloc<Int32>(65535);
+  // print('calling GetIDsOfNames');
+  // hr = pDisp.GetIDsOfNames(iidNull, ptName, 1, LOCALE_USER_DEFAULT, dispid);
+  // if (FAILED(hr)) {
+  //   print('Failed at IDispatch::GetIDsOfNames.');
+  //   throw WindowsException(hr);
+  // }
+  // print('Got ID from Excel');
 
   // final noArgs = calloc<DISPPARAMS>();
 
