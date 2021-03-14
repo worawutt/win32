@@ -21,9 +21,9 @@ void write(
 
   final credential = calloc<CREDENTIAL>()
     ..ref.Type = CRED_TYPE_GENERIC
-    ..ref.TargetName = TEXT(credentialName)
+    ..ref.TargetName = credentialName.toNativeUtf16()
     ..ref.Persist = CRED_PERSIST_LOCAL_MACHINE
-    ..ref.UserName = TEXT(userName)
+    ..ref.UserName = userName.toNativeUtf16()
     ..ref.CredentialBlob = blob
     ..ref.CredentialBlobSize = examplePassword.length;
 
@@ -36,15 +36,15 @@ void write(
   }
   print('Success. (${credential.ref.CredentialBlobSize})');
 
-  calloc.free(blob);
-  calloc.free(credential);
+  free(blob);
+  free(credential);
 }
 
 void read(String credentialName) {
   print('Reading $credentialName ...');
   final credPointer = calloc<Pointer<CREDENTIAL>>();
-  final result =
-      CredRead(TEXT(credentialName), CRED_TYPE_GENERIC, 0, credPointer);
+  final result = CredRead(
+      credentialName.toNativeUtf16(), CRED_TYPE_GENERIC, 0, credPointer);
   if (result != TRUE) {
     final errorCode = GetLastError();
     var errorText = '$errorCode';
@@ -55,20 +55,21 @@ void read(String credentialName) {
     return;
   }
   final cred = credPointer.value.ref;
-  print('Success. Read username ${cred.UserName.unpackString(100)} '
+  print('Success. Read username ${cred.UserName.toDartString()} '
       'password size: ${cred.CredentialBlobSize}');
   final blob = cred.CredentialBlob.asTypedList(cred.CredentialBlobSize);
   final password = utf8.decode(blob);
   print('read password: $password');
   CredFree(credPointer.value);
   print('done.');
-  calloc.free(credPointer);
+  free(credPointer);
   print('returning');
 }
 
 void delete(String credentialName) {
   print('Deleting $credentialName');
-  final result = CredDelete(TEXT(credentialName), CRED_TYPE_GENERIC, 0);
+  final result =
+      CredDelete(credentialName.toNativeUtf16(), CRED_TYPE_GENERIC, 0);
   if (result != TRUE) {
     final errorCode = GetLastError();
     print('Error ($result): $errorCode');

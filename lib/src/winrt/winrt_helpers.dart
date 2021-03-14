@@ -10,9 +10,9 @@ import 'package:ffi/ffi.dart';
 
 import '../api-ms-win-core-winrt-l1-1-0.dart';
 import '../api-ms-win-core-winrt-string-l1-1-0.dart';
+import '../com/combase.dart';
 import '../constants.dart';
 import '../exceptions.dart';
-import '../extensions/unpack_utf16.dart';
 import '../generated/IInspectable.dart';
 import '../macros.dart';
 import '../ole32.dart';
@@ -35,11 +35,11 @@ String convertFromHString(Pointer<IntPtr> hstring) {
 
   try {
     final stringPtr = WindowsGetStringRawBuffer(hstring.value, stringLength);
-    final dartString = stringPtr.unpackString(stringLength.value);
+    final dartString = stringPtr.toDartString();
 
     return dartString;
   } finally {
-    calloc.free(stringLength);
+    free(stringLength);
   }
 }
 
@@ -51,12 +51,17 @@ String convertFromHString(Pointer<IntPtr> hstring) {
 /// {@category winrt}
 Pointer<IntPtr> convertToHString(String string) {
   final hString = calloc<IntPtr>();
+  final stringPtr = string.toNativeUtf16();
   // Create a HSTRING representing the object
-  final hr = WindowsCreateString(Utf16.toUtf16(string), string.length, hString);
-  if (FAILED(hr)) {
-    throw WindowsException(hr);
-  } else {
-    return hString;
+  try {
+    final hr = WindowsCreateString(stringPtr, string.length, hString);
+    if (FAILED(hr)) {
+      throw WindowsException(hr);
+    } else {
+      return hString;
+    }
+  } finally {
+    free(stringPtr);
   }
 }
 
@@ -67,24 +72,24 @@ Pointer<IntPtr> convertToHString(String string) {
 /// final calendar = ICalendar(object.cast());
 /// ```
 /// {@category winrt}
-Pointer<IntPtr> CreateObject(String className, String iid) {
+Pointer<COMObject> CreateObject(String className, String iid) {
   final hstrClass = calloc<IntPtr>();
-  final lpClassName = TEXT(className);
-  final inspectablePtr = calloc<Pointer>();
+  final lpClassName = className.toNativeUtf16();
+  final inspectablePtr = calloc<COMObject>();
   final riid = calloc<GUID>();
-  final classPtr = calloc<IntPtr>();
-  final iidPtr = TEXT(iid);
+  final classPtr = calloc<Pointer>();
+  final iidPtr = iid.toNativeUtf16();
+  final classNamePtr = className.toNativeUtf16();
 
   try {
     // Create a HSTRING representing the object
-    var hr = WindowsCreateString(
-        Utf16.toUtf16(className), className.length, hstrClass);
+    var hr = WindowsCreateString(classNamePtr, className.length, hstrClass);
     if (FAILED(hr)) {
       throw WindowsException(hr);
     }
     // Activates the specified Windows Runtime class. This returns the WinRT
     // IInspectable interface, which is a subclass of IUnknown.
-    hr = RoActivateInstance(hstrClass.value, inspectablePtr);
+    hr = RoActivateInstance(hstrClass.value, inspectablePtr.cast());
     if (FAILED(hr)) {
       throw WindowsException(hr);
     }
@@ -96,19 +101,20 @@ Pointer<IntPtr> CreateObject(String className, String iid) {
     }
 
     // Now use IInspectable to navigate to the relevant interface
-    final inspectable = IInspectable(inspectablePtr.cast());
+    final inspectable = IInspectable(inspectablePtr);
     hr = inspectable.QueryInterface(riid, classPtr);
     if (FAILED(hr)) {
       throw WindowsException(hr);
     }
 
     // Return a pointer to the relevant class
-    return classPtr;
+    return classPtr.cast();
   } finally {
-    calloc.free(iidPtr);
-    calloc.free(riid);
-    calloc.free(inspectablePtr);
-    calloc.free(lpClassName);
-    calloc.free(hstrClass);
+    free(classNamePtr);
+    free(iidPtr);
+    free(riid);
+    free(inspectablePtr);
+    free(lpClassName);
+    free(hstrClass);
   }
 }

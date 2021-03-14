@@ -25,8 +25,9 @@ void main() {
       for (var i = 0; i < TEST_RUNS; i++) {
         final stringPtr = TEXT(testString);
 
-        expect(stringPtr.unpackString(5), equals(testString.substring(0, 5)));
-        calloc.free(stringPtr);
+        expect(stringPtr.toDartString(length: 5),
+            equals(testString.substring(0, 5)));
+        free(stringPtr);
       }
     });
 
@@ -34,8 +35,8 @@ void main() {
       for (var i = 0; i < TEST_RUNS; i++) {
         final stringPtr = TEXT(testString);
 
-        expect(stringPtr.unpackString(256), equals(testString));
-        calloc.free(stringPtr);
+        expect(stringPtr.toDartString(), equals(testString));
+        free(stringPtr);
       }
     });
 
@@ -43,8 +44,8 @@ void main() {
       for (var i = 0; i < TEST_RUNS; i++) {
         final stringPtr = TEXT('');
 
-        expect(stringPtr.unpackString(10), equals(''));
-        calloc.free(stringPtr);
+        expect(stringPtr.toDartString(), equals(''));
+        free(stringPtr);
       }
     });
 
@@ -60,7 +61,7 @@ void main() {
         expect(arrayPtr.unpackStringArray(400)[5], equals('sultanas'));
         expect(arrayPtr.unpackStringArray(400).length, equals(6));
 
-        calloc.free(arrayPtr);
+        free(arrayPtr);
       }
     });
   });
@@ -76,7 +77,7 @@ void main() {
           expect(string, equals(string2));
 
           WindowsDeleteString(hstring.value);
-          calloc.free(hstring);
+          free(hstring);
         }
       });
       test('String to HSTRING conversion -- more complex', () {
@@ -92,7 +93,7 @@ Some accented text: Résumé
           expect(string, equals(string2));
 
           WindowsDeleteString(hstring.value);
-          calloc.free(hstring);
+          free(hstring);
         }
       });
     });

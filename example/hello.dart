@@ -27,9 +27,9 @@ int mainWindowProc(int hWnd, int uMsg, int wParam, int lParam) {
       DrawText(hdc, msg, -1, rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
       EndPaint(hWnd, ps);
 
-      calloc.free(ps);
-      calloc.free(rect);
-      calloc.free(msg);
+      free(ps);
+      free(rect);
+      free(msg);
 
       return 0;
   }
@@ -68,6 +68,8 @@ void main() {
       nullptr // Additional application data
       );
 
+  free(className);
+
   if (hWnd == 0) {
     final error = GetLastError();
     throw WindowsException(HRESULT_FROM_WIN32(error));
@@ -77,10 +79,11 @@ void main() {
   UpdateWindow(hWnd);
 
   // Run the message loop.
-
   final msg = calloc<MSG>();
   while (GetMessage(msg, NULL, 0, 0) != 0) {
     TranslateMessage(msg);
     DispatchMessage(msg);
   }
+
+  free(msg);
 }

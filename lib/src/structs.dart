@@ -9,12 +9,12 @@
 // -----------------------------------------------------------------------------
 // Linter exceptions
 // -----------------------------------------------------------------------------
-// ignore_for_file: camel_case_types
-// ignore_for_file: camel_case_extensions
+// ignore_for_file: camel_case_types ignore_for_file: camel_case_extensions
 //
 // Why? The linter defaults to throw a warning for types not named as camel
 // case. We deliberately break this convention to match the Win32 underlying
 // types.
+//
 //
 // ignore_for_file: unused_field
 //
@@ -23,6 +23,13 @@
 // we use this feature to ensure that sizeOf<STRUCT_NAME> returns a size at
 // least as large as the underlying native struct. See, for example,
 // ENUMLOGFONTEX.
+//
+//
+// ignore_for_file: unnecessary_getters_setters
+//
+// Why? In structs like VARIANT, we're using getters and setters to project the
+// same underlying data property to various union types. The trivial overhead is
+// outweighed by readability.
 // -----------------------------------------------------------------------------
 
 import 'dart:ffi';
@@ -32,8 +39,8 @@ import 'package:ffi/ffi.dart';
 
 import 'callbacks.dart';
 import 'com/combase.dart';
-import 'generated/IUnknown.dart';
 import 'generated/IDispatch.dart';
+import 'generated/IUnknown.dart';
 import 'oleaut32.dart';
 
 // typedef struct tagWNDCLASSW {
@@ -240,6 +247,27 @@ class BIND_OPTS extends Struct {
   external int grfMode;
   @Uint32()
   external int dwTickCountDeadline;
+}
+
+// typedef struct value_entW {
+//   LPWSTR    ve_valuename;
+//   DWORD     ve_valuelen;
+//   DWORD_PTR ve_valueptr;
+//   DWORD     ve_type;
+// } VALENTW, *PVALENTW;
+
+/// Contains information about a registry value. The RegQueryMultipleValues
+/// function uses this structure.
+///
+/// {@category Struct}
+class VALENT extends Struct {
+  external Pointer<Utf16> ve_valuename;
+  @Uint32()
+  external int ve_valuelen;
+  @IntPtr()
+  external int ve_valueptr;
+  @Uint32()
+  external int ve_type;
 }
 
 // typedef struct {
@@ -901,6 +929,176 @@ class CHOOSEFONT extends Struct {
   external int nSizeMax;
 }
 
+// typedef struct _STRRET {
+//   UINT  uType;
+//   union {
+//     LPWSTR pOleStr;
+//     UINT   uOffset;
+//     char   cStr[260];
+//   } DUMMYUNIONNAME;
+// } STRRET;
+
+/// Contains strings returned from the IShellFolder interface methods.
+///
+/// {@category Struct}
+class STRRET extends Struct {
+  @Uint32()
+  external int uType;
+
+  int get uOffset => _cStr0;
+
+  @Uint32()
+  external int _cStr0;
+  @Uint32()
+  external int _cStr1;
+  @Uint32()
+  external int _cStr2;
+  @Uint32()
+  external int _cStr3;
+  @Uint32()
+  external int _cStr4;
+  @Uint32()
+  external int _cStr5;
+  @Uint32()
+  external int _cStr6;
+  @Uint32()
+  external int _cStr7;
+  @Uint32()
+  external int _cStr8;
+  @Uint32()
+  external int _cStr9;
+  @Uint32()
+  external int _cStr10;
+  @Uint32()
+  external int _cStr11;
+  @Uint32()
+  external int _cStr12;
+  @Uint32()
+  external int _cStr13;
+  @Uint32()
+  external int _cStr14;
+  @Uint32()
+  external int _cStr15;
+  @Uint32()
+  external int _cStr16;
+  @Uint32()
+  external int _cStr17;
+  @Uint32()
+  external int _cStr18;
+  @Uint32()
+  external int _cStr19;
+  @Uint32()
+  external int _cStr20;
+  @Uint32()
+  external int _cStr21;
+  @Uint32()
+  external int _cStr22;
+  @Uint32()
+  external int _cStr23;
+  @Uint32()
+  external int _cStr24;
+  @Uint32()
+  external int _cStr25;
+  @Uint32()
+  external int _cStr26;
+  @Uint32()
+  external int _cStr27;
+  @Uint32()
+  external int _cStr28;
+  @Uint32()
+  external int _cStr29;
+  @Uint32()
+  external int _cStr30;
+  @Uint32()
+  external int _cStr31;
+  @Uint32()
+  external int _cStr32;
+  @Uint32()
+  external int _cStr33;
+  @Uint32()
+  external int _cStr34;
+  @Uint32()
+  external int _cStr35;
+  @Uint32()
+  external int _cStr36;
+  @Uint32()
+  external int _cStr37;
+  @Uint32()
+  external int _cStr38;
+  @Uint32()
+  external int _cStr39;
+  @Uint32()
+  external int _cStr40;
+  @Uint32()
+  external int _cStr41;
+  @Uint32()
+  external int _cStr42;
+  @Uint32()
+  external int _cStr43;
+  @Uint32()
+  external int _cStr44;
+  @Uint32()
+  external int _cStr45;
+  @Uint32()
+  external int _cStr46;
+  @Uint32()
+  external int _cStr47;
+  @Uint32()
+  external int _cStr48;
+  @Uint32()
+  external int _cStr49;
+  @Uint32()
+  external int _cStr50;
+  @Uint32()
+  external int _cStr51;
+  @Uint32()
+  external int _cStr52;
+  @Uint32()
+  external int _cStr53;
+  @Uint32()
+  external int _cStr54;
+  @Uint32()
+  external int _cStr55;
+  @Uint32()
+  external int _cStr56;
+  @Uint32()
+  external int _cStr57;
+  @Uint32()
+  external int _cStr58;
+  @Uint32()
+  external int _cStr59;
+  @Uint32()
+  external int _cStr60;
+  @Uint32()
+  external int _cStr61;
+  @Uint32()
+  external int _cStr62;
+  @Uint32()
+  external int _cStr63;
+  @Uint32()
+  external int _cStr64;
+
+  String get cStr => String.fromCharCodes(Uint32List.fromList([
+        _cStr0, _cStr1, _cStr2, _cStr3, //
+        _cStr4, _cStr5, _cStr6, _cStr7,
+        _cStr8, _cStr9, _cStr10, _cStr11,
+        _cStr12, _cStr13, _cStr14, _cStr15,
+        _cStr16, _cStr17, _cStr18, _cStr19,
+        _cStr20, _cStr21, _cStr22, _cStr23,
+        _cStr24, _cStr25, _cStr26, _cStr27,
+        _cStr28, _cStr29, _cStr30, _cStr31,
+        _cStr32, _cStr33, _cStr34, _cStr35,
+        _cStr36, _cStr37, _cStr38, _cStr39,
+        _cStr40, _cStr41, _cStr42, _cStr43,
+        _cStr44, _cStr45, _cStr46, _cStr47,
+        _cStr48, _cStr49, _cStr50, _cStr51,
+        _cStr52, _cStr53, _cStr54, _cStr55,
+        _cStr56, _cStr57, _cStr58, _cStr59,
+        _cStr60, _cStr61, _cStr62, _cStr63,
+        _cStr64
+      ]).buffer.asUint16List());
+}
+
 // typedef struct tagOFNW {
 //    DWORD        lStructSize;
 //    HWND         hwndOwner;
@@ -1540,7 +1738,7 @@ class INPUT extends Struct {
   external int _data4;
 }
 
-extension Pointer_INPUT_Extension on Pointer<INPUT> {
+extension PointerINPUTExtension on Pointer<INPUT> {
   // Location adjusts for padding on 32-bit or 64-bit
   MOUSEINPUT get mi =>
       MOUSEINPUT(cast<Uint8>().elementAt(sizeOf<IntPtr>()).cast());
@@ -2923,7 +3121,7 @@ class BLUETOOTH_AUTHENTICATION_CALLBACK_PARAMS extends Struct {
 //   SYSTEMTIME        stLastSeen;
 //   SYSTEMTIME        stLastUsed;
 //   WCHAR             szName[BLUETOOTH_MAX_NAME_SIZE];
-// } BLUETOOTH_DEVICE_INFO_STRUCT;
+// } BLUETOOTH_DEVICE_INFO;
 
 /// The BLUETOOTH_DEVICE_INFO structure provides information about a Bluetooth
 /// device.
@@ -3143,7 +3341,7 @@ class BLUETOOTH_FIND_RADIO_PARAMS extends Struct {
 //     BTH_ADDR ullLong;
 //     BYTE     rgBytes[6];
 //   };
-// } BLUETOOTH_ADDRESS_STRUCT;
+// } BLUETOOTH_ADDRESS;
 
 /// The BLUETOOTH_ADDRESS structure provides the address of a Bluetooth device.
 ///

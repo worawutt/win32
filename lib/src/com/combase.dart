@@ -31,31 +31,37 @@ class COMObject extends Struct {
 ///
 /// {@category com}
 Pointer<GUID> convertToIID(String strIID) {
-  final lpszIID = TEXT(strIID);
+  final lpszIID = strIID.toNativeUtf16();
   final iid = calloc<GUID>();
 
-  final hr = IIDFromString(lpszIID, iid);
-  if (FAILED(hr)) {
-    throw WindowsException(hr);
+  try {
+    final hr = IIDFromString(lpszIID, iid);
+    if (FAILED(hr)) {
+      throw WindowsException(hr);
+    }
+    return iid;
+  } finally {
+    free(lpszIID);
   }
-  calloc.free(lpszIID);
-  return iid;
 }
 
 /// Converts a Dart string into an CLSID using the [CLSIDFromString] call.
 ///
 /// Returns a Pointer to the allocated CLSID. It is the caller's responsibility
-/// to deallocate the pointer when they are finished with it
+/// to deallocate the pointer when they are finished with it.
 ///
 /// {@category com}
 Pointer<GUID> convertToCLSID(String strCLSID) {
-  final lpszCLSID = TEXT(strCLSID);
+  final lpszCLSID = strCLSID.toNativeUtf16();
   final clsid = calloc<GUID>();
 
-  final hr = CLSIDFromString(lpszCLSID, clsid);
-  if (FAILED(hr)) {
-    throw WindowsException(hr);
+  try {
+    final hr = CLSIDFromString(lpszCLSID, clsid);
+    if (FAILED(hr)) {
+      throw WindowsException(hr);
+    }
+    return clsid;
+  } finally {
+    free(lpszCLSID);
   }
-  calloc.free(lpszCLSID);
-  return clsid;
 }

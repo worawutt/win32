@@ -10,8 +10,8 @@ import 'package:ffi/ffi.dart';
 
 import 'constants.dart';
 import 'extensions/int_to_hexstring.dart';
-import 'extensions/unpack_utf16.dart';
 import 'kernel32.dart';
+import 'utils.dart';
 
 /// Generic COM Exception
 class COMException implements Exception {
@@ -50,7 +50,7 @@ class WindowsException extends COMException {
         // Failed to get error string
         errorMessage = '';
       } else {
-        errorMessage = buffer.unpackString(result);
+        errorMessage = buffer.toDartString();
       }
 
       // Strip off CRLF in the returned error message, if it exists
@@ -60,7 +60,7 @@ class WindowsException extends COMException {
 
       return errorMessage;
     } finally {
-      calloc.free(buffer);
+      free(buffer);
     }
   }
 
