@@ -41,6 +41,7 @@ void main() {
   }
 
   final pDisp = IDispatch(inst.cast());
+  print('IDispatch.ptr == ${pDisp.ptr.address.toHexString(64)}');
   print('calling GetTypeInfoCount');
   final typeInfoCount = calloc<Uint32>();
   hr = pDisp.GetTypeInfoCount(typeInfoCount);
@@ -51,46 +52,50 @@ void main() {
     throw WindowsException(hr);
   }
 
-  final ppTypeInfo = calloc<COMObject>();
+  print('calling GetTypeInfo');
+  final ppTypeInfo = calloc<Pointer>();
   hr = pDisp.GetTypeInfo(0, 0, ppTypeInfo.cast());
   if (FAILED(hr)) {
     print('Failed at IDispatch::GetTypeInfo.');
     throw WindowsException(hr);
   }
 
-  final ppTypeAttr = calloc<IntPtr>();
-  final pTypeInfo = ITypeInfo(ppTypeInfo.cast());
-  hr = pTypeInfo.GetTypeAttr(ppTypeAttr.cast());
-  if (FAILED(hr)) {
-    print('Failed at ITypeInfo::GetTypeAttr.');
-    throw WindowsException(hr);
-  }
-  const CP_ACP = 0;
+  // Crashes out
+  //
+  // print('calling GetTypeAttr');
+  // final ppTypeAttr = calloc<Pointer<TYPEATTR>>();
+  // final pTypeInfo = ITypeInfo(ppTypeInfo.value.cast());
+  // print('ITypeInfo.ptr == ${pTypeInfo.ptr.address.toHexString(64)}');
+  // hr = pTypeInfo.GetTypeAttr(ppTypeAttr);
+  // if (FAILED(hr)) {
+  //   print('Failed at ITypeInfo::GetTypeAttr.');
+  //   throw WindowsException(hr);
+  // }
+
   final ptName = TEXT('Version\x00');
-  final szName = calloc<Uint8>(256).cast<Utf8>();
-  WideCharToMultiByte(CP_ACP, 0, ptName, -1, szName, 256, nullptr, nullptr);
   final iidNull = calloc<GUID>();
   print(iidNull.ref.toString());
 
-  // final dispid = calloc<Int32>(65535);
-  // print('calling GetIDsOfNames');
-  // hr = pDisp.GetIDsOfNames(iidNull, ptName, 1, LOCALE_USER_DEFAULT, dispid);
-  // if (FAILED(hr)) {
-  //   print('Failed at IDispatch::GetIDsOfNames.');
-  //   throw WindowsException(hr);
-  // }
-  // print('Got ID from Excel');
+  final dispid = calloc<Int32>(65535);
+  print('calling GetIDsOfNames');
+  hr = pDisp.GetIDsOfNames(
+      iidNull, ptName.cast(), 1, LOCALE_USER_DEFAULT, dispid);
+  if (FAILED(hr)) {
+    print('Failed at IDispatch::GetIDsOfNames.');
+    throw WindowsException(hr);
+  } else {
+    print('Got ID from Excel');
+  }
 
-  // final noArgs = calloc<DISPPARAMS>();
-
-  // hr = pDisp.Invoke(dispid.value, iidNull, LOCALE_SYSTEM_DEFAULT,
-  //     DISPATCH_PROPERTYGET, noArgs, nullptr, nullptr, nullptr);
-  // if (FAILED(hr)) {
-  //   print('Failed at IDispatch::Invoke.');
-  //   throw WindowsException(hr);
-  // } else {
-  //   print('Succeeded. And here we are in Dart again.');
-  // }
+  final noArgs = calloc<DISPPARAMS>();
+  hr = pDisp.Invoke(dispid.value, iidNull, LOCALE_SYSTEM_DEFAULT,
+      DISPATCH_PROPERTYGET, noArgs, nullptr, nullptr, nullptr);
+  if (FAILED(hr)) {
+    print('Failed at IDispatch::Invoke.');
+    throw WindowsException(hr);
+  } else {
+    print('Succeeded. And here we are in Dart again.');
+  }
 
   CoUninitialize();
 }
