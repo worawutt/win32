@@ -10,16 +10,16 @@ import 'package:win32/win32.dart';
 const LOCALE_USER_DEFAULT = 0x400;
 const LOCALE_SYSTEM_DEFAULT = 0x0800;
 void main() {
-  var hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+  var hr = OleInitialize(nullptr);
 
   if (FAILED(hr)) {
-    print('Failed at CoInitializeEx.');
+    print('Failed at OleInitialize.');
     throw WindowsException(hr);
   }
 
-  final excelClsId = calloc<GUID>();
-  hr = CLSIDFromProgID(TEXT('Excel.Application'), excelClsId);
-  if (hr != S_OK) {
+  final shellApp = calloc<GUID>();
+  hr = CLSIDFromProgID(TEXT('Shell.Application'), shellApp);
+  if (FAILED(hr)) {
     print('Failed at CLSIDFromProgID.');
     throw WindowsException(hr);
   }
@@ -28,14 +28,10 @@ void main() {
   final iidIDispatch = calloc<GUID>()..ref.setGUID(IID_IDispatch);
 
   hr = CoCreateInstance(
-      excelClsId,
-      nullptr,
-      CLSCTX_LOCAL_SERVER | CLSCTX_INPROC_SERVER | CLSCTX_REMOTE_SERVER,
-      iidIDispatch,
-      inst.cast());
+      shellApp, nullptr, CLSCTX_INPROC_SERVER, iidIDispatch, inst.cast());
   if (FAILED(hr)) {
     print('Failed at CoCreateInstance.');
-    print('CLSID: ${excelClsId.ref.toString()}');
+    print('CLSID: ${shellApp.ref.toString()}');
     print('IID: ${iidIDispatch.ref.toString()}');
     throw WindowsException(hr);
   }
@@ -72,11 +68,12 @@ void main() {
   //   throw WindowsException(hr);
   // }
 
-  final ptName = TEXT('Version\x00');
+  final ptName = 'CascadeWindows\x00'.toNativeUtf16();
+  final ptptName = calloc<Pointer>().value = ptName;
   final iidNull = calloc<GUID>();
   print(iidNull.ref.toString());
 
-  final dispid = calloc<Int32>(65535);
+  final dispid = calloc<Int32>();
   print('calling GetIDsOfNames');
   hr = pDisp.GetIDsOfNames(
       iidNull, ptName.cast(), 1, LOCALE_USER_DEFAULT, dispid);
