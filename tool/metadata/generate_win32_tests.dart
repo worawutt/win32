@@ -78,21 +78,12 @@ void main() {
       final minimumWindowsVersion =
           filteredFunctionList[function]!.minimumWindowsVersion;
 
-      // Temporary, because of
-      // https://github.com/microsoft/win32metadata/issues/296
-      final nativeParams = prototype.nativeParams
-          .replaceAll('BLUETOOTH_ADDRESS_STRUCT', 'BLUETOOTH_ADDRESS')
-          .replaceAll('BLUETOOTH_DEVICE_INFO_STRUCT', 'BLUETOOTH_DEVICE_INFO');
-      final dartParams = prototype.dartParams
-          .replaceAll('BLUETOOTH_ADDRESS_STRUCT', 'BLUETOOTH_ADDRESS')
-          .replaceAll('BLUETOOTH_DEVICE_INFO_STRUCT', 'BLUETOOTH_DEVICE_INFO');
-
       final test = '''
       test('Can instantiate $function', () {
         final $libraryDartName = DynamicLibrary.open('$library${library == 'bthprops' ? '.cpl' : '.dll'}');
         final $function = $libraryDartName.lookupFunction<\n
-          $returnFFIType Function($nativeParams),
-          $returnDartType Function($dartParams)>
+          $returnFFIType Function(${prototype.nativeParams}),
+          $returnDartType Function(${prototype.dartParams})>
           ('${method.methodName}');
         expect($function, isA<Function>());
       });''';
@@ -140,8 +131,7 @@ void main() {
   final is64bitOS = sizeOf<IntPtr>() == 8;
 ''');
 
-  for (final struct
-      in structSize64.keys.where((struct) => !skipStructs.contains(struct))) {
+  for (final struct in structSize64.keys) {
     writer.writeStringSync('''
   test('Struct $struct is the right size', () {
     if (is64bitOS) {

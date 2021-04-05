@@ -6,6 +6,10 @@
 
 // ignore_for_file: camel_case_types
 
+import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
+
 // -----------------------------------------------------------------------------
 // General constants
 // -----------------------------------------------------------------------------
@@ -24,6 +28,12 @@ const STATUS_SUCCESS = 0;
 
 // Path length
 const MAX_PATH = 260;
+
+/// The default locale for the operating system.
+const LOCALE_SYSTEM_DEFAULT = 0x0800;
+
+/// The default locale for the user or process.
+const LOCALE_USER_DEFAULT = 0x0400;
 
 // -----------------------------------------------------------------------------
 // COM Error Codes
@@ -341,6 +351,34 @@ const ERROR_TOO_MANY_SEM_REQUESTS = 103;
 const ERROR_INVALID_AT_INTERRUPT_TIME = 104;
 
 // -----------------------------------------------------------------------------
+// Windows Runtime errors
+// -----------------------------------------------------------------------------
+
+/// Typename or Namespace was not found in metadata file.
+const RO_E_METADATA_NAME_NOT_FOUND = 0x8000000F;
+
+/// Name is an existing namespace rather than a typename.
+const RO_E_METADATA_NAME_IS_NAMESPACE = 0x80000010;
+
+/// Typename has an invalid format.
+const RO_E_METADATA_INVALID_TYPE_FORMAT = 0x80000011;
+
+/// Metadata file is invalid or corrupted.
+const RO_E_INVALID_METADATA_FILE = 0x80000012;
+
+/// The object has been closed.
+const RO_E_CLOSED = 0x80000013;
+
+/// Only one thread may access the object during a write operation.
+const RO_E_EXCLUSIVE_WRITE = 0x80000014;
+
+/// Operation is prohibited during change notification.
+const RO_E_CHANGE_NOTIFICATION_IN_PROGRESS = 0x80000015;
+
+/// The text associated with this error code could not be found.
+const RO_E_ERROR_STRING_NOT_FOUND = 0x80000016;
+
+// -----------------------------------------------------------------------------
 // Process and file access types
 // -----------------------------------------------------------------------------
 
@@ -598,6 +636,18 @@ const FILE_FLAG_OPEN_NO_RECALL = 0x00100000;
 /// creation of the first instance succeeds, but creation of the next instance
 /// fails with ERROR_ACCESS_DENIED.
 const FILE_FLAG_FIRST_PIPE_INSTANCE = 0x00080000;
+
+// -----------------------------------------------------------------------------
+// Handle flags
+// -----------------------------------------------------------------------------
+
+/// If this flag is set, a child process created with the bInheritHandles
+/// parameter of CreateProcess set to TRUE will inherit the object handle.
+const HANDLE_FLAG_INHERIT = 0x00000001;
+
+/// If this flag is set, calling the CloseHandle function will not close the
+/// object handle.
+const HANDLE_FLAG_PROTECT_FROM_CLOSE = 0x00000002;
 
 // -----------------------------------------------------------------------------
 // Get Binary Type flags
@@ -1932,6 +1982,23 @@ const GWL_USERDATA = -21;
 /// attribute if the window does not belong to the same process as the calling
 /// thread.
 const GWL_WNDPROC = -4;
+
+/// Sets a new address for the window procedure.
+const GWLP_WNDPROC = -4;
+
+/// Sets a new application instance handle.
+const GWLP_HINSTANCE = -6;
+
+/// Retrieves a handle to the parent window, if there is one.
+const GWLP_HWNDPARENT = -8;
+
+/// Sets the user data associated with the window. This data is intended for use
+/// by the application that created the window. Its value is initially zero.
+const GWLP_USERDATA = -21;
+
+/// Sets a new identifier of the child window. The window cannot be a top-level
+/// window.
+const GWLP_ID = -12;
 
 // -----------------------------------------------------------------------------
 // Hit testing constants
@@ -4691,6 +4758,12 @@ final E_ACCESSDENIED = 0x80070005.toSigned(32);
 /// The data necessary to complete this operation is not yet available.
 final E_PENDING = 0x8000000A.toSigned(32);
 
+/// typedef short VARIANT_BOOL: -1 == TRUE
+final VARIANT_TRUE = -1;
+
+/// typedef short VARIANT_BOOL: 0 == FALSE
+final VARIANT_FALSE = 0;
+
 /// Specifies the variant types.
 ///
 /// {@category Enum}
@@ -4922,6 +4995,166 @@ class MC_POSITION_TYPE {
 class MC_SIZE_TYPE {
   static const MC_WIDTH = 0;
   static const MC_HEIGHT = 1;
+}
+
+/// Identifies the dots per inch (dpi) setting for a thread, process, or window.
+///
+/// {@category Enum}
+class DPI_AWARENESS {
+  /// Invalid DPI awareness. This is an invalid DPI awareness value.
+  static const DPI_AWARENESS_INVALID = -1;
+
+  /// DPI unaware. This process does not scale for DPI changes and is always
+  /// assumed to have a scale factor of 100% (96 DPI). It will be automatically
+  /// scaled by the system on any other DPI setting.
+  static const DPI_AWARENESS_UNAWARE = 0;
+
+  /// System DPI aware. This process does not scale for DPI changes. It will
+  /// query for the DPI once and use that value for the lifetime of the process.
+  /// If the DPI changes, the process will not adjust to the new DPI value. It
+  /// will be automatically scaled up or down by the system when the DPI changes
+  /// from the system value.
+  static const DPI_AWARENESS_SYSTEM_AWARE = 1;
+
+  /// Per monitor DPI aware. This process checks for the DPI when it is created
+  /// and adjusts the scale factor whenever the DPI changes. These processes are
+  /// not automatically scaled by the system.
+  static const DPI_AWARENESS_PER_MONITOR_AWARE = 2;
+}
+
+/// Identifies the DPI hosting behavior for a window. This behavior allows
+/// windows created in the thread to host child windows with a different
+/// DPI_AWARENESS_CONTEXT.
+///
+/// {@category Enum}
+class DPI_HOSTING_BEHAVIOR {
+  /// Invalid DPI hosting behavior. This usually occurs if the previous
+  /// SetThreadDpiHostingBehavior call used an invalid parameter.
+  static const DPI_HOSTING_BEHAVIOR_INVALID = -1;
+
+  /// Default DPI hosting behavior. The associated window behaves as normal, and
+  /// cannot create or re-parent child windows with a different
+  /// DPI_AWARENESS_CONTEXT.
+  static const DPI_HOSTING_BEHAVIOR_DEFAULT = 0;
+
+  /// Mixed DPI hosting behavior. This enables the creation and re-parenting of
+  /// child windows with different DPI_AWARENESS_CONTEXT. These child windows
+  /// will be independently scaled by the OS.
+  static const DPI_HOSTING_BEHAVIOR_MIXED = 1;
+}
+
+/// Identifies dots per inch (dpi) awareness values. DPI awareness indicates how
+/// much scaling work an application performs for DPI versus how much is done by
+/// the system.
+///
+/// {@category Enum}
+class PROCESS_DPI_AWARENESS {
+  /// DPI unaware. This app does not scale for DPI changes and is always assumed
+  /// to have a scale factor of 100% (96 DPI). It will be automatically scaled
+  /// by the system on any other DPI setting.
+  static const PROCESS_DPI_UNAWARE = 0;
+
+  /// System DPI aware. This app does not scale for DPI changes. It will query
+  /// for the DPI once and use that value for the lifetime of the app. If the
+  /// DPI changes, the app will not adjust to the new DPI value. It will be
+  /// automatically scaled up or down by the system when the DPI changes from
+  /// the system value.
+  static const PROCESS_SYSTEM_DPI_AWARE = 1;
+
+  /// Per monitor DPI aware. This app checks for the DPI when it is created and
+  /// adjusts the scale factor whenever the DPI changes. These applications are
+  /// not automatically scaled by the system.
+  static const PROCESS_PER_MONITOR_DPI_AWARE = 2;
+}
+
+/// Identifies the dots per inch (dpi) setting for a monitor.
+///
+/// {@category Enum}
+class MONITOR_DPI_TYPE {
+  /// The effective DPI. This value should be used when determining the correct
+  /// scale factor for scaling UI elements. This incorporates the scale factor
+  /// set by the user for this specific display.
+  static const MDT_EFFECTIVE_DPI = 0;
+
+  /// The angular DPI. This DPI ensures rendering at a compliant angular
+  /// resolution on the screen. This does not include the scale factor set by
+  /// the user for this specific display.
+  static const MDT_ANGULAR_DPI = 1;
+
+  /// The raw DPI. This value is the linear DPI of the screen as measured on the
+  /// screen itself. Use this value when you want to read the pixel density and
+  /// not the recommended scaling setting. This does not include the scale
+  /// factor set by the user for this specific display and is not guaranteed to
+  /// be a supported DPI value.
+  static const MDT_RAW_DPI = 2;
+
+  /// The default DPI setting for a monitor is MDT_EFFECTIVE_DPI.
+  static const MDT_DEFAULT = MDT_EFFECTIVE_DPI;
+}
+
+// -----------------------------------------------------------------------------
+// Window Display Affinity constants
+// -----------------------------------------------------------------------------
+
+/// Imposes no restrictions on where the window can be displayed.
+const WDA_NONE = 0x00000000;
+
+/// The window content is displayed only on a monitor. Everywhere else, the
+/// window appears with no content.
+const WDA_MONITOR = 0x00000001;
+
+/// The window is displayed only on a monitor. Everywhere else, the window does
+/// not appear at all. One use for this affinity is for windows that show video
+/// recording controls, so that the controls are not included in the capture.
+const WDA_EXCLUDEFROMCAPTURE = 0x00000011;
+
+// -----------------------------------------------------------------------------
+/// High DPI constants & enumerations
+// -----------------------------------------------------------------------------
+
+/// Describes per-monitor DPI scaling behavior overrides for child windows
+/// within dialogs. The values in this enumeration are bitfields and can be
+/// combined.
+///
+/// {@category Enum}
+class DIALOG_CONTROL_DPI_CHANGE_BEHAVIORS {
+  /// The default behavior of the dialog manager. The dialog managed will update
+  /// the font, size, and position of the child window on DPI changes.
+  static const DCDC_DEFAULT = 0x0000;
+
+  /// Prevents the dialog manager from sending an updated font to the child
+  /// window via WM_SETFONT in response to a DPI change.
+  static const DCDC_DISABLE_FONT_UPDATE = 0x0001;
+
+  /// Prevents the dialog manager from resizing and repositioning the child
+  /// window in response to a DPI change.
+  static const DCDC_DISABLE_RELAYOUT = 0x0002;
+}
+
+/// In Per Monitor v2 contexts, dialogs will automatically respond to DPI
+/// changes by resizing themselves and re-computing the positions of their child
+/// windows (here referred to as re-layouting). This enum works in conjunction
+/// with SetDialogDpiChangeBehavior in order to override the default DPI scaling
+/// behavior for dialogs.
+///
+/// {@category Enum}
+class DIALOG_DPI_CHANGE_BEHAVIORS {
+  /// The default behavior of the dialog manager. In response to a DPI change,
+  /// the dialog manager will re-layout each control, update the font on each
+  /// control, resize the dialog, and update the dialog's own font.
+  static const DDC_DEFAULT = 0x0000;
+
+  /// Prevents the dialog manager from responding to WM_GETDPISCALEDSIZE and
+  /// WM_DPICHANGED, disabling all default DPI scaling behavior.
+  static const DDC_DISABLE_ALL = 0x0001;
+
+  /// Prevents the dialog manager from resizing the dialog in response to a DPI
+  /// change.
+  static const DDC_DISABLE_RESIZE = 0x0002;
+
+  /// Prevents the dialog manager from re-layouting all of the dialogue's
+  /// immediate children HWNDs in response to a DPI change.
+  static const DDC_DISABLE_CONTROL_RELAYOUT = 0x0004;
 }
 
 // -----------------------------------------------------------------------------
@@ -5442,6 +5675,87 @@ const IMAGE_CURSOR = 2;
 const IMAGE_ENHMETAFILE = 3;
 
 // -----------------------------------------------------------------------------
+// Stock icons and cursors
+// -----------------------------------------------------------------------------
+
+// In the original header files, these take the form:
+//   #define IDI_APPLICATION     MAKEINTRESOURCE(32512)
+// The MAKEINTRESOURCE() macro creates a pointer to a known memory address. The
+// address itself has no meaning other than as a marker.
+
+/// Default application icon.
+final IDI_APPLICATION = Pointer<Utf16>.fromAddress(32512);
+
+/// Hand-shaped icon. Same as IDI_ERROR.
+final IDI_HAND = Pointer<Utf16>.fromAddress(32513);
+
+/// Question mark icon.
+final IDI_QUESTION = Pointer<Utf16>.fromAddress(32514);
+
+/// Exclamation point icon. Same as IDI_WARNING.
+final IDI_EXCLAMATION = Pointer<Utf16>.fromAddress(32515);
+
+/// Asterisk icon. Same as IDI_INFORMATION.
+final IDI_ASTERISK = Pointer<Utf16>.fromAddress(32516);
+
+/// Windows logo icon.
+final IDI_WINLOGO = Pointer<Utf16>.fromAddress(32517);
+
+/// Security Shield icon.
+final IDI_SHIELD = Pointer<Utf16>.fromAddress(32518);
+
+/// Exclamation point icon.
+final IDI_WARNING = IDI_EXCLAMATION;
+
+/// Hand-shaped icon.
+final IDI_ERROR = IDI_HAND;
+
+/// Asterisk icon.
+final IDI_INFORMATION = IDI_ASTERISK;
+
+/// Standard arrow
+final IDC_ARROW = Pointer<Utf16>.fromAddress(32512);
+
+/// I-beam
+final IDC_IBEAM = Pointer<Utf16>.fromAddress(32513);
+
+/// Hourglass
+final IDC_WAIT = Pointer<Utf16>.fromAddress(32514);
+
+/// Crosshair
+final IDC_CROSS = Pointer<Utf16>.fromAddress(32515);
+
+/// Vertical arrow
+final IDC_UPARROW = Pointer<Utf16>.fromAddress(32516);
+
+/// Double-pointed arrow pointing northwest and southeast
+final IDC_SIZENWSE = Pointer<Utf16>.fromAddress(32642);
+
+/// Double-pointed arrow pointing northeast and southwest
+final IDC_SIZENESW = Pointer<Utf16>.fromAddress(32643);
+
+/// Double-pointed arrow pointing west and east
+final IDC_SIZEWE = Pointer<Utf16>.fromAddress(32644);
+
+/// Double-pointed arrow pointing north and south
+final IDC_SIZENS = Pointer<Utf16>.fromAddress(32645);
+
+/// Four-pointed arrow pointing north, south, east, and west
+final IDC_SIZEALL = Pointer<Utf16>.fromAddress(32646);
+
+/// Slashed circle
+final IDC_NO = Pointer<Utf16>.fromAddress(32648);
+
+/// Hand
+final IDC_HAND = Pointer<Utf16>.fromAddress(32649);
+
+/// Standard arrow and small hourglass
+final IDC_APPSTARTING = Pointer<Utf16>.fromAddress(32650);
+
+/// Arrow and question mark
+final IDC_HELP = Pointer<Utf16>.fromAddress(32651);
+
+// -----------------------------------------------------------------------------
 // LoadImage fuLoad constants
 // -----------------------------------------------------------------------------
 
@@ -5537,4 +5851,34 @@ class CORRECTIVE_ACTION {
 
   /// The user should be prompted to delete the indicated erroneous text.
   static const DELETE = 3;
+}
+
+// -----------------------------------------------------------------------------
+// IApplicationActivationManager constants
+// -----------------------------------------------------------------------------
+
+/// Flags used to support design mode, debugging, and testing scenarios.
+class ACTIVATEOPTIONS {
+  /// No flags are set.
+  static const AO_NONE = 0;
+
+  /// The app is being activated for design mode, so it can't create its normal
+  /// window. The creation of the app's window must be done by design tools that
+  /// load the necessary components by communicating with a designer-specified
+  /// service on the site chain established through the activation manager. Note
+  /// that this means that the splash screen seen during regular activations
+  /// won't be seen.
+  static const AO_DESIGNMODE = 0x1;
+
+  /// Do not display an error dialog if the app fails to activate.
+  static const AO_NOERRORUI = 0x2;
+
+  /// Do not display the app's splash screen when the app is activated. You must
+  /// enable debug mode on the app's package when you use this flag; otherwise,
+  /// the PLM will terminate the app after a few seconds.
+  static const AO_NOSPLASHSCREEN = 0x4;
+
+  /// The application is being activated in prelaunch mode. This value is
+  /// supported starting in Windows 10.
+  static const AO_PRELAUNCH = 0x2000000;
 }
