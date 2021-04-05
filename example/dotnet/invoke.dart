@@ -3,12 +3,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
-// const CLSID_Example = '{6afe06b4-fa44-4ad8-b357-0cbfa7875137}';
-// const CLSID_Example = '{40A9DD52-84CD-4018-9A03-62DB6B9B5DE2}';
-// const CLSID_Example = '{40A9DD52-84CD-4018-9A03-62DB6B9B5DE2}';
-// const CLSID_Example = '{F79383CD-6FD8-4B64-ADED-B1762BD7CD1A}';
-const LOCALE_USER_DEFAULT = 0x400;
-const LOCALE_SYSTEM_DEFAULT = 0x0800;
+// TODO: Tidy up this sample
 void main() {
   var hr = OleInitialize(nullptr);
 
@@ -56,20 +51,18 @@ void main() {
     throw WindowsException(hr);
   }
 
-  // Crashes out
-  //
-  // print('calling GetTypeAttr');
-  // final ppTypeAttr = calloc<Pointer<TYPEATTR>>();
-  // final pTypeInfo = ITypeInfo(ppTypeInfo.value.cast());
-  // print('ITypeInfo.ptr == ${pTypeInfo.ptr.address.toHexString(64)}');
-  // hr = pTypeInfo.GetTypeAttr(ppTypeAttr);
-  // if (FAILED(hr)) {
-  //   print('Failed at ITypeInfo::GetTypeAttr.');
-  //   throw WindowsException(hr);
-  // }
+  print('calling GetTypeAttr');
+  final ppTypeAttr = calloc<Pointer<TYPEATTR>>();
+  final pTypeInfo = ITypeInfo(ppTypeInfo.cast());
+  print('ITypeInfo.ptr == ${pTypeInfo.ptr.address.toHexString(64)}');
+  hr = pTypeInfo.GetTypeAttr(ppTypeAttr);
+  if (FAILED(hr)) {
+    print('Failed at ITypeInfo::GetTypeAttr.');
+    throw WindowsException(hr);
+  }
 
-  final ptName = 'CascadeWindows\x00'.toNativeUtf16();
-  final ptptName = calloc<Pointer>().value = ptName;
+  final ptNameFunc = 'MinimizeAll'.toNativeUtf16();
+  final ptName = calloc<Pointer<Utf16>>()..value = ptNameFunc;
   final iidNull = calloc<GUID>();
   print(iidNull.ref.toString());
 
@@ -81,12 +74,12 @@ void main() {
     print('Failed at IDispatch::GetIDsOfNames.');
     throw WindowsException(hr);
   } else {
-    print('Got ID from Excel');
+    print('Got ID from ${dispid.value}.');
   }
 
   final noArgs = calloc<DISPPARAMS>();
   hr = pDisp.Invoke(dispid.value, iidNull, LOCALE_SYSTEM_DEFAULT,
-      DISPATCH_PROPERTYGET, noArgs, nullptr, nullptr, nullptr);
+      DISPATCH_METHOD, noArgs, nullptr, nullptr, nullptr);
   if (FAILED(hr)) {
     print('Failed at IDispatch::Invoke.');
     throw WindowsException(hr);
@@ -94,5 +87,5 @@ void main() {
     print('Succeeded. And here we are in Dart again.');
   }
 
-  CoUninitialize();
+  OleUninitialize();
 }
