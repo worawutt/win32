@@ -27,7 +27,9 @@ final typesToGenerate = [
   'Windows.Storage.Pickers.IFileOpenPicker',
   'Windows.Storage.IUserDataPathsStatics',
   'Windows.Gaming.Input.IGamepadStatics',
-  // 'Windows.Gaming.Input.IGamepadStatics2'
+  'Windows.Storage.IStorageItem',
+  'Windows.Storage.IApplicationDataStatics',
+  'Windows.Storage.IApplicationData',
 ];
 
 void main(List<String> args) {
