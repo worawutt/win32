@@ -457,6 +457,11 @@
         "dllLibrary": "ole32",
         "comment": "Registers security and sets the default security values for the process."
     },
+    "CommandLineToArgvW": {
+        "prototype": "LPWSTR * CommandLineToArgvW(\n  LPCWSTR lpCmdLine,\n  int     *pNumArgs\n);",
+        "dllLibrary": "shell32",
+        "comment": "Retrieves the command-line string for the current process."
+    },
     "CompareObjectHandles": {
         "prototype": "BOOL CompareObjectHandles(\n  HANDLE hFirstObjectHandle,\n  HANDLE hSecondObjectHandle\n);",
         "dllLibrary": "kernelbase",
@@ -1228,6 +1233,11 @@
         "dllLibrary": "user32",
         "comment": "Retrieves the screen coordinates of the rectangular area to which the cursor is confined."
     },
+    "GetCommandLine": {
+        "prototype": "LPWSTR GetCommandLineW();",
+        "dllLibrary": "kernel32",
+        "comment": "Parses a Unicode command line string and returns an array of pointers to the command line arguments, along with a count of such arguments, in a way that is similar to the standard C run-time argv and argc values."
+    },
     "GetComputerName": {
         "prototype": "BOOL GetComputerNameW(\n  LPWSTR  lpBuffer,\n  LPDWORD nSize\n);",
         "dllLibrary": "kernel32",
@@ -1787,6 +1797,11 @@
         "dllLibrary": "kernel32",
         "comment": "Returns the number of active heaps and retrieves handles to all of the active heaps for the calling process."
     },
+    "GetProcessId": {
+        "prototype": "DWORD GetProcessId(\n  HANDLE Process\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves the process identifier of the specified process."
+    },
     "GetProcessWindowStation": {
         "prototype": "HWINSTA GetProcessWindowStation();",
         "dllLibrary": "user32",
@@ -1826,6 +1841,11 @@
         "prototype": "HWND GetShellWindow();",
         "dllLibrary": "user32",
         "comment": "Retrieves a handle to the Shell's desktop window."
+    },
+    "GetStartupInfo": {
+        "prototype": "void GetStartupInfoW(\n  LPSTARTUPINFOW lpStartupInfo\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves the contents of the STARTUPINFO structure that was specified when the calling process was created."
     },
     "GetStdHandle": {
         "prototype": "HANDLE WINAPI GetStdHandle(\n  _In_ DWORD nStdHandle\n);",
@@ -1904,6 +1924,11 @@
         "dllLibrary": "kernel32",
         "comment": "Retrieves the current local date and time."
     },
+    "GetSystemTimes": {
+        "prototype": "BOOL GetSystemTimes(\n  PFILETIME lpIdleTime,\n  PFILETIME lpKernelTime,\n  PFILETIME lpUserTime\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves system timing information. On a multiprocessor system, the values returned are the sum of the designated times across all processors."
+    },
     "GetTabbedTextExtent": {
         "prototype": "DWORD GetTabbedTextExtentW(\n  HDC       hdc,\n  LPCWSTR   lpString,\n  int       chCount,\n  int       nTabPositions,\n  const INT *lpnTabStopPositions\n);",
         "dllLibrary": "user32",
@@ -1936,10 +1961,20 @@
         "comment": "Retrieves the DPI_HOSTING_BEHAVIOR from the current thread.",
         "minimumWindowsVersion": "WIN10_RS4"
     },
+    "GetThreadId": {
+        "prototype": "DWORD GetThreadId(\n  HANDLE Thread\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves the thread identifier of the specified thread."
+    },
     "GetThreadLocale": {
         "prototype": "LCID GetThreadLocale();",
         "dllLibrary": "kernel32",
         "comment": "Returns the locale identifier of the current locale for the calling thread."
+    },
+    "GetThreadTimes": {
+        "prototype": "BOOL GetThreadTimes(\n  HANDLE     hThread,\n  LPFILETIME lpCreationTime,\n  LPFILETIME lpExitTime,\n  LPFILETIME lpKernelTime,\n  LPFILETIME lpUserTime\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Retrieves timing information for the specified thread."
     },
     "GetThreadUILanguage": {
         "prototype": "LANGID GetThreadUILanguage();",
@@ -2429,6 +2464,11 @@
         "prototype": "int LoadStringW(\n  HINSTANCE hInstance,\n  UINT      uID,\n  LPWSTR    lpBuffer,\n  int       cchBufferMax\n);",
         "dllLibrary": "user32",
         "comment": "Loads a string resource from the executable file associated with a specified module and either copies the string into a buffer with a terminating null character or returns a read-only pointer to the string resource itself."
+    },
+    "LocalFree": {
+        "prototype": "HLOCAL LocalFree(\n  _Frees_ptr_opt_ HLOCAL hMem\n);",
+        "dllLibrary": "kernel32",
+        "comment": "Frees the specified local memory object and invalidates its handle."
     },
     "LockResource": {
         "prototype": "LPVOID LockResource(\n  HGLOBAL hResData\n);",

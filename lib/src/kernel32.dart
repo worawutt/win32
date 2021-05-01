@@ -1302,6 +1302,20 @@ int GetBinaryType(
   return _GetBinaryType(lpApplicationName, lpBinaryType);
 }
 
+/// Parses a Unicode command line string and returns an array of pointers
+/// to the command line arguments, along with a count of such arguments, in
+/// a way that is similar to the standard C run-time argv and argc values.
+///
+/// ```c
+/// LPWSTR GetCommandLineW();
+/// ```
+/// {@category kernel32}
+Pointer<Utf16> GetCommandLine() {
+  final _GetCommandLine = _kernel32.lookupFunction<Pointer<Utf16> Function(),
+      Pointer<Utf16> Function()>('GetCommandLineW');
+  return _GetCommandLine();
+}
+
 /// Retrieves the NetBIOS name of the local computer. This name is
 /// established at system startup, when the system reads it from the
 /// registry.
@@ -1905,6 +1919,21 @@ int GetProcessHeaps(int NumberOfHeaps, Pointer<IntPtr> ProcessHeaps) {
   return _GetProcessHeaps(NumberOfHeaps, ProcessHeaps);
 }
 
+/// Retrieves the process identifier of the specified process.
+///
+/// ```c
+/// DWORD GetProcessId(
+///   HANDLE Process
+/// );
+/// ```
+/// {@category kernel32}
+int GetProcessId(int Process) {
+  final _GetProcessId = _kernel32.lookupFunction<
+      Uint32 Function(IntPtr Process),
+      int Function(int Process)>('GetProcessId');
+  return _GetProcessId(Process);
+}
+
 /// Retrieves the minimum and maximum working set sizes of the specified
 /// process.
 ///
@@ -1964,6 +1993,22 @@ int GetProductInfo(
           Pointer<Uint32> pdwReturnedProductType)>('GetProductInfo');
   return _GetProductInfo(dwOSMajorVersion, dwOSMinorVersion, dwSpMajorVersion,
       dwSpMinorVersion, pdwReturnedProductType);
+}
+
+/// Retrieves the contents of the STARTUPINFO structure that was specified
+/// when the calling process was created.
+///
+/// ```c
+/// void GetStartupInfoW(
+///   LPSTARTUPINFOW lpStartupInfo
+/// );
+/// ```
+/// {@category kernel32}
+void GetStartupInfo(Pointer<STARTUPINFO> lpStartupInfo) {
+  final _GetStartupInfo = _kernel32.lookupFunction<
+      Void Function(Pointer<STARTUPINFO> lpStartupInfo),
+      void Function(Pointer<STARTUPINFO> lpStartupInfo)>('GetStartupInfoW');
+  return _GetStartupInfo(lpStartupInfo);
 }
 
 /// Retrieves a handle to the specified standard device (standard input,
@@ -2080,6 +2125,28 @@ void GetSystemTime(Pointer<SYSTEMTIME> lpSystemTime) {
   return _GetSystemTime(lpSystemTime);
 }
 
+/// Retrieves system timing information. On a multiprocessor system, the
+/// values returned are the sum of the designated times across all
+/// processors.
+///
+/// ```c
+/// BOOL GetSystemTimes(
+///   PFILETIME lpIdleTime,
+///   PFILETIME lpKernelTime,
+///   PFILETIME lpUserTime
+/// );
+/// ```
+/// {@category kernel32}
+int GetSystemTimes(Pointer<FILETIME> lpIdleTime, Pointer<FILETIME> lpKernelTime,
+    Pointer<FILETIME> lpUserTime) {
+  final _GetSystemTimes = _kernel32.lookupFunction<
+      Int32 Function(Pointer<FILETIME> lpIdleTime,
+          Pointer<FILETIME> lpKernelTime, Pointer<FILETIME> lpUserTime),
+      int Function(Pointer<FILETIME> lpIdleTime, Pointer<FILETIME> lpKernelTime,
+          Pointer<FILETIME> lpUserTime)>('GetSystemTimes');
+  return _GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime);
+}
+
 /// Retrieves the path of the directory designated for temporary files.
 ///
 /// ```c
@@ -2096,6 +2163,20 @@ int GetTempPath(int nBufferLength, Pointer<Utf16> lpBuffer) {
   return _GetTempPath(nBufferLength, lpBuffer);
 }
 
+/// Retrieves the thread identifier of the specified thread.
+///
+/// ```c
+/// DWORD GetThreadId(
+///   HANDLE Thread
+/// );
+/// ```
+/// {@category kernel32}
+int GetThreadId(int Thread) {
+  final _GetThreadId = _kernel32.lookupFunction<Uint32 Function(IntPtr Thread),
+      int Function(int Thread)>('GetThreadId');
+  return _GetThreadId(Thread);
+}
+
 /// Returns the locale identifier of the current locale for the calling
 /// thread.
 ///
@@ -2107,6 +2188,41 @@ int GetThreadLocale() {
   final _GetThreadLocale = _kernel32
       .lookupFunction<Uint32 Function(), int Function()>('GetThreadLocale');
   return _GetThreadLocale();
+}
+
+/// Retrieves timing information for the specified thread.
+///
+/// ```c
+/// BOOL GetThreadTimes(
+///   HANDLE     hThread,
+///   LPFILETIME lpCreationTime,
+///   LPFILETIME lpExitTime,
+///   LPFILETIME lpKernelTime,
+///   LPFILETIME lpUserTime
+/// );
+/// ```
+/// {@category kernel32}
+int GetThreadTimes(
+    int hThread,
+    Pointer<FILETIME> lpCreationTime,
+    Pointer<FILETIME> lpExitTime,
+    Pointer<FILETIME> lpKernelTime,
+    Pointer<FILETIME> lpUserTime) {
+  final _GetThreadTimes = _kernel32.lookupFunction<
+      Int32 Function(
+          IntPtr hThread,
+          Pointer<FILETIME> lpCreationTime,
+          Pointer<FILETIME> lpExitTime,
+          Pointer<FILETIME> lpKernelTime,
+          Pointer<FILETIME> lpUserTime),
+      int Function(
+          int hThread,
+          Pointer<FILETIME> lpCreationTime,
+          Pointer<FILETIME> lpExitTime,
+          Pointer<FILETIME> lpKernelTime,
+          Pointer<FILETIME> lpUserTime)>('GetThreadTimes');
+  return _GetThreadTimes(
+      hThread, lpCreationTime, lpExitTime, lpKernelTime, lpUserTime);
 }
 
 /// Returns the language identifier of the first user interface language
@@ -2688,6 +2804,20 @@ int LoadResource(int hModule, int hResInfo) {
       IntPtr Function(IntPtr hModule, IntPtr hResInfo),
       int Function(int hModule, int hResInfo)>('LoadResource');
   return _LoadResource(hModule, hResInfo);
+}
+
+/// Frees the specified local memory object and invalidates its handle.
+///
+/// ```c
+/// HLOCAL LocalFree(
+///   _Frees_ptr_opt_ HLOCAL hMem
+/// );
+/// ```
+/// {@category kernel32}
+int LocalFree(int hMem) {
+  final _LocalFree = _kernel32.lookupFunction<IntPtr Function(IntPtr hMem),
+      int Function(int hMem)>('LocalFree');
+  return _LocalFree(hMem);
 }
 
 /// Retrieves a pointer to the specified resource in memory.
