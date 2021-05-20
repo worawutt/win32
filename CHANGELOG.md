@@ -1,4 +1,8 @@
-## 2.1.0-pre.0
+## 2.1.1
+
+- Work around FFI regression in Dart master and dev builds.
+
+## 2.1.0
 
 - Upgrade to Dart 2.13, which supports packed structs and arrays in FFI. This
   enables support for more automated generation of structs, which in turn
