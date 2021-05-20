@@ -75,12 +75,12 @@ void main() {
     // Uninitialize WinRT now that we're done with it.
     RoUninitialize();
   } finally {
+    WindowsDeleteString(hNationalSignificantNumber.value);
+    WindowsDeleteString(hRegionCode.value);
     free(activationFactory);
     free(phoneNumberInfoObject);
     free(phoneNumber);
     free(hClassName);
-    WindowsDeleteString(hNationalSignificantNumber.value);
-    WindowsDeleteString(hRegionCode.value);
     free(hNationalSignificantNumber);
     free(hRegionCode);
     print('All done!');
