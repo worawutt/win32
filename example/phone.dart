@@ -38,10 +38,11 @@ void main() {
   final hClassName = convertToHString(
     'Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo',
   );
-  final pIID = calloc<GUID>()..ref.setGUID(IID_IPhoneNumberInfoStatics);
-  final result = calloc<Uint32>();
+  final pIID = calloc<GUID>()..ref.setGUID(IID_IPhoneNumberInfoFactory);
+  final hRegionCode = calloc<HSTRING>();
+  final hNationalSignificantNumber = calloc<HSTRING>();
 
-  final phoneNumber = convertToHString('+441480123456');
+  final phoneNumber = convertToHString('+14252085555');
 
   try {
     // Initialize WinRT
@@ -50,19 +51,26 @@ void main() {
 
     hr = RoGetActivationFactory(
         hClassName.value, pIID, activationFactory.cast());
-    final phoneNumberInfoStatics = IPhoneNumberInfoStatics(activationFactory);
+    final phoneNumberInfoStatics = IPhoneNumberInfoFactory(activationFactory);
 
-    hr = phoneNumberInfoStatics.TryParse(
-        phoneNumber.value, phoneNumberInfoObject.cast(), result);
+    hr = phoneNumberInfoStatics.Create(
+        phoneNumber.value, phoneNumberInfoObject.cast());
     if (FAILED(hr)) throw WindowsException(hr);
 
     final phoneNumberInfo = IPhoneNumberInfo(phoneNumberInfoObject);
     final hstrPhoneNumber = phoneNumberInfo.PhoneNumber;
-    print('here');
     final p = calloc<HSTRING>()..value = hstrPhoneNumber;
     final parsedPhoneNumber = convertFromHString(p);
-    print('Parsed number: $parsedPhoneNumber');
+    print('Phone number: $parsedPhoneNumber');
     print('Country code: ${phoneNumberInfo.CountryCode}');
+
+    hr = phoneNumberInfo.GetGeographicRegionCode(hRegionCode);
+    print('Region code: ${convertFromHString(hRegionCode)}');
+
+    hr = phoneNumberInfo.GetNationalSignificantNumber(
+        hNationalSignificantNumber);
+    print(
+        'National Significant Number: ${convertFromHString(hNationalSignificantNumber)}');
 
     // Uninitialize WinRT now that we're done with it.
     RoUninitialize();
@@ -71,6 +79,10 @@ void main() {
     free(phoneNumberInfoObject);
     free(phoneNumber);
     free(hClassName);
+    WindowsDeleteString(hNationalSignificantNumber.value);
+    WindowsDeleteString(hRegionCode.value);
+    free(hNationalSignificantNumber);
+    free(hRegionCode);
+    print('All done!');
   }
-  print('All done!');
 }
