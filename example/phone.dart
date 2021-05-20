@@ -33,41 +33,44 @@ import 'package:win32/win32.dart';
 void main() {
   int hr;
 
+  final activationFactory = calloc<COMObject>();
   final phoneNumberInfoObject = calloc<COMObject>();
-  final factoryCreatedObject = calloc<COMObject>();
-  final activatableClass = convertToHString(
+  final hClassName = convertToHString(
     'Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo',
   );
-  final szIID = IID_IPhoneNumberInfoFactory.toNativeUtf16();
-  final iid = calloc<GUID>();
-  final phoneNumber = convertToHString('+14252085555');
+  final pIID = calloc<GUID>()..ref.setGUID(IID_IPhoneNumberInfoStatics);
+  final result = calloc<Uint32>();
+
+  final phoneNumber = convertToHString('+441480123456');
 
   try {
     // Initialize WinRT
     hr = RoInitialize(RO_INIT_TYPE.RO_INIT_SINGLETHREADED);
     if (FAILED(hr)) throw WindowsException(hr);
 
-    hr = IIDFromString(szIID, iid);
     hr = RoGetActivationFactory(
-        activatableClass.value, iid, phoneNumberInfoObject.cast());
-    final phoneNumberInfoFactory =
-        IPhoneNumberInfoFactory(phoneNumberInfoObject);
+        hClassName.value, pIID, activationFactory.cast());
+    final phoneNumberInfoStatics = IPhoneNumberInfoStatics(activationFactory);
 
-    phoneNumberInfoFactory.Create(
-        phoneNumber.value, factoryCreatedObject.cast());
+    hr = phoneNumberInfoStatics.TryParse(
+        phoneNumber.value, phoneNumberInfoObject.cast(), result);
+    if (FAILED(hr)) throw WindowsException(hr);
 
-    final phoneNumberInfo = IPhoneNumberInfo(factoryCreatedObject);
+    final phoneNumberInfo = IPhoneNumberInfo(phoneNumberInfoObject);
     final hstrPhoneNumber = phoneNumberInfo.PhoneNumber;
     print('here');
-    final parsedPhoneNumber =
-        convertFromHString(Pointer<IntPtr>.fromAddress(hstrPhoneNumber));
-    print(parsedPhoneNumber);
+    final p = calloc<HSTRING>()..value = hstrPhoneNumber;
+    final parsedPhoneNumber = convertFromHString(p);
+    print('Parsed number: $parsedPhoneNumber');
+    print('Country code: ${phoneNumberInfo.CountryCode}');
 
     // Uninitialize WinRT now that we're done with it.
     RoUninitialize();
   } finally {
-    free(factoryCreatedObject);
+    free(activationFactory);
+    free(phoneNumberInfoObject);
     free(phoneNumber);
+    free(hClassName);
   }
   print('All done!');
 }
