@@ -12,7 +12,7 @@ instructive examples for more complex FFI usage scenarios.
 
 By design, this package provides minimal modifications to the Win32 API to
 support Dart idioms. The goal is to provide high familiarity to an existing
-Win32 developer. Other plugins may build on these primitives to provide a
+Win32 developer. Other Dart packages may build on these primitives to provide a
 friendly API for Dart and Flutter developers. A good example of that is
 [filepicker_windows](https://pub.dev/packages/filepicker_windows), which offers
 a common item dialog suitable for incorporation into an existing Flutter app.
@@ -112,10 +112,12 @@ examples use the Win32 API for all UI display and do not require Flutter.
 | `msgbox.dart`      | Demonstrates a MessageBox from the console                |
 | `notepad\`         | Lightweight replica of the Windows notepad applet         |
 | `paint.dart`       | Demonstrates simple GDI drawing and min/max window sizing |
+| `pipe.dart`        | Shows use of named pipes for interprocess communication   |
 | `play_sound.dart`  | Plays a WAV file through the Windows PlaySound API        |
 | `screenshot.dart`  | Takes a screenshot of the current desktop                 |
 | `scroll.dart`      | Example of horizontal and vertical scrolling text window  |
 | `sendinput.dart`   | Sends keyboard and mouse input to another window          |
+| `shortcut.dart`    | Demonstrates creating a Windows shell link.               |
 | `snake.dart`       | Snake game using various GDI features                     |
 | `sysinfo.dart`     | Examples of getting device information from native C APIs |
 | `taskdialog.dart`  | Demonstrates using modern task dialog boxes               |
@@ -142,13 +144,9 @@ tested on Windows-on-ARM architecture, running in x64 emulation mode.
 ## Features and bugs
 
 The current package only projects a subset of the Win32 API, but new APIs will
-be add based on user demand. I'm particularly interested in unblocking plugins
+be added based on user demand. I'm particularly interested in unblocking plugins
 for Windows. Please file feature requests and bugs at the [issue
 tracker][tracker].
-
-**Disclaimer**: This is a hobby project, and should not be viewed as having the
-same level of quality assurance as an official package from the Dart team. I'm a
-product manager having fun on my weekends!
 
 ## Backwards compatibility
 
@@ -173,7 +171,7 @@ package matures, these issues should gradually fade away.
 
 The Tetris example listed above is a fuller worked example of a reasonably
 complete program that uses the Dart Win32 package. It is a port of a C version
-of the game by Chang-Hung Liang. [More information...](tetris/README.md)
+of the game by Chang-Hung Liang. [More information...](example/tetris/README.md)
 
 The [C implementation of Snake](https://github.com/davidejones/winsnake) is by
 David Jones, and is ported with his permission.

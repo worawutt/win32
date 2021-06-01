@@ -156,11 +156,21 @@ ${Win32Prototype(function, method, libraryDartName).dartFfiMapping}
   }
 }
 
-void main() {
+void main(List<String> args) {
+  final options = args.length != 1 ? '--all' : args.last;
+  final optionAPIs =
+      (options != '--tests-only') && (options != '--structs-only');
+  final optionTests =
+      (options != '--apis-only') && (options != '--structs-only');
+  final optionStructs =
+      (options != '--apis-only') && (options != '--tests-only');
+
   final scope = MetadataStore.getWin32Scope();
   final apis = scope.typeDefs.where((type) => type.name.endsWith('Apis'));
 
-  apis.forEach((api) => methods.addAll(api.methods));
+  for (final api in apis) {
+    methods.addAll(api.methods);
+  }
   print('${methods.length} APIs collected');
 
   final win32 = Win32API(
@@ -170,15 +180,23 @@ void main() {
       .where((func) => winmdGenerated.contains(func.dllLibrary))
       .length;
 
-  generateFfiFiles(win32);
-  print('$genCount typedefs generated from Windows metadata.');
+  if (optionAPIs) {
+    generateFfiFiles(win32);
+    print('$genCount typedefs generated from Windows metadata.');
+  }
 
-  final apiTestsGenerated = generateTests(win32);
-  print('$apiTestsGenerated API tests generated.');
+  if (optionTests) {
+    final apiTestsGenerated = generateTests(win32);
+    print('$apiTestsGenerated API tests generated.');
+  }
 
-  final structsGenerated = generateStructs(win32);
-  print('$structsGenerated structs generated from Windows metadata.');
+  if (optionStructs) {
+    final structsGenerated = generateStructs(win32);
+    print('$structsGenerated structs generated from Windows metadata.');
+  }
 
-  final structTestsGenerated = generateStructSizeTests();
-  print('$structTestsGenerated struct tests generated.');
+  if (optionTests) {
+    final structTestsGenerated = generateStructSizeTests();
+    print('$structTestsGenerated struct tests generated.');
+  }
 }

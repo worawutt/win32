@@ -447,6 +447,74 @@ class COMDLG_FILTERSPEC extends Struct {
   external Pointer<Utf16> pszSpec;
 }
 
+/// Contains information about the configuration state of a communications
+/// device.
+///
+/// {@category Struct}
+class COMMCONFIG extends Struct {
+  @Uint32()
+  external int dwSize;
+  @Uint16()
+  external int wVersion;
+  @Uint16()
+  external int wReserved;
+  external DCB dcb;
+  @Uint32()
+  external int dwProviderSubType;
+  @Uint32()
+  external int dwProviderOffset;
+  @Uint32()
+  external int dwProviderSize;
+  @Array(1)
+  external Array<Uint16> _wcProviderData;
+
+  String get wcProviderData {
+    final charCodes = <int>[];
+    for (var i = 0; i < 1; i++) {
+      charCodes.add(_wcProviderData[i]);
+    }
+    return String.fromCharCodes(charCodes);
+  }
+
+  set wcProviderData(String value) {
+    final stringToStore = value.padRight(1, '\x00');
+    for (var i = 0; i < 1; i++) {
+      _wcProviderData[i] = stringToStore.codeUnitAt(i);
+    }
+  }
+}
+
+/// Contains the time-out parameters for a communications device. The
+/// parameters determine the behavior of ReadFile, WriteFile, ReadFileEx,
+/// and WriteFileEx operations on the device.
+///
+/// {@category Struct}
+class COMMTIMEOUTS extends Struct {
+  @Uint32()
+  external int ReadIntervalTimeout;
+  @Uint32()
+  external int ReadTotalTimeoutMultiplier;
+  @Uint32()
+  external int ReadTotalTimeoutConstant;
+  @Uint32()
+  external int WriteTotalTimeoutMultiplier;
+  @Uint32()
+  external int WriteTotalTimeoutConstant;
+}
+
+/// Contains information about a communications device. This structure is
+/// filled by the ClearCommError function.
+///
+/// {@category Struct}
+class COMSTAT extends Struct {
+  @Uint32()
+  external int _bitfield;
+  @Uint32()
+  external int cbInQue;
+  @Uint32()
+  external int cbOutQue;
+}
+
 /// Contains information about the console cursor.
 ///
 /// {@category Struct}
@@ -568,6 +636,42 @@ class CURSORINFO extends Struct {
   @IntPtr()
   external int hCursor;
   external POINT ptScreenPos;
+}
+
+/// Defines the control setting for a serial communications device.
+///
+/// {@category Struct}
+class DCB extends Struct {
+  @Uint32()
+  external int DCBlength;
+  @Uint32()
+  external int BaudRate;
+  @Uint32()
+  external int _bitfield;
+  @Uint16()
+  external int wReserved;
+  @Uint16()
+  external int XonLim;
+  @Uint16()
+  external int XoffLim;
+  @Uint8()
+  external int ByteSize;
+  @Uint8()
+  external int Parity;
+  @Uint8()
+  external int StopBits;
+  @Uint8()
+  external int XonChar;
+  @Uint8()
+  external int XoffChar;
+  @Uint8()
+  external int ErrorChar;
+  @Uint8()
+  external int EofChar;
+  @Uint8()
+  external int EvtChar;
+  @Uint16()
+  external int wReserved1;
 }
 
 /// The DESIGNVECTOR structure is used by an application to specify values
@@ -1460,6 +1564,82 @@ class MINMAXINFO extends Struct {
   external POINT ptMaxTrackSize;
 }
 
+/// Contains information about the capabilities of a modem.
+///
+/// {@category Struct}
+class MODEMDEVCAPS extends Struct {
+  @Uint32()
+  external int dwActualSize;
+  @Uint32()
+  external int dwRequiredSize;
+  @Uint32()
+  external int dwDevSpecificOffset;
+  @Uint32()
+  external int dwDevSpecificSize;
+  @Uint32()
+  external int dwModemProviderVersion;
+  @Uint32()
+  external int dwModemManufacturerOffset;
+  @Uint32()
+  external int dwModemManufacturerSize;
+  @Uint32()
+  external int dwModemModelOffset;
+  @Uint32()
+  external int dwModemModelSize;
+  @Uint32()
+  external int dwModemVersionOffset;
+  @Uint32()
+  external int dwModemVersionSize;
+  @Uint32()
+  external int dwDialOptions;
+  @Uint32()
+  external int dwCallSetupFailTimer;
+  @Uint32()
+  external int dwInactivityTimeout;
+  @Uint32()
+  external int dwSpeakerVolume;
+  @Uint32()
+  external int dwSpeakerMode;
+  @Uint32()
+  external int dwModemOptions;
+  @Uint32()
+  external int dwMaxDTERate;
+  @Uint32()
+  external int dwMaxDCERate;
+  @Array(1)
+  external Array<Uint8> abVariablePortion;
+}
+
+/// Contains information about a modem's configuration.
+///
+/// {@category Struct}
+class MODEMSETTINGS extends Struct {
+  @Uint32()
+  external int dwActualSize;
+  @Uint32()
+  external int dwRequiredSize;
+  @Uint32()
+  external int dwDevSpecificOffset;
+  @Uint32()
+  external int dwDevSpecificSize;
+  @Uint32()
+  external int dwCallSetupFailTimer;
+  @Uint32()
+  external int dwInactivityTimeout;
+  @Uint32()
+  external int dwSpeakerVolume;
+  @Uint32()
+  external int dwSpeakerMode;
+  @Uint32()
+  external int dwPreferredModemOptions;
+  @Uint32()
+  external int dwNegotiatedModemOptions;
+  @Uint32()
+  external int dwNegotiatedDCERate;
+  @Array(1)
+  external Array<Uint8> abVariablePortion;
+}
+
 /// Contains module data.
 ///
 /// {@category Struct}
@@ -2057,6 +2237,30 @@ class SECURITY_DESCRIPTOR extends Struct {
   external Pointer Group;
   external Pointer<ACL> Sacl;
   external Pointer<ACL> Dacl;
+}
+
+/// Defines Shell item resource.
+///
+/// {@category Struct}
+class SHELL_ITEM_RESOURCE extends Struct {
+  external GUID guidType;
+  @Array(260)
+  external Array<Uint16> _szName;
+
+  String get szName {
+    final charCodes = <int>[];
+    for (var i = 0; i < 260; i++) {
+      charCodes.add(_szName[i]);
+    }
+    return String.fromCharCodes(charCodes);
+  }
+
+  set szName(String value) {
+    final stringToStore = value.padRight(260, '\x00');
+    for (var i = 0; i < 260; i++) {
+      _szName[i] = stringToStore.codeUnitAt(i);
+    }
+  }
 }
 
 /// Defines an item identifier.
