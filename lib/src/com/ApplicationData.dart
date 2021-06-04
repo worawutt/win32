@@ -24,19 +24,19 @@ import '../winrt/winrt_helpers.dart';
 
 import 'IApplicationData.dart';
 import 'IApplicationDataStatics.dart';
+import 'IInspectable.dart';
 
 const _className = 'Windows.Storage.ApplicationData';
 
 /// {@category winrt}
-class ApplicationData extends IApplicationData {
+class ApplicationData extends IInspectable {
   ApplicationData(Pointer<COMObject> ptr) : super(ptr);
 
-  static IApplicationData get Current {
+  static ApplicationData get Current {
     final hClassName = convertToHString(_className);
 
-    final pIID = calloc<GUID>()..ref.setGUID(IID_IApplicationDataStatics);
+    final pIID = GUIDFromString(IID_IApplicationDataStatics);
     final activationFactory = calloc<COMObject>();
-    final userDataDefaults = calloc<COMObject>();
 
     try {
       final hr = RoGetActivationFactory(
@@ -49,13 +49,12 @@ class ApplicationData extends IApplicationData {
       if (FAILED(hr)) {
         throw WindowsException(hr);
       }
-      return IApplicationData(current.cast());
+      return ApplicationData(current.cast());
     } finally {
       WindowsDeleteString(hClassName.value);
       free(hClassName);
       free(pIID);
       free(activationFactory);
-      free(userDataDefaults);
     }
   }
 }
