@@ -1,0 +1,145 @@
+// IRunningObjectTable.dart
+
+// THIS FILE IS GENERATED AUTOMATICALLY AND SHOULD NOT BE EDITED DIRECTLY.
+
+// ignore_for_file: unused_import, directives_ordering
+
+import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
+
+import '../../com/IUnknown.dart';
+import '../../combase.dart';
+import '../../constants.dart';
+import '../../exceptions.dart';
+import '../../guid.dart';
+import '../../macros.dart';
+import '../../ole32.dart';
+import '../../structs.dart';
+import '../../utils.dart';
+import '../../specialTypes.dart';
+import '../../system/com/structs.g.dart';
+import '../../foundation/structs.g.dart';
+/// @nodoc
+const IID_IRunningObjectTable = '{00000010-0000-0000-C000-000000000046}';
+
+typedef _Register_Native = Int32 Function(
+  Pointer,
+  Uint32 grfFlags, 
+  COMObject punkObject, 
+  COMObject pmkObjectName, 
+  Pointer<Uint32> pdwRegister
+);
+typedef _Register_Dart = int Function(
+  Pointer,
+  int grfFlags, 
+  COMObject punkObject, 
+  COMObject pmkObjectName, 
+  Pointer<Uint32> pdwRegister
+);
+
+typedef _Revoke_Native = Int32 Function(
+  Pointer,
+  Uint32 dwRegister
+);
+typedef _Revoke_Dart = int Function(
+  Pointer,
+  int dwRegister
+);
+
+typedef _IsRunning_Native = Int32 Function(
+  Pointer,
+  COMObject pmkObjectName
+);
+typedef _IsRunning_Dart = int Function(
+  Pointer,
+  COMObject pmkObjectName
+);
+
+typedef _GetObject_Native = Int32 Function(
+  Pointer,
+  COMObject pmkObjectName, 
+  Pointer<COMObject> ppunkObject
+);
+typedef _GetObject_Dart = int Function(
+  Pointer,
+  COMObject pmkObjectName, 
+  Pointer<COMObject> ppunkObject
+);
+
+typedef _NoteChangeTime_Native = Int32 Function(
+  Pointer,
+  Uint32 dwRegister, 
+  Pointer<FILETIME> pfiletime
+);
+typedef _NoteChangeTime_Dart = int Function(
+  Pointer,
+  int dwRegister, 
+  Pointer<FILETIME> pfiletime
+);
+
+typedef _GetTimeOfLastChange_Native = Int32 Function(
+  Pointer,
+  COMObject pmkObjectName, 
+  Pointer<FILETIME> pfiletime
+);
+typedef _GetTimeOfLastChange_Dart = int Function(
+  Pointer,
+  COMObject pmkObjectName, 
+  Pointer<FILETIME> pfiletime
+);
+
+typedef _EnumRunning_Native = Int32 Function(
+  Pointer,
+  Pointer<COMObject> ppenumMoniker
+);
+typedef _EnumRunning_Dart = int Function(
+  Pointer,
+  Pointer<COMObject> ppenumMoniker
+);
+
+/// {@category Interface}
+/// {@category com}
+class IRunningObjectTable extends IUnknown {
+  // vtable begins at 3, ends at 9
+
+   IRunningObjectTable(Pointer<COMObject> ptr) : super(ptr);
+
+  int Register(int grfFlags, COMObject punkObject, COMObject pmkObjectName, Pointer<Uint32> pdwRegister) => ptr.ref.lpVtbl.value      .elementAt(3)
+      .cast<Pointer<NativeFunction<_Register_Native>>>()
+      .value
+      .asFunction<_Register_Dart>()(ptr.ref.lpVtbl, grfFlags, punkObject, pmkObjectName, pdwRegister);
+
+  int Revoke(int dwRegister) => ptr.ref.lpVtbl.value      .elementAt(4)
+      .cast<Pointer<NativeFunction<_Revoke_Native>>>()
+      .value
+      .asFunction<_Revoke_Dart>()(ptr.ref.lpVtbl, dwRegister);
+
+  int IsRunning(COMObject pmkObjectName) => ptr.ref.lpVtbl.value      .elementAt(5)
+      .cast<Pointer<NativeFunction<_IsRunning_Native>>>()
+      .value
+      .asFunction<_IsRunning_Dart>()(ptr.ref.lpVtbl, pmkObjectName);
+
+  int GetObject(COMObject pmkObjectName, Pointer<COMObject> ppunkObject) => ptr.ref.lpVtbl.value      .elementAt(6)
+      .cast<Pointer<NativeFunction<_GetObject_Native>>>()
+      .value
+      .asFunction<_GetObject_Dart>()(ptr.ref.lpVtbl, pmkObjectName, ppunkObject);
+
+  int NoteChangeTime(int dwRegister, Pointer<FILETIME> pfiletime) => ptr.ref.lpVtbl.value      .elementAt(7)
+      .cast<Pointer<NativeFunction<_NoteChangeTime_Native>>>()
+      .value
+      .asFunction<_NoteChangeTime_Dart>()(ptr.ref.lpVtbl, dwRegister, pfiletime);
+
+  int GetTimeOfLastChange(COMObject pmkObjectName, Pointer<FILETIME> pfiletime) => ptr.ref.lpVtbl.value      .elementAt(8)
+      .cast<Pointer<NativeFunction<_GetTimeOfLastChange_Native>>>()
+      .value
+      .asFunction<_GetTimeOfLastChange_Dart>()(ptr.ref.lpVtbl, pmkObjectName, pfiletime);
+
+  int EnumRunning(Pointer<COMObject> ppenumMoniker) => ptr.ref.lpVtbl.value      .elementAt(9)
+      .cast<Pointer<NativeFunction<_EnumRunning_Native>>>()
+      .value
+      .asFunction<_EnumRunning_Dart>()(ptr.ref.lpVtbl, ppenumMoniker);
+
+}
+
+
