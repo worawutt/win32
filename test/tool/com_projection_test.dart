@@ -58,8 +58,8 @@ void main() {
     final param = getCategory.parameters.first;
     final projection = TypeProjector(param.typeIdentifier);
 
-    expect(projection.dartType, equals('Pointer<Uint32>'));
-    expect(projection.nativeType, equals('Pointer<Uint32>'));
+    expect(projection.dartType, equals('Pointer<Int32>'));
+    expect(projection.nativeType, equals('Pointer<Int32>'));
   });
 
   test('Pointers to interfaces are projected accurately', () {
@@ -172,8 +172,8 @@ void main() {
     final param = activateApplication.parameters[2];
     final projector = TypeProjector(param.typeIdentifier);
 
-    expect(projector.isTypeAnEnum, equals(true));
-    expect(projector.nativeType, equals('Uint32'));
+    expect(projector.isEnum, equals(true));
+    expect(projector.nativeType, equals('Int32'));
     expect(projector.dartType, equals('int'));
   });
   test('COM interfaces should be represented as Pointers', () {
