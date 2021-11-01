@@ -19,6 +19,26 @@ import 'winmd_caveats.dart';
 
 final methods = <Method>[];
 
+String wrapCommentText(String inputText, [int wrapLength = 76]) {
+  final words = inputText.split(' ');
+  final textLine = StringBuffer('/// ');
+  final outputText = StringBuffer();
+
+  for (final word in words) {
+    if ((textLine.length + word.length) >= wrapLength) {
+      textLine.write('\n');
+      outputText.write(textLine);
+      textLine.clear();
+      textLine.write('/// $word ');
+    } else {
+      textLine.write('$word ');
+    }
+  }
+
+  outputText.write(textLine);
+  return outputText.toString().trimRight();
+}
+
 bool methodMatches(String methodName, List<String> rawPrototype) {
   final prototype = rawPrototype.join('\n');
   final methodNameToFind = ' $methodName(';

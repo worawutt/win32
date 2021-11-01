@@ -28,40 +28,40 @@ const IID_IAppxFactory = '{BEB94909-E451-438B-B5A7-D79E767B75D8}';
 
 typedef _CreatePackageWriter_Native = Int32 Function(
     Pointer obj,
-    Pointer outputStream,
+    Pointer<COMObject> outputStream,
     Pointer<APPX_PACKAGE_SETTINGS> settings,
-    Pointer<Pointer> packageWriter);
+    Pointer<Pointer<COMObject>> packageWriter);
 typedef _CreatePackageWriter_Dart = int Function(
     Pointer obj,
-    Pointer outputStream,
+    Pointer<COMObject> outputStream,
     Pointer<APPX_PACKAGE_SETTINGS> settings,
-    Pointer<Pointer> packageWriter);
+    Pointer<Pointer<COMObject>> packageWriter);
 
-typedef _CreatePackageReader_Native = Int32 Function(
-    Pointer obj, Pointer inputStream, Pointer<Pointer> packageReader);
-typedef _CreatePackageReader_Dart = int Function(
-    Pointer obj, Pointer inputStream, Pointer<Pointer> packageReader);
+typedef _CreatePackageReader_Native = Int32 Function(Pointer obj,
+    Pointer<COMObject> inputStream, Pointer<Pointer<COMObject>> packageReader);
+typedef _CreatePackageReader_Dart = int Function(Pointer obj,
+    Pointer<COMObject> inputStream, Pointer<Pointer<COMObject>> packageReader);
 
-typedef _CreateManifestReader_Native = Int32 Function(
-    Pointer obj, Pointer inputStream, Pointer<Pointer> manifestReader);
-typedef _CreateManifestReader_Dart = int Function(
-    Pointer obj, Pointer inputStream, Pointer<Pointer> manifestReader);
+typedef _CreateManifestReader_Native = Int32 Function(Pointer obj,
+    Pointer<COMObject> inputStream, Pointer<Pointer<COMObject>> manifestReader);
+typedef _CreateManifestReader_Dart = int Function(Pointer obj,
+    Pointer<COMObject> inputStream, Pointer<Pointer<COMObject>> manifestReader);
 
-typedef _CreateBlockMapReader_Native = Int32 Function(
-    Pointer obj, Pointer inputStream, Pointer<Pointer> blockMapReader);
-typedef _CreateBlockMapReader_Dart = int Function(
-    Pointer obj, Pointer inputStream, Pointer<Pointer> blockMapReader);
+typedef _CreateBlockMapReader_Native = Int32 Function(Pointer obj,
+    Pointer<COMObject> inputStream, Pointer<Pointer<COMObject>> blockMapReader);
+typedef _CreateBlockMapReader_Dart = int Function(Pointer obj,
+    Pointer<COMObject> inputStream, Pointer<Pointer<COMObject>> blockMapReader);
 
 typedef _CreateValidatedBlockMapReader_Native = Int32 Function(
     Pointer obj,
-    Pointer blockMapStream,
+    Pointer<COMObject> blockMapStream,
     Pointer<Utf16> signatureFileName,
-    Pointer<Pointer> blockMapReader);
+    Pointer<Pointer<COMObject>> blockMapReader);
 typedef _CreateValidatedBlockMapReader_Dart = int Function(
     Pointer obj,
-    Pointer blockMapStream,
+    Pointer<COMObject> blockMapStream,
     Pointer<Utf16> signatureFileName,
-    Pointer<Pointer> blockMapReader);
+    Pointer<Pointer<COMObject>> blockMapReader);
 
 /// {@category Interface}
 /// {@category com}
@@ -71,9 +71,9 @@ class IAppxFactory extends IUnknown {
   IAppxFactory(Pointer<COMObject> ptr) : super(ptr);
 
   int CreatePackageWriter(
-          Pointer outputStream,
+          Pointer<COMObject> outputStream,
           Pointer<APPX_PACKAGE_SETTINGS> settings,
-          Pointer<Pointer> packageWriter) =>
+          Pointer<Pointer<COMObject>> packageWriter) =>
       ptr.ref.lpVtbl.value
               .elementAt(3)
               .cast<Pointer<NativeFunction<_CreatePackageWriter_Native>>>()
@@ -81,8 +81,8 @@ class IAppxFactory extends IUnknown {
               .asFunction<_CreatePackageWriter_Dart>()(
           ptr.ref.lpVtbl, outputStream, settings, packageWriter);
 
-  int CreatePackageReader(
-          Pointer inputStream, Pointer<Pointer> packageReader) =>
+  int CreatePackageReader(Pointer<COMObject> inputStream,
+          Pointer<Pointer<COMObject>> packageReader) =>
       ptr.ref.lpVtbl.value
               .elementAt(4)
               .cast<Pointer<NativeFunction<_CreatePackageReader_Native>>>()
@@ -90,8 +90,8 @@ class IAppxFactory extends IUnknown {
               .asFunction<_CreatePackageReader_Dart>()(
           ptr.ref.lpVtbl, inputStream, packageReader);
 
-  int CreateManifestReader(
-          Pointer inputStream, Pointer<Pointer> manifestReader) =>
+  int CreateManifestReader(Pointer<COMObject> inputStream,
+          Pointer<Pointer<COMObject>> manifestReader) =>
       ptr.ref.lpVtbl.value
               .elementAt(5)
               .cast<Pointer<NativeFunction<_CreateManifestReader_Native>>>()
@@ -99,8 +99,8 @@ class IAppxFactory extends IUnknown {
               .asFunction<_CreateManifestReader_Dart>()(
           ptr.ref.lpVtbl, inputStream, manifestReader);
 
-  int CreateBlockMapReader(
-          Pointer inputStream, Pointer<Pointer> blockMapReader) =>
+  int CreateBlockMapReader(Pointer<COMObject> inputStream,
+          Pointer<Pointer<COMObject>> blockMapReader) =>
       ptr.ref.lpVtbl.value
               .elementAt(6)
               .cast<Pointer<NativeFunction<_CreateBlockMapReader_Native>>>()
@@ -108,8 +108,10 @@ class IAppxFactory extends IUnknown {
               .asFunction<_CreateBlockMapReader_Dart>()(
           ptr.ref.lpVtbl, inputStream, blockMapReader);
 
-  int CreateValidatedBlockMapReader(Pointer blockMapStream,
-          Pointer<Utf16> signatureFileName, Pointer<Pointer> blockMapReader) =>
+  int CreateValidatedBlockMapReader(
+          Pointer<COMObject> blockMapStream,
+          Pointer<Utf16> signatureFileName,
+          Pointer<Pointer<COMObject>> blockMapReader) =>
       ptr.ref.lpVtbl.value
               .elementAt(7)
               .cast<

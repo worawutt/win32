@@ -352,7 +352,7 @@ void main() {
       String nativeType, String fieldName, int dimensions) {
     final buffer = StringBuffer();
     buffer.writeln('  @Array($dimensions)');
-    buffer.writeln('  external Array<$nativeType> _$fieldName;\n');
+    buffer.writeln('  external $nativeType _$fieldName;\n');
     buffer.writeln('  String get $fieldName {');
     buffer.writeln('    final charCodes = <int>[];');
     buffer.writeln('    for (var i = 0; i < $dimensions; i++) {');
@@ -392,37 +392,16 @@ void main() {
       }
 
       for (final field in typedef.fields) {
-        if (field.typeIdentifier.baseType == BaseType.ArrayTypeModifier) {
-          final dimensions = field.typeIdentifier.arrayDimensions!.first;
-          final nativeType = TypeProjector(field.typeIdentifier).nativeType;
+        final projection = TypeProjector(field.typeIdentifier);
 
-          // Handle a string array
-          if (field.typeIdentifier.typeArg?.baseType == BaseType.Char) {
-            buffer.write(
-                printArray(nativeType, safeName(field.name), dimensions));
-          }
-
-          // Handle a non-string array
-          else {
-            buffer.writeln('  @Array($dimensions)');
-            buffer.writeln(
-                '  external Array<${safeTypename(nameWithoutEncoding(nativeType))}> '
-                '${safeName(field.name)};');
-          }
-        }
-        // Handle a non-array
-        else {
-          final nativeType = TypeProjector(field.typeIdentifier).nativeType;
-          final dartType = TypeProjector(field.typeIdentifier).dartType;
-
-          if (dartType == 'int' || dartType == 'double' || dartType == 'bool') {
-            buffer.writeln(
-                '  @$nativeType() external $dartType ${safeName(field.name)};');
-          } else {
-            buffer.writeln(
-                '  external ${safeTypename(nameWithoutEncoding(dartType))} '
-                '${safeName(field.name)};');
-          }
+        // Special-case string arrays for now
+        if (field.typeIdentifier.baseType == BaseType.ArrayTypeModifier &&
+            field.typeIdentifier.typeArg?.baseType == BaseType.Char) {
+          buffer.write(printArray(projection.nativeType, field.name,
+              field.typeIdentifier.arrayDimensions!.first));
+        } else {
+          buffer.writeln('  ${projection.attribute} '
+              'external ${projection.dartType} ${field.name};');
         }
       }
       buffer.writeln('}\n');
