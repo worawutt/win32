@@ -22,77 +22,77 @@ import 'IDispatch.dart';
 const IID_INetwork = '{DCB00002-570F-4A9B-8D69-199FDBA5723B}';
 
 typedef _GetName_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Pointer<Utf16>> pszNetworkName
 );
 typedef _GetName_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Pointer<Utf16>> pszNetworkName
 );
 
 typedef _SetName_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Utf16> szNetworkNewName
 );
 typedef _SetName_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Utf16> szNetworkNewName
 );
 
 typedef _GetDescription_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Pointer<Utf16>> pszDescription
 );
 typedef _GetDescription_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Pointer<Utf16>> pszDescription
 );
 
 typedef _SetDescription_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Utf16> szDescription
 );
 typedef _SetDescription_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Utf16> szDescription
 );
 
 typedef _GetNetworkId_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<GUID> pgdGuidNetworkId
 );
 typedef _GetNetworkId_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<GUID> pgdGuidNetworkId
 );
 
 typedef _GetDomainType_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Int32> pNetworkType
 );
 typedef _GetDomainType_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Int32> pNetworkType
 );
 
 typedef _GetNetworkConnections_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Pointer<COMObject>> ppEnumNetworkConnection
 );
 typedef _GetNetworkConnections_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Pointer<COMObject>> ppEnumNetworkConnection
 );
 
 typedef _GetTimeCreatedAndConnected_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Uint32> pdwLowDateTimeCreated, 
   Pointer<Uint32> pdwHighDateTimeCreated, 
   Pointer<Uint32> pdwLowDateTimeConnected, 
   Pointer<Uint32> pdwHighDateTimeConnected
 );
 typedef _GetTimeCreatedAndConnected_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Uint32> pdwLowDateTimeCreated, 
   Pointer<Uint32> pdwHighDateTimeCreated, 
   Pointer<Uint32> pdwLowDateTimeConnected, 
@@ -100,43 +100,43 @@ typedef _GetTimeCreatedAndConnected_Dart = int Function(
 );
 
 typedef _get_IsConnectedToInternet_Native = Int32 Function(
-  Pointer obj,
-  Pointer<Int16> pbIsConnected);
+  Pointer,
+  Pointer<Int16> );
 typedef _get_IsConnectedToInternet_Dart = int Function(
-  Pointer obj,
-  Pointer<Int16> pbIsConnected);
+  Pointer,
+  Pointer<Int16> );
 
 typedef _get_IsConnected_Native = Int32 Function(
-  Pointer obj,
-  Pointer<Int16> pbIsConnected);
+  Pointer,
+  Pointer<Int16> );
 typedef _get_IsConnected_Dart = int Function(
-  Pointer obj,
-  Pointer<Int16> pbIsConnected);
+  Pointer,
+  Pointer<Int16> );
 
 typedef _GetConnectivity_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Int32> pConnectivity
 );
 typedef _GetConnectivity_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Int32> pConnectivity
 );
 
 typedef _GetCategory_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Pointer<Int32> pCategory
 );
 typedef _GetCategory_Dart = int Function(
-  Pointer obj,
+  Pointer,
   Pointer<Int32> pCategory
 );
 
 typedef _SetCategory_Native = Int32 Function(
-  Pointer obj,
+  Pointer,
   Int32 NewCategory
 );
 typedef _SetCategory_Dart = int Function(
-  Pointer obj,
+  Pointer,
   int NewCategory
 );
 
