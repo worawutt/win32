@@ -14,7 +14,6 @@ import '../namespace/win32_functions.dart';
 import 'generate_win32_structs.dart';
 import 'generate_win32_tests.dart';
 import 'projection/win32_function_printer.dart';
-import 'utils.dart';
 import 'winmd_caveats.dart';
 
 final methods = <Method>[];
