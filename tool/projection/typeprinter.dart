@@ -73,55 +73,6 @@ import '../winrt/winrt_constants.dart';
     return buffer.toString();
   }
 
-  static String typedefsAsString(ClassProjection type) {
-    final buffer = StringBuffer();
-    for (final methodProjection in type.methods) {
-      // Native typedef
-      buffer.writeln(
-          'typedef _${methodProjection.name}_Native = ${methodProjection.returnType.nativeType} Function(');
-      buffer.write('  Pointer');
-      if (methodProjection.parameters.isNotEmpty) {
-        buffer.writeln(',');
-      }
-      // TODO: Remove params check when https://github.com/microsoft/win32metadata/issues/707 is fixed
-      if (treatAsGetProperty(methodProjection, type.name)) {
-        buffer.write(
-            '  Pointer<${methodProjection.parameters.first.type.nativeType}> ${methodProjection.parameters.first.name}');
-      } else {
-        for (var idx = 0; idx < methodProjection.parameters.length; idx++) {
-          buffer.write(
-              '  ${methodProjection.parameters[idx].type.nativeType} ${methodProjection.parameters[idx].name}');
-          if (idx < methodProjection.parameters.length - 1) buffer.write(', ');
-          buffer.writeln();
-        }
-      }
-      buffer.writeln(');');
-
-      // Dart typedef
-      buffer.writeln(
-          'typedef _${methodProjection.name}_Dart = ${methodProjection.returnType.dartType} Function(');
-      buffer.write('  Pointer');
-      if (methodProjection.parameters.isNotEmpty) {
-        buffer.writeln(',');
-      }
-      if (treatAsGetProperty(methodProjection, type.name)) {
-        buffer.write(
-            '  Pointer<${methodProjection.parameters.first.type.nativeType}> ${methodProjection.parameters.first.name}');
-      } else {
-        for (var idx = 0; idx < methodProjection.parameters.length; idx++) {
-          buffer.write(
-              '  ${methodProjection.parameters[idx].type.dartType} ${methodProjection.parameters[idx].name}');
-          if (idx < methodProjection.parameters.length - 1) buffer.write(', ');
-          buffer.writeln();
-        }
-      }
-      buffer.writeln(');');
-      buffer.writeln();
-    }
-
-    return buffer.toString();
-  }
-
   static String interfaceAsString(ClassProjection type) {
     final buffer = StringBuffer();
     var vtableIndex = type.vtableStart;
@@ -317,7 +268,6 @@ void main() {
           {bool excludeHeader = false}) =>
       '${excludeHeader ? "" : headerAsString(projection)}'
       '${guidConstantsAsString(projection)}'
-      '${typedefsAsString(projection)}'
       '${interfaceAsString(projection)}'
       '${classAsString(projection)}';
 
