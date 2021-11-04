@@ -8,9 +8,8 @@ class InterfaceProjection {
   final List<MethodProjection> methodProjections = [];
 
   InterfaceProjection(this.typeDef) {
+    var vtableOffset = vtableStart;
     for (final method in typeDef.methods) {
-      var vtableOffset = vtableStart;
-
       // TODO: Remove params check when
       // https://github.com/microsoft/win32metadata/issues/707 is fixed
       if (method.isGetProperty && method.parameters.isNotEmpty) {
@@ -33,10 +32,10 @@ class InterfaceProjection {
       return 0;
     }
 
-    if (typeDef.isInterface && typeDef.interfaces.isNotEmpty) {
+    if (type.isInterface && type.interfaces.isNotEmpty) {
       var sum = 0;
 
-      for (final interface in typeDef.interfaces) {
+      for (final interface in type.interfaces) {
         sum += interface.methods.length + calculateVTableStart(interface);
       }
 
@@ -71,59 +70,64 @@ class InterfaceProjection {
     import 'dart:ffi';
 
     import 'package:ffi/ffi.dart';
+
     import '../combase.dart';
     import '../constants.dart';
     import '../exceptions.dart';
+    import '../guid.dart';
     import '../macros.dart';
     import '../ole32.dart';
-    import '../structs.dart';
-    import '../structs.g.dart';
     import '../utils.dart';
-
-    $importHeader
   ''';
 
-// TODO: Complete IID
   String get guidConstants => '''
-//     buffer.writeln('/// @nodoc');
-//     buffer.writeln("const IID_$shortName = 'IID';\n");
-//     return buffer.toString();
-//   }
-''';
+    /// @nodoc
+    const IID_$shortName = '${typeDef.guid}';
+  ''';
+
+  String get queryInterfaceHelper => shortName != 'IUnknown'
+      ? ''
+      : '''
+    /// Cast an existing COM object to a specified interface.
+    ///
+    /// Takes a string (typically a constant such as `IID_IModalWindow`) and does
+    /// a COM QueryInterface to return a reference to that interface. This method
+    /// reduces the boilerplate associated with calling QueryInterface manually.
+    Pointer<COMObject> toInterface(String iid) {
+      final pIID = convertToIID(iid);
+      final pObject = calloc<COMObject>();
+      try {
+        final hr = QueryInterface(pIID, pObject.cast());
+        if (FAILED(hr)) throw WindowsException(hr);
+        return pObject;
+      } finally {
+        free(pIID);
+      }
+    }
+  ''';
 
   @override
   String toString() {
-    final buffer = StringBuffer();
+    final extendsClause = inheritsFrom.isEmpty ? '' : 'extends $inheritsFrom';
+    final constructor = inheritsFrom.isEmpty
+        ? 'Pointer<COMObject> ptr;\n\n$shortName(this.ptr);'
+        : '$shortName(Pointer<COMObject> ptr) : super(ptr);';
 
-    buffer.writeln('/// {@category Interface}');
-    buffer.writeln('/// {@category com}');
-    if (inheritsFrom.isEmpty) {
-      buffer.writeln('class $shortName {');
-    } else {
-      buffer.writeln('class $shortName extends $inheritsFrom {');
-    }
+    return '''
+      $header
+      $importHeader
+      $guidConstants
 
-    buffer.writeln('''
-  // vtable begins at $vtableStart, ends at ${vtableStart + methodProjections.length - 1}
-''');
-    if (inheritsFrom.isNotEmpty) {
-      buffer.write('''
-   $shortName(Pointer<COMObject> ptr) : super(ptr);\n
-''');
-    } else {
-      buffer.write('''
-  Pointer<COMObject> ptr;
+      /// {@category Interface}
+      /// {@category com}
+      class $shortName $extendsClause {
+        // vtable begins at $vtableStart, ends at ${vtableStart + methodProjections.length - 1}
+        $constructor
 
-   $shortName(this.ptr);\n
-''');
-    }
+        ${methodProjections.map((p) => p.toString()).join('\n')}
 
-    for (final methodProjection in methodProjections) {
-      buffer.write(methodProjection.toString());
-    }
-
-    buffer.writeln('}\n\n');
-
-    return buffer.toString();
+        $queryInterfaceHelper
+      }
+    ''';
   }
 }

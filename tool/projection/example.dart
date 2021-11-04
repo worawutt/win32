@@ -1,6 +1,7 @@
 import 'package:winmd/winmd.dart' show MetadataStore;
 
 import 'callback.dart';
+import 'class.dart';
 import 'function.dart';
 import 'interface.dart';
 import 'method.dart';
@@ -81,6 +82,15 @@ void printComInterface() {
   }
 }
 
+void printComClass() {
+  final comClass = scope.findTypeDef('Windows.Win32.UI.Shell.IFileOpenDialog');
+
+  if (comClass != null) {
+    final classProjection = ClassProjection.fromInterface(comClass);
+    print(classProjection);
+  }
+}
+
 void main() {
-  printComInterface();
+  printComClass();
 }
