@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
-import '../metadata/projection/struct.dart';
-import '../metadata/utils.dart';
+import '../projection/struct.dart';
+import '../projection/utils.dart';
 import 'exclusions.dart';
 
 const structFileHeader = '''

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
-import '../metadata/projection/callback.dart';
-import '../metadata/utils.dart';
+import '../projection/callback.dart';
+import '../projection/utils.dart';
 import 'exclusions.dart';
 import 'win32_functions.dart';
 

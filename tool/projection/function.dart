@@ -1,8 +1,8 @@
 import 'package:winmd/winmd.dart' as winmd;
 
-import '../utils.dart';
 import 'parameter.dart';
 import 'type.dart';
+import 'utils.dart';
 
 class FunctionProjection {
   final winmd.Method method;

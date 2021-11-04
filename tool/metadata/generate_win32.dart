@@ -11,9 +11,9 @@ import 'package:winmd/winmd.dart';
 import '../manual_gen/function.dart';
 import '../manual_gen/win32api.dart';
 import '../namespace/win32_functions.dart';
+import '../projection/function.dart';
 import 'generate_win32_structs.dart';
 import 'generate_win32_tests.dart';
-import 'projection/function.dart';
 import 'winmd_caveats.dart';
 
 final methods = <Method>[];

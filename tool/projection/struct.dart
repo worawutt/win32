@@ -1,8 +1,8 @@
 import 'package:winmd/winmd.dart' as winmd;
 
-import '../../namespace/exclusions.dart';
-import '../utils.dart';
+import '../namespace/exclusions.dart';
 import 'field.dart';
+import 'utils.dart';
 
 /// Represents a Dart projection of a Struct typedef.
 class StructProjection {

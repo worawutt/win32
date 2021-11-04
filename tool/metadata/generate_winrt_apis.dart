@@ -13,8 +13,8 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
-import 'projection/classprojector.dart';
-import 'projection/typeprinter.dart';
+import '../projection/classprojector.dart';
+import '../projection/typeprinter.dart';
 
 final typesToGenerate = [
   'Windows.Foundation.IPropertyValue',

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
-import '../metadata/utils.dart';
+import '../projection/utils.dart';
 import 'com_interfaces.dart';
 import 'exclusions.dart';
 import 'win32_callbacks.dart';

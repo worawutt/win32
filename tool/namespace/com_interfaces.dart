@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
-import '../metadata/projection/class.dart';
-import '../metadata/projection/classprojector.dart';
-import '../metadata/projection/typeprinter.dart';
-import '../metadata/utils.dart';
+import '../projection/class.dart';
+import '../projection/classprojector.dart';
+import '../projection/typeprinter.dart';
+import '../projection/utils.dart';
 import 'exclusions.dart';
 
 // TODO: Remove some of these imports when system/com is projected

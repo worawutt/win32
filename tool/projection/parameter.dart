@@ -1,5 +1,5 @@
-import '../utils.dart';
 import 'type.dart';
+import 'utils.dart';
 
 /// A parameter.
 ///

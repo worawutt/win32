@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:winmd/winmd.dart';
 
-import '../../tool/metadata/projection/typeprinter.dart';
+import '../../tool/projection/typeprinter.dart';
 
 void main() {
   test('Windows Runtime golden', () {

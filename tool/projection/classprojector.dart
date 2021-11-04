@@ -1,8 +1,8 @@
 import 'package:winmd/winmd.dart' as winmd;
 
-import '../utils.dart';
 import 'class.dart';
 import 'method.dart';
+import 'utils.dart';
 
 class ClassProjector {
   final winmd.TypeDef typeDef;

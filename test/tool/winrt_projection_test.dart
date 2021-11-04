@@ -3,7 +3,7 @@
 import 'package:test/test.dart';
 import 'package:winmd/winmd.dart';
 
-import '../../tool/metadata/projection/type.dart';
+import '../../tool/projection/type.dart';
 
 void main() {
   test('Class valuetype is correctly identified', () {

@@ -3,8 +3,8 @@
 import 'package:test/test.dart';
 import 'package:winmd/winmd.dart';
 
-import '../../tool/metadata/projection/classprojector.dart';
-import '../../tool/metadata/projection/type.dart';
+import '../../tool/projection/classprojector.dart';
+import '../../tool/projection/type.dart';
 
 void main() {
   final scope = MetadataStore.getWin32Scope();

@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:winmd/winmd.dart';
 
-import 'projection/class.dart';
-import 'projection/classprojector.dart';
-import 'projection/typeprinter.dart';
-import 'utils.dart';
+import '../projection/class.dart';
+import '../projection/classprojector.dart';
+import '../projection/typeprinter.dart';
+import '../projection/utils.dart';
 
 const interfacesToGenerate = <String>[
   'Windows.Win32.Globalization.IEnumSpellingError',

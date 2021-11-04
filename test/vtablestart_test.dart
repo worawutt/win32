@@ -7,7 +7,7 @@
 import 'package:test/test.dart';
 import 'package:winmd/winmd.dart';
 
-import '../tool/metadata/projection/classprojector.dart';
+import '../tool/projection/classprojector.dart';
 
 void main() {
   test('vTableStart for COM types', () {

@@ -7,8 +7,8 @@
 import 'dart:io';
 
 import 'package:winmd/winmd.dart';
-import '../metadata/projection/function.dart';
-import '../metadata/utils.dart';
+import '../projection/function.dart';
+import '../projection/utils.dart';
 import 'exclusions.dart';
 
 const ffiFileHeader = '''

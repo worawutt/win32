@@ -10,8 +10,8 @@ import 'dart:io';
 import 'package:winmd/winmd.dart';
 
 import '../manual_gen/win32api.dart';
-import 'projection/struct.dart';
-import 'utils.dart';
+import '../projection/struct.dart';
+import '../projection/utils.dart';
 
 const structFileHeader = '''
 // Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
