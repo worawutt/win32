@@ -8,23 +8,22 @@
 
 import 'package:winmd/winmd.dart';
 
-import '../../namespace/exclusions.dart';
-import '../utils.dart';
+import 'class.dart';
 import 'classprojector.dart';
-import 'data_classes.dart';
-import 'typeprojector.dart';
-import 'win32_function_printer.dart';
+import 'method.dart';
 
 class TypePrinter {
   // TODO: Remove params check when
   // https://github.com/microsoft/win32metadata/issues/707 is fixed
   static bool treatAsGetProperty(
-          MethodProjection method, String parentClassName) =>
-      method.isGetProperty && method.parameters.isNotEmpty;
+          MethodProjection methodProjection, String parentClassName) =>
+      methodProjection.method.isGetProperty &&
+      methodProjection.method.parameters.isNotEmpty;
 
   static bool treatAsSetProperty(
-          MethodProjection method, String parentClassName) =>
-      method.isGetProperty && method.parameters.isNotEmpty;
+          MethodProjection methodProjection, String parentClassName) =>
+      methodProjection.method.isSetProperty &&
+      methodProjection.method.parameters.isNotEmpty;
 
   static String headerAsString(ClassProjection type) {
     final buffer = StringBuffer();
@@ -76,23 +75,23 @@ import '../winrt/winrt_constants.dart';
 
   static String typedefsAsString(ClassProjection type) {
     final buffer = StringBuffer();
-    for (final method in type.methods) {
+    for (final methodProjection in type.methods) {
       // Native typedef
       buffer.writeln(
-          'typedef _${method.name}_Native = ${method.returnTypeNative} Function(');
+          'typedef _${methodProjection.name}_Native = ${methodProjection.returnType.nativeType} Function(');
       buffer.write('  Pointer');
-      if (method.parameters.isNotEmpty) {
+      if (methodProjection.parameters.isNotEmpty) {
         buffer.writeln(',');
       }
       // TODO: Remove params check when https://github.com/microsoft/win32metadata/issues/707 is fixed
-      if (treatAsGetProperty(method, type.name)) {
+      if (treatAsGetProperty(methodProjection, type.name)) {
         buffer.write(
-            '  Pointer<${method.parameters.first.nativeType}> ${method.parameters.first.name}');
+            '  Pointer<${methodProjection.parameters.first.type.nativeType}> ${methodProjection.parameters.first.name}');
       } else {
-        for (var idx = 0; idx < method.parameters.length; idx++) {
+        for (var idx = 0; idx < methodProjection.parameters.length; idx++) {
           buffer.write(
-              '  ${method.parameters[idx].nativeType} ${method.parameters[idx].name}');
-          if (idx < method.parameters.length - 1) buffer.write(', ');
+              '  ${methodProjection.parameters[idx].type.nativeType} ${methodProjection.parameters[idx].name}');
+          if (idx < methodProjection.parameters.length - 1) buffer.write(', ');
           buffer.writeln();
         }
       }
@@ -100,19 +99,19 @@ import '../winrt/winrt_constants.dart';
 
       // Dart typedef
       buffer.writeln(
-          'typedef _${method.name}_Dart = ${method.returnTypeDart} Function(');
+          'typedef _${methodProjection.name}_Dart = ${methodProjection.returnType.dartType} Function(');
       buffer.write('  Pointer');
-      if (method.parameters.isNotEmpty) {
+      if (methodProjection.parameters.isNotEmpty) {
         buffer.writeln(',');
       }
-      if (treatAsGetProperty(method, type.name)) {
+      if (treatAsGetProperty(methodProjection, type.name)) {
         buffer.write(
-            '  Pointer<${method.parameters.first.nativeType}> ${method.parameters.first.name}');
+            '  Pointer<${methodProjection.parameters.first.type.nativeType}> ${methodProjection.parameters.first.name}');
       } else {
-        for (var idx = 0; idx < method.parameters.length; idx++) {
+        for (var idx = 0; idx < methodProjection.parameters.length; idx++) {
           buffer.write(
-              '  ${method.parameters[idx].dartType} ${method.parameters[idx].name}');
-          if (idx < method.parameters.length - 1) buffer.write(', ');
+              '  ${methodProjection.parameters[idx].type.dartType} ${methodProjection.parameters[idx].name}');
+          if (idx < methodProjection.parameters.length - 1) buffer.write(', ');
           buffer.writeln();
         }
       }
@@ -161,7 +160,7 @@ import '../winrt/winrt_constants.dart';
       } else if (treatAsSetProperty(method, type.name)) {
         buffer.write(dartSetProperty(method, vtableIndex));
       } else {
-        buffer.write(dartMethod(method, vtableIndex));
+        buffer.write(method.toString());
       }
 
       // Always increment vtable even if we don't generate method
@@ -169,44 +168,6 @@ import '../winrt/winrt_constants.dart';
     }
     buffer.writeln('}\n\n');
 
-    return buffer.toString();
-  }
-
-  // TODO: Check whether there's a better way to detect how methods like
-  // put_AutoDemodulate are declared (should this be a property?)
-  // Detect whether it's a property masquerading as a method. The test should
-  // be the use of the get_ prefix, combined with the specialname modifier,
-  // but win32metadata incorrectly marks some methods with this combination
-  // (https://github.com/microsoft/win32metadata/issues/707). So instead, we
-  // also need to check the number of parameters.
-
-  static String dartMethod(MethodProjection method, int? vtableIndex) {
-    final buffer = StringBuffer();
-    buffer.write('  ${method.returnTypeDart} ${method.name}(');
-    for (var idx = 0; idx < method.parameters.length; idx++) {
-      buffer.write(
-          '${method.parameters[idx].dartType} ${method.parameters[idx].name}');
-      if (idx < method.parameters.length - 1) {
-        buffer.write(', ');
-      }
-    }
-    buffer.write(') => ptr.ref.lpVtbl.value');
-    buffer.write('''
-      .elementAt($vtableIndex)
-      .cast<Pointer<NativeFunction<_${method.name}_Native>>>()
-      .value
-      .asFunction<_${method.name}_Dart>()(ptr.ref.lpVtbl''');
-    if (method.parameters.isNotEmpty) {
-      buffer.write(', ');
-    }
-
-    for (var idx = 0; idx < method.parameters.length; idx++) {
-      buffer.write(method.parameters[idx].name);
-      if (idx < method.parameters.length - 1) {
-        buffer.write(', ');
-      }
-    }
-    buffer.write(');\n\n');
     return buffer.toString();
   }
 
@@ -218,11 +179,11 @@ import '../winrt/winrt_constants.dart';
         ? method.name.substring(5)
         : method.name.substring(4);
 
-    final convertBool = method.parameters.first.dartType == 'bool';
+    final convertBool = method.parameters.first.type.dartType == 'bool';
 
     buffer.writeln('''
-    ${method.parameters.first.dartType} get $exposedMethodName {
-      final retValuePtr = calloc<${method.parameters.first.nativeType}>();
+    ${method.parameters.first.type.dartType} get $exposedMethodName {
+      final retValuePtr = calloc<${method.parameters.first.type.nativeType}>();
       
       try {
         final hr = ptr.ref.lpVtbl.value
@@ -247,7 +208,7 @@ import '../winrt/winrt_constants.dart';
     final buffer = StringBuffer();
 
     buffer.writeln('''
-  set ${method.name.substring(4)}(${method.parameters.first.dartType} value) {
+  set ${method.name.substring(4)}(${method.parameters.first.type.dartType} value) {
     final hr = ptr.ref.lpVtbl.value
           .elementAt($vtableIndex)
           .cast<Pointer<NativeFunction<_${method.name}_Native>>>()
@@ -331,11 +292,12 @@ void main() {
   final $dartClassName = $interfaceName(ptr);
 ''');
 
-    for (final method in projection.methods) {
-      if (!method.isGetProperty && !method.isSetProperty) {
+    for (final methodProjection in projection.methods) {
+      if (!methodProjection.method.isGetProperty &&
+          !methodProjection.method.isSetProperty) {
         buffer.write('''
-        test('Can instantiate $interfaceName.${method.name}', () {
-          expect($dartClassName.${method.name}, isA<Function>());
+        test('Can instantiate $interfaceName.${methodProjection.name}', () {
+          expect($dartClassName.${methodProjection.name}, isA<Function>());
           });
           ''');
       }
@@ -346,81 +308,6 @@ void main() {
   }''');
 
     return buffer.toString();
-  }
-
-  static String printArray(
-      String nativeType, String fieldName, int dimensions) {
-    final buffer = StringBuffer();
-    buffer.writeln('  @Array($dimensions)');
-    buffer.writeln('  external $nativeType _$fieldName;\n');
-    buffer.writeln('  String get $fieldName {');
-    buffer.writeln('    final charCodes = <int>[];');
-    buffer.writeln('    for (var i = 0; i < $dimensions; i++) {');
-    buffer.writeln('      charCodes.add(_$fieldName[i]);');
-    buffer.writeln('    }');
-    buffer.writeln('    return String.fromCharCodes(charCodes);');
-    buffer.writeln('  }\n');
-
-    buffer.writeln('  set $fieldName(String value) {');
-    buffer.writeln(
-        "    final stringToStore = value.padRight($dimensions, '\\x00');");
-    buffer.writeln('    for (var i = 0; i < $dimensions; i++) {');
-    buffer.writeln('      _$fieldName[i] = stringToStore.codeUnitAt(i);');
-    buffer.writeln('    }');
-    buffer.writeln('  }');
-    return buffer.toString();
-  }
-
-  static String printStruct(TypeDef typedef, String structName) {
-    try {
-      final buffer = StringBuffer();
-
-      buffer.writeln('/// {@category Struct}');
-
-      final packingAlignment = typedef.classLayout.packingAlignment;
-      if (packingAlignment != null &&
-          packingAlignment > 0 &&
-          !ignorePackingDirectives.contains(typedef.name)) {
-        buffer.writeln('@Packed($packingAlignment)');
-      }
-
-      // Some structs may be opaque types. For example, WS_ERROR.
-      if (typedef.fields.isEmpty) {
-        buffer.writeln('class ${safeName(structName)} extends Opaque {');
-      } else {
-        buffer.writeln('class ${safeName(structName)} extends Struct {');
-      }
-
-      for (final field in typedef.fields) {
-        final projection = TypeProjector(field.typeIdentifier);
-
-        // Special-case string arrays for now
-        if (field.typeIdentifier.baseType == BaseType.ArrayTypeModifier &&
-            field.typeIdentifier.typeArg?.baseType == BaseType.Char) {
-          buffer.write(printArray(projection.nativeType, field.name,
-              field.typeIdentifier.arrayDimensions!.first));
-        } else {
-          buffer.writeln('  ${projection.attribute} '
-              'external ${projection.dartType} ${field.name};');
-        }
-      }
-      buffer.writeln('}\n');
-      return buffer.toString();
-    } catch (identifier) {
-      return '';
-    }
-  }
-
-  static String printCallback(TypeDef typedef, String callbackName) {
-    final invokeMethod = typedef.findMethod('Invoke');
-
-    if (invokeMethod == null) {
-      throw Exception('${typedef.name} is not a callback.');
-    }
-
-    final printer = Win32FunctionPrinter('', invokeMethod, '');
-
-    return "typedef $callbackName = ${printer.nativePrototype};";
   }
 
   static String printClass(TypeDef typeDef) =>

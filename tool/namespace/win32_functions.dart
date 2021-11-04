@@ -7,7 +7,7 @@
 import 'dart:io';
 
 import 'package:winmd/winmd.dart';
-import '../metadata/projection/win32_function_printer.dart';
+import '../metadata/projection/function.dart';
 import '../metadata/utils.dart';
 import 'exclusions.dart';
 
@@ -99,7 +99,7 @@ void generateFfiFile(File file, TypeDef typedef) {
         .where((method) => method.module.name == library)
         .where((method) => !method.name.endsWith('A'))
         .where((method) =>
-            !excludedFunctions.contains(nameWithoutEncoding(method.name)))
+            !excludedFunctions.contains(stripAnsiUnicodeSuffix(method.name)))
         .toList()
       ..sort((a, b) => a.name.compareTo(b.name));
 
@@ -114,9 +114,8 @@ void generateFfiFile(File file, TypeDef typedef) {
     buffer.writeln();
 
     for (final function in functions) {
-      final printer = Win32FunctionPrinter(
-          nameWithoutEncoding(function.name), function, libraryDartName);
-      buffer.writeln(printer.dartFfiMapping);
+      final printer = FunctionProjection(function, libraryDartName);
+      buffer.writeln(printer.toString());
       imports.addAll(importsForFunction(function));
     }
     buffer.writeln();

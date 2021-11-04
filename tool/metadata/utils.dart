@@ -23,13 +23,21 @@ const dartKeywords = <String>[
   'Unsized', 'Void', 'Packed', 'Handle',
 ];
 
+bool typePretendsToBeAnsi(String typeName) => [
+      'DATA',
+      'SCHEMA',
+      'AREA',
+      'M128A',
+      'CIECHROMA'
+    ].contains(typeName.split('.').last);
+
 /// Strip the Unicode / ANSI suffix from the name. For example,`MessageBoxW`
 /// should become `MessageBox`. Heuristic approach.
-String nameWithoutEncoding(String typeName) {
+String stripAnsiUnicodeSuffix(String typeName) {
   if (typeName.startsWith('Pointer<')) {
     final wrappedType =
         typeName.substring(8, typeName.length - 1); // Pointer<X> => X
-    return 'Pointer<${nameWithoutEncoding(wrappedType)}>';
+    return 'Pointer<${stripAnsiUnicodeSuffix(wrappedType)}>';
   }
   if (typePretendsToBeAnsi(typeName)) {
     return typeName;
@@ -39,12 +47,6 @@ String nameWithoutEncoding(String typeName) {
   }
   return typeName;
 }
-
-bool typePretendsToBeAnsi(String typeName) =>
-    typeName.endsWith('DATA') ||
-    typeName.endsWith('SCHEMA') ||
-    typeName.endsWith('AREA') ||
-    ['M128A', 'CIECHROMA'].contains(typeName.split('.').last);
 
 bool typedefIsAnsi(TypeDef typedef) =>
     typedef.name.endsWith('A') && !typePretendsToBeAnsi(typedef.name);
@@ -83,7 +85,7 @@ String classNameForInterfaceName(String interfaceName) {
           .join('.');
 
   // If class has a 'W' suffix, erase it.
-  return nameWithoutEncoding(fullyQualifiedClassName);
+  return stripAnsiUnicodeSuffix(fullyQualifiedClassName);
 }
 
 extension CamelCaseConversion on String {

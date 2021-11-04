@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
-import '../metadata/projection/typeprinter.dart';
+import '../metadata/projection/struct.dart';
 import '../metadata/utils.dart';
 import 'exclusions.dart';
 
@@ -62,8 +62,10 @@ void generateStructsFile(File file, List<TypeDef> typedefs) {
   final buffer = StringBuffer();
 
   for (final struct in typedefs) {
-    buffer.write(TypePrinter.printStruct(
-        struct, nameWithoutEncoding(struct.name.split('.').last)));
+    final structName = stripAnsiUnicodeSuffix(struct.name.split('.').last);
+    final projectedStruct = StructProjection(struct, structName);
+
+    buffer.write(projectedStruct);
     imports.addAll(importsForStruct(struct));
   }
 

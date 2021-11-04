@@ -1,6 +1,6 @@
 import 'package:winmd/winmd.dart';
 
-import 'win32_typemap.dart';
+import '../utils.dart';
 
 class TypeTuple {
   final String nativeType;
@@ -42,17 +42,18 @@ const Map<String, TypeTuple> specialTypes = {
       TypeTuple('Int32', 'int', attribute: '@Int32()'),
 };
 
-class TypeProjector {
+class TypeProjection {
   final TypeIdentifier typeIdentifier;
   late final TypeTuple projection;
 
-  TypeProjector(this.typeIdentifier) {
+  TypeProjection(this.typeIdentifier) {
     projection = projectType();
   }
 
   String get attribute => projection.attribute;
   String get nativeType => projection.nativeType;
   String get dartType => projection.dartType;
+  int? get arrayUpperBound => typeIdentifier.arrayDimensions?.first;
 
   bool get isIntrinsic =>
       baseNativeMapping.keys.contains(typeIdentifier.baseType);
@@ -100,7 +101,7 @@ class TypeProjector {
     if (fieldType == null) {
       throw Exception('Enum $typeIdentifier is missing value__');
     }
-    return TypeProjector(fieldType).projection;
+    return TypeProjection(fieldType).projection;
   }
 
   TypeTuple unwrapValueType() {
@@ -115,7 +116,7 @@ class TypeProjector {
         .customAttributeAsBytes('Windows.Win32.Interop.NativeTypedefAttribute')
         .isNotEmpty) {
       final typeIdentifier = wrappedType.fields.first.typeIdentifier;
-      return TypeProjector(typeIdentifier).projection;
+      return TypeProjection(typeIdentifier).projection;
     } else {
       final typeClass =
           stripAnsiUnicodeSuffix(wrappedType.name.split('.').last);
@@ -127,7 +128,7 @@ class TypeProjector {
     if (typeIdentifier.typeArg == null) {
       throw Exception('Pointer type missing for $typeIdentifier.');
     }
-    final typeArg = TypeProjector(typeIdentifier.typeArg!);
+    final typeArg = TypeProjection(typeIdentifier.typeArg!);
 
     // Pointer<Void> in Dart is unnecessarily restrictive, versus the
     // Win32 meaning, which is more like "undefined type". We can
@@ -149,7 +150,7 @@ class TypeProjector {
       throw Exception('Array information missing for $typeIdentifier.');
     }
 
-    final typeArg = TypeProjector(typeIdentifier.typeArg!);
+    final typeArg = TypeProjection(typeIdentifier.typeArg!);
     final projection = typeArg.projection;
 
     final nativeType = 'Array<${projection.nativeType}>';
@@ -161,12 +162,6 @@ class TypeProjector {
 
   TypeTuple unwrapCallbackType() {
     final callbackType = typeIdentifier.name.split('.').last;
-
-    // TODO: Remove in v3 -- for backward compat only
-    if (callbackTypeMapping.keys.contains(callbackType)) {
-      final mappedType = callbackTypeMapping[callbackType]!;
-      return TypeTuple(mappedType, mappedType);
-    }
 
     final nativeType = 'Pointer<NativeFunction<$callbackType>>';
     final dartType = 'Pointer<NativeFunction<$callbackType>>';

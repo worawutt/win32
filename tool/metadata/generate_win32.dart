@@ -13,7 +13,7 @@ import '../manual_gen/win32api.dart';
 import '../namespace/win32_functions.dart';
 import 'generate_win32_structs.dart';
 import 'generate_win32_tests.dart';
-import 'projection/win32_function_printer.dart';
+import 'projection/function.dart';
 import 'winmd_caveats.dart';
 
 final methods = <Method>[];
@@ -103,7 +103,7 @@ final _$libraryDartName = DynamicLibrary.open('${libraryFromDllName(library)}');
             methodMatches(m.name, filteredFunctionList[function]!.prototype));
         writer.writeStringSync('''
 ${generateDocComment(filteredFunctionList[function]!)}
-${Win32FunctionPrinter(function, method, libraryDartName).dartFfiMapping}
+${FunctionProjection(method, libraryDartName).toString()}
 ''');
       } on StateError {
         continue;

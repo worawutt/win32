@@ -1,18 +1,13 @@
-// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
-import 'package:winmd/winmd.dart';
+import 'package:winmd/winmd.dart' as winmd;
 
 import '../utils.dart';
-import 'data_classes.dart';
-import 'typeprojector.dart';
-import 'win32_typemap.dart';
+import 'class.dart';
+import 'method.dart';
 
 class ClassProjector {
-  final TypeDef typeDef;
+  final winmd.TypeDef typeDef;
 
-  int _vtableStart(TypeDef? type) {
+  int _vtableStart(winmd.TypeDef? type) {
     if (type == null) {
       return 0;
     }
@@ -38,31 +33,6 @@ class ClassProjector {
   int get vtableStart => _vtableStart(typeDef);
 
   const ClassProjector(this.typeDef);
-
-  /// Uniquely name the method.
-  ///
-  /// Dart doesn't allow overloaded methods, so we have to rename methods that
-  /// are duplicated.
-  String uniquelyNameMethod(Method method) {
-    // Is it an overload with a name provided by the metadata?
-    final overloadName = method
-        .attributeAsString('Windows.Foundation.Metadata.OverloadAttribute');
-    if (overloadName.isNotEmpty) return overloadName;
-
-    // If not, we check whether multiple methods exist with the same name.
-    final overloads = typeDef.methods.where((m) => m.name == method.name);
-
-    // If so, and there is more than one entry with the same name, add a suffix to all but the first.
-    if (overloads.length > 1) {
-      final overloadIndex = overloads.toList().indexOf(method);
-      if (overloadIndex > 0) {
-        return '${method.name}_$overloadIndex';
-      }
-    }
-
-    // Otherwise the original name is fine.
-    return method.name;
-  }
 
   /// Take a TypeDef and create a Dart projection of it.
   ClassProjection get projection {
@@ -101,88 +71,71 @@ class ClassProjector {
     }
 
     for (final method in typeDef.methods) {
-      final methodProjection = MethodProjection();
-
-      // Generate a Dart-compatible name
-      methodProjection.name = uniquelyNameMethod(method);
-
-      methodProjection.isGetProperty = method.isGetProperty;
-      methodProjection.isSetProperty = method.isSetProperty;
-
-      for (final mdParam in method.parameters) {
-        final typeProjection = TypeProjector(mdParam.typeIdentifier);
-
-        methodProjection.parameters.add(ParameterProjection(
-            safeName(mdParam.name),
-            nativeType: typeProjection.nativeType,
-            dartType: typeProjection.dartType));
-      }
-
-      // TODO: Rationalize these. We shouldn't have to hardcode for the
-      // difference between Win32 and WinRT metadata...
-      if (interface.name.startsWith('Windows.Win32')) {
-        final typeBuilder = TypeProjector(method.returnType.typeIdentifier);
-
-        methodProjection.returnTypeNative = typeBuilder.nativeType;
-        methodProjection.returnTypeDart = typeBuilder.dartType;
-
-        if (method.isGetProperty && method.parameters.isNotEmpty) {
-          methodProjection.isGetProperty = true;
-
-          // TODO: Deal with methods like IUPnPServices.get_Item([In], [Out]).
-          // Right now we ignore the [In] parameter :-O
-
-          // TODO: Next line should throw an exception when
-          // https://github.com/microsoft/win32metadata/issues/707 is fixed and
-          // we can reliably detect Win32 properties.
-
-          // This is a Pointer<T>, which will be wrapped later, so strip the
-          // Pointer<> off.
-          try {
-            final outParam = method.parameters
-                .lastWhere((param) => param.isOutParam)
-                .typeIdentifier;
-
-            final arg = outParam.typeArg ?? outParam;
-
-            final outParamType = TypeProjector(arg);
-            methodProjection.parameters = [
-              ParameterProjection(outParam.name,
-                  nativeType: outParamType.nativeType,
-                  dartType: outParamType.dartType)
-            ];
-          } catch (identifier) {
-            print(method.parameters.length);
-            throw Exception(
-                'Get property $method in ${method.parent} has no out param');
-          }
-        }
-      } else {
-        // WinRT methods always return an HRESULT, and provide the actual return
-        // value as an pointer
-        methodProjection.returnTypeNative = 'Int32';
-        methodProjection.returnTypeDart = 'int';
-        if (method.returnType.typeIdentifier.baseType != BaseType.Void) {
-          final typeBuilder = TypeProjector(method.returnType.typeIdentifier);
-
-          if (method.isSetProperty) {
-            final paramName = methodProjection.name.substring(4).toCamelCase();
-            methodProjection.parameters.add(ParameterProjection(paramName,
-                nativeType: typeBuilder.nativeType,
-                dartType: typeBuilder.dartType));
-          } else if (method.isGetProperty) {
-            methodProjection.parameters.add(ParameterProjection('value',
-                nativeType: typeBuilder.nativeType,
-                dartType: typeBuilder.dartType));
-          } else {
-            methodProjection.parameters.add(ParameterProjection('result',
-                nativeType: 'Pointer<${typeBuilder.nativeType}>',
-                dartType: 'Pointer<${typeBuilder.nativeType}>'));
-          }
-        }
-      }
-
+      var vtableOffset = interface.vtableStart;
+      final methodProjection = MethodProjection(method, vtableOffset++);
       interface.methods.add(methodProjection);
+
+      // // TODO: Rationalize these. We shouldn't have to hardcode for the
+      // // difference between Win32 and WinRT metadata...
+      // if (interface.name.startsWith('Windows.Win32')) {
+      //   final typeBuilder = TypeProjection(method.returnType.typeIdentifier);
+
+      //   methodProjection.returnTypeNative = typeBuilder.nativeType;
+      //   methodProjection.returnTypeDart = typeBuilder.dartType;
+
+      //   if (method.isGetProperty && method.parameters.isNotEmpty) {
+      //     methodProjection.isGetProperty = true;
+
+      //     // TODO: Deal with methods like IUPnPServices.get_Item([In], [Out]).
+      //     // Right now we ignore the [In] parameter :-O
+
+      //     // TODO: Next line should throw an exception when
+      //     // https://github.com/microsoft/win32metadata/issues/707 is fixed and
+      //     // we can reliably detect Win32 properties.
+
+      //     // This is a Pointer<T>, which will be wrapped later, so strip the
+      //     // Pointer<> off.
+      //     try {
+      //       final outParam = method.parameters
+      //           .lastWhere((param) => param.isOutParam)
+      //           .typeIdentifier;
+
+      //       final arg = outParam.typeArg ?? outParam;
+
+      //       final outParamType = TypeProjection(arg);
+      //       methodProjection.parameters = [
+      //         ParameterProjection(outParam.name, outParamType)
+      //       ];
+      //     } catch (identifier) {
+      //       print(method.parameters.length);
+      //       throw Exception(
+      //           'Get property $method in ${method.parent} has no out param');
+      //     }
+      //   }
+      // } else {
+      //   // WinRT methods always return an HRESULT, and provide the actual return
+      //   // value as an pointer
+      //   methodProjection.returnTypeNative = 'Int32';
+      //   methodProjection.returnTypeDart = 'int';
+      //   if (method.returnType.typeIdentifier.baseType != winmd.BaseType.Void) {
+      //     final typeBuilder = TypeProjection(method.returnType.typeIdentifier);
+
+      //     if (method.isSetProperty) {
+      //       final paramName = methodProjection.name.substring(4).toCamelCase();
+      //       methodProjection.parameters
+      //           .add(ParameterProjection(paramName, typeBuilder));
+      //     } else if (method.isGetProperty) {
+      //       methodProjection.parameters
+      //           .add(ParameterProjection('value', typeBuilder));
+      //     } else {
+      //       // TODO: needs wrapping in a Pointer<> when it's printed
+      //       methodProjection.parameters
+      //           .add(ParameterProjection('result', typeBuilder));
+      //     }
+      //   }
+      // }
+
+      // interface.methods.add(methodProjection);
     }
 
     return interface;

@@ -10,7 +10,7 @@ import 'dart:io';
 import 'package:winmd/winmd.dart';
 
 import '../manual_gen/win32api.dart';
-import 'projection/typeprinter.dart';
+import 'projection/struct.dart';
 import 'utils.dart';
 
 const structFileHeader = '''
@@ -91,8 +91,8 @@ int generateStructs(Win32API win32) {
     if (packingAlignment != null && packingAlignment > 0) {
       writer.writeStringSync('@Packed($packingAlignment)\n');
     }
-
-    writer.writeStringSync(TypePrinter.printStruct(typedef, struct));
+    final projectedStruct = StructProjection(typedef, struct);
+    writer.writeStringSync(projectedStruct.toString());
     structsGenerated++;
   }
 

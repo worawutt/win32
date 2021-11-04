@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
+import '../metadata/projection/class.dart';
 import '../metadata/projection/classprojector.dart';
-import '../metadata/projection/data_classes.dart';
 import '../metadata/projection/typeprinter.dart';
 import '../metadata/utils.dart';
 import 'exclusions.dart';
@@ -111,7 +111,7 @@ void generateInterfaceFiles(
       ..generateClass = clsid.isNotEmpty
       ..clsid = clsid
       ..className =
-          nameWithoutEncoding(interface.name.split('.').last.substring(1));
+          stripAnsiUnicodeSuffix(interface.name.split('.').last.substring(1));
 
     final imports = importsForClass(interface).toSet();
 
@@ -121,7 +121,7 @@ void generateInterfaceFiles(
         TypePrinter.printProjection(classProjection, excludeHeader: true);
 
     final classOutputFilename =
-        nameWithoutEncoding(interface.name.split('.').last);
+        stripAnsiUnicodeSuffix(interface.name.split('.').last);
     final writer =
         File('${directory.uri.toFilePath()}$classOutputFilename.dart')
             .openSync(mode: FileMode.writeOnly);
