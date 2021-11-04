@@ -2,6 +2,7 @@ import 'package:winmd/winmd.dart' show MetadataStore;
 
 import 'callback.dart';
 import 'function.dart';
+import 'interface.dart';
 import 'method.dart';
 import 'property.dart';
 import 'struct.dart';
@@ -71,6 +72,15 @@ void printComSetProperty() {
   }
 }
 
+void printComInterface() {
+  final interface = scope.findTypeDef('Windows.Win32.System.Com.IUnknown');
+
+  if (interface != null) {
+    final interfaceProjection = InterfaceProjection(interface);
+    print(interfaceProjection);
+  }
+}
+
 void main() {
-  printComSetProperty();
+  printComInterface();
 }

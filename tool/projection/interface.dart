@@ -5,7 +5,7 @@ import 'property.dart';
 
 class InterfaceProjection {
   final winmd.TypeDef typeDef;
-  late final List<MethodProjection> methodProjections;
+  final List<MethodProjection> methodProjections = [];
 
   InterfaceProjection(this.typeDef) {
     for (final method in typeDef.methods) {

@@ -50,6 +50,9 @@ class MethodProjection {
     return method.name;
   }
 
+  String get methodParams =>
+      parameters.map((param) => param.dartProjection).join(', ');
+
   String get nativeParams => [
         'Pointer',
         ...parameters.map((param) => param.ffiProjection),
@@ -80,7 +83,7 @@ class MethodProjection {
   // TODO: Consider using `late final` technique to cache the function lookup.
   @override
   String toString() => '''
-      ${returnType.dartType} $name($dartParams) => ptr.ref.lpVtbl.value
+      ${returnType.dartType} $name($methodParams) => ptr.ref.lpVtbl.value
         .elementAt($vtableOffset)
         .cast<Pointer<NativeFunction<$nativePrototype>>>()
         .value
