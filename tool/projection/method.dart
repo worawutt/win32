@@ -3,7 +3,7 @@ import 'package:winmd/winmd.dart' as winmd;
 import 'parameter.dart';
 import 'type.dart';
 
-/// A method or a property.
+/// A method.
 ///
 /// Methods have names, a list of parameters, and may return a type.
 class MethodProjection {

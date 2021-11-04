@@ -3,6 +3,7 @@ import 'package:winmd/winmd.dart' show MetadataStore;
 import 'callback.dart';
 import 'function.dart';
 import 'method.dart';
+import 'property.dart';
 import 'struct.dart';
 
 final scope = MetadataStore.getWin32Scope();
@@ -48,6 +49,28 @@ void printComMethod() {
   }
 }
 
+void printComGetProperty() {
+  final interface = scope.findTypeDef(
+      'Windows.Win32.Networking.ActiveDirectory.IADsPropertyEntry');
+  final method = interface?.findMethod('get_Name');
+
+  if (method != null) {
+    final methodProjection = GetPropertyProjection(method, 10);
+    print(methodProjection);
+  }
+}
+
+void printComSetProperty() {
+  final interface = scope.findTypeDef(
+      'Windows.Win32.Networking.ActiveDirectory.IADsPropertyEntry');
+  final method = interface?.findMethod('put_Name');
+
+  if (method != null) {
+    final methodProjection = SetPropertyProjection(method, 11);
+    print(methodProjection);
+  }
+}
+
 void main() {
-  printComMethod();
+  printComSetProperty();
 }

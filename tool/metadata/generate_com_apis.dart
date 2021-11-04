@@ -5,9 +5,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:winmd/winmd.dart';
 
-import '../projection/class.dart';
-import '../projection/classprojector.dart';
-import '../projection/typeprinter.dart';
+import '../projection/interface.dart';
 import '../projection/utils.dart';
 
 const interfacesToGenerate = <String>[
@@ -101,29 +99,31 @@ void main(List<String> args) {
 
   final argResults = parser.parse(args);
   final classDirectory = Directory(argResults['classDirectory'] as String);
-  final testDirectory = Directory(argResults['testDirectory'] as String);
+  // final testDirectory = Directory(argResults['testDirectory'] as String);
 
   for (final type in interfacesToGenerate) {
     final mdTypeDef = scope.findTypeDef(type);
 
     if (mdTypeDef == null) throw Exception("Can't find $type");
 
-    final clsid =
-        scope.findTypeDef(classNameForInterfaceName(type))?.guid ?? '';
+    // final clsid =
+    //     scope.findTypeDef(classNameForInterfaceName(type))?.guid ?? '';
 
-    final parentInterface = mdTypeDef.interfaces.isNotEmpty
-        ? mdTypeDef.interfaces.first.name.split('.').last
-        : '';
+    // final parentInterface = mdTypeDef.interfaces.isNotEmpty
+    //     ? mdTypeDef.interfaces.first.name.split('.').last
+    //     : '';
 
-    final classProjection = ClassProjector(mdTypeDef).projection
-      ..inherits = parentInterface
-      // ..vtableStart = vTableStart(mdTypeDef)
-      ..sourceType = SourceType.com
-      ..generateClass = clsid.isNotEmpty
-      ..clsid = clsid
-      ..className = stripAnsiUnicodeSuffix(type.split('.').last.substring(1));
+    final interfaceProjection = InterfaceProjection(mdTypeDef);
+    // // = ClassProjector(mdTypeDef).projection
+    //   ..inherits = parentInterface
+    //   // ..vtableStart = vTableStart(mdTypeDef)
+    //   ..sourceType = SourceType.com
+    //   ..generateClass = clsid.isNotEmpty
+    //   ..clsid = clsid
+    //   ..className = stripAnsiUnicodeSuffix(type.split('.').last.substring(1));
 
-    final dartClass = TypePrinter.printProjection(classProjection);
+    // final dartClass = TypePrinter.printProjection(classProjection);
+    final dartClass = interfaceProjection.toString();
 
     final classOutputFilename = stripAnsiUnicodeSuffix(type.split('.').last);
     final outputFile =
@@ -132,12 +132,12 @@ void main(List<String> args) {
     print('Writing:    ${outputFile.path}');
     outputFile.writeAsStringSync(dartClass);
 
-    final dartTests = TypePrinter.printTests(classProjection);
+    //   final dartTests = TypePrinter.printTests(classProjection);
 
-    final testFile = File(
-        '${testDirectory.uri.toFilePath()}${classOutputFilename}_test.dart');
+    //   final testFile = File(
+    //       '${testDirectory.uri.toFilePath()}${classOutputFilename}_test.dart');
 
-    print('Writing:    ${testFile.path}');
-    testFile.writeAsStringSync(dartTests);
+    //   print('Writing:    ${testFile.path}');
+    //   testFile.writeAsStringSync(dartTests);
   }
 }

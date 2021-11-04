@@ -2,9 +2,7 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
-import '../projection/class.dart';
-import '../projection/classprojector.dart';
-import '../projection/typeprinter.dart';
+import '../projection/interface.dart';
 import '../projection/utils.dart';
 import 'exclusions.dart';
 
@@ -95,42 +93,45 @@ Set<String> importsForClass(TypeDef typedef) {
 void generateInterfaceFiles(
     Directory directory, List<TypeDef> interfaces, Scope scope) {
   for (final interface in interfaces) {
-    final clsid =
-        scope.findTypeDef(classNameForInterfaceName(interface.name))?.guid ??
-            '';
+    // final clsid =
+    //     scope.findTypeDef(classNameForInterfaceName(interface.name))?.guid ??
+    //         '';
 
-    final parentInterface = interface.interfaces.isNotEmpty
-        ? interface.interfaces.first.name.split('.').last
-        : '';
+    // final parentInterface = interface.interfaces.isNotEmpty
+    //     ? interface.interfaces.first.name.split('.').last
+    //     : '';
 
-    final classProjection = ClassProjector(interface).projection
-      ..inherits = parentInterface
-      ..namespace = interface.name
-      // ..vtableStart = vTableStart(mdTypeDef)
-      ..sourceType = SourceType.com
-      ..generateClass = clsid.isNotEmpty
-      ..clsid = clsid
-      ..className =
-          stripAnsiUnicodeSuffix(interface.name.split('.').last.substring(1));
+    final interfaceProjection = InterfaceProjection(interface);
+    final dartClass = interfaceProjection.toString();
 
-    final imports = importsForClass(interface).toSet();
+    // ClassProjector(interface).projection
+    //   ..inherits = parentInterface
+    //   ..namespace = interface.name
+    //   // ..vtableStart = vTableStart(mdTypeDef)
+    //   ..sourceType = SourceType.com
+    //   ..generateClass = clsid.isNotEmpty
+    //   ..clsid = clsid
+    //   ..className =
+    //       stripAnsiUnicodeSuffix(interface.name.split('.').last.substring(1));
 
-    // Pass relative directory to lib/src as second parameter (e.g. '../../')
-    final prefix = '../' * (interface.name.split('.').length - 3);
-    final dartClass =
-        TypePrinter.printProjection(classProjection, excludeHeader: true);
+    // final imports = importsForClass(interface).toSet();
+
+    // // Pass relative directory to lib/src as second parameter (e.g. '../../')
+    // final prefix = '../' * (interface.name.split('.').length - 3);
+    // final dartClass =
+    //     TypePrinter.printProjection(classProjection, excludeHeader: true);
 
     final classOutputFilename =
         stripAnsiUnicodeSuffix(interface.name.split('.').last);
     final writer =
         File('${directory.uri.toFilePath()}$classOutputFilename.dart')
             .openSync(mode: FileMode.writeOnly);
-    writer.writeStringSync(comFileHeader(interface, prefix));
-    for (final import in imports) {
-      if (!excludedImports.contains(import)) {
-        writer.writeStringSync("import '$prefix$import';\n");
-      }
-    }
+    // writer.writeStringSync(comFileHeader(interface, prefix));
+    // for (final import in imports) {
+    //   if (!excludedImports.contains(import)) {
+    //     writer.writeStringSync("import '$prefix$import';\n");
+    //   }
+    // }
     writer.writeStringSync(dartClass);
   }
 }
