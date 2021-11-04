@@ -83,6 +83,14 @@ class InterfaceProjection {
     $importHeader
   ''';
 
+// TODO: Complete IID
+  String get guidConstants => '''
+//     buffer.writeln('/// @nodoc');
+//     buffer.writeln("const IID_$shortName = 'IID';\n");
+//     return buffer.toString();
+//   }
+''';
+
   @override
   String toString() {
     final buffer = StringBuffer();

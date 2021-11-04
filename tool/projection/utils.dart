@@ -72,22 +72,6 @@ String wrapCommentText(String inputText, [int wrapLength = 76]) {
   return outputText.toString().trimRight();
 }
 
-/// Take a fully-qualified interface name (e.g.
-/// `Windows.Win32.UI.Shell.IShellLinkW`) and return the corresponding class
-/// name (e.g. `Windows.Win32.UI.Shell.ShellLink`).
-String classNameForInterfaceName(String interfaceName) {
-  final interfaceNameAsList = interfaceName.split('.');
-
-  // Strip off the 'I' from the last component
-  final fullyQualifiedClassName =
-      (interfaceNameAsList.sublist(0, interfaceNameAsList.length - 1)
-            ..add(interfaceNameAsList.last.substring(1)))
-          .join('.');
-
-  // If class has a 'W' suffix, erase it.
-  return stripAnsiUnicodeSuffix(fullyQualifiedClassName);
-}
-
 extension CamelCaseConversion on String {
   String toCamelCase() =>
       length >= 2 ? substring(0, 1).toLowerCase() + substring(1) : this;
