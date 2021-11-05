@@ -30,7 +30,7 @@ List<String> importsForStruct(TypeDef struct) {
   final importList = <String>[];
 
   for (final field in struct.fields) {
-    if (specialTypes.contains(field.typeIdentifier.name)) {
+    if (excludedTypes.contains(field.typeIdentifier.name)) {
       importList.add('specialTypes.dart');
     }
 

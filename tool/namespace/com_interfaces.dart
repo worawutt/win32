@@ -46,7 +46,7 @@ import '${pathToLibSrc}utils.dart';
 }
 
 String? getImportForTypeIdentifier(TypeIdentifier typeIdentifier) {
-  if (specialTypes.contains(typeIdentifier.name)) {
+  if (excludedTypes.contains(typeIdentifier.name)) {
     return 'specialTypes.dart';
   }
 

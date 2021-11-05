@@ -94,7 +94,7 @@ export 'src/exceptions.dart';
 export 'src/guid.dart';
 export 'src/macros.dart';
 export 'src/guid.dart';
-export 'src/structs.dart' hide COR_FIELD_OFFSET;
+export 'src/structs.dart';
 export 'src/structs.g.dart'
     hide addrinfo, fd_set, SOCKADDR, timeval, hostent, protoent, servent;
 export 'src/specialTypes.dart';

@@ -744,58 +744,6 @@ class BLUETOOTH_PIN_INFO extends Struct {
   }
 }
 
-// typedef struct _OVERLAPPED {
-//   ULONG_PTR Internal;
-//   ULONG_PTR InternalHigh;
-//   union {
-//     struct {
-//       DWORD Offset;
-//       DWORD OffsetHigh;
-//     } DUMMYSTRUCTNAME;
-//     PVOID Pointer;
-//   } DUMMYUNIONNAME;
-//   HANDLE    hEvent;
-// } OVERLAPPED, *LPOVERLAPPED;
-
-class _OVERLAPPED_Anonymous_1 extends Struct {
-  @Uint32()
-  external int Offset;
-  @Uint32()
-  external int OffsetHigh;
-}
-
-class _OVERLAPPED_Anonymous_0 extends Union {
-  external _OVERLAPPED_Anonymous_1 _DUMMYSTRUCTNAME;
-  external Pointer pointer;
-}
-
-/// Contains information used in asynchronous (or overlapped) input and output
-/// (I/O).
-///
-/// {@category Struct}
-class OVERLAPPED extends Struct {
-  @IntPtr()
-  external int Internal;
-
-  @IntPtr()
-  external int InternalHigh;
-
-  external _OVERLAPPED_Anonymous_0 _DUMMYUNIONNAME;
-
-  int get Offset => _DUMMYUNIONNAME._DUMMYSTRUCTNAME.Offset;
-  int get OffsetHigh => _DUMMYUNIONNAME._DUMMYSTRUCTNAME.OffsetHigh;
-
-  set Offset(int value) => _DUMMYUNIONNAME._DUMMYSTRUCTNAME.Offset = value;
-  set OffsetHigh(int value) =>
-      _DUMMYUNIONNAME._DUMMYSTRUCTNAME.OffsetHigh = value;
-
-  Pointer get pointer => _DUMMYUNIONNAME.pointer;
-  set pointer(Pointer value) => _DUMMYUNIONNAME.pointer = value;
-
-  @IntPtr()
-  external int hEvent;
-}
-
 // typedef struct _WLAN_RAW_DATA_LIST {
 //     DWORD dwTotalSize;
 //     DWORD dwNumberOfItems;

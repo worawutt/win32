@@ -1,7 +1,6 @@
 import 'package:winmd/winmd.dart' as winmd;
 
 import 'utils.dart';
-import 'win32_typemap.dart';
 
 class TypeTuple {
   final String nativeType;
