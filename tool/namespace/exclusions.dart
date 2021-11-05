@@ -33,10 +33,10 @@ const excludedCallbacks = <String>[];
 const excludedImports = <String>[];
 
 const excludedComInterfaces = <String>[
-  'Windows.Win32.System.Com.IUnknown', // generated manually w/ extra APIs
+  // 'Windows.Win32.System.Com.IUnknown', // generated manually w/ extra APIs
 ];
 
-const specialTypes = [...excludedStructs, ...excludedComInterfaces];
+const excludedTypes = [...excludedStructs, ...excludedComInterfaces];
 
 // Working around https://github.com/dart-lang/sdk/issues/46644
 const ignorePackingDirectives = <String>[

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:winmd/winmd.dart';
 
+import '../projection/class.dart';
 import '../projection/interface.dart';
 import '../projection/utils.dart';
 
@@ -49,16 +50,16 @@ const interfacesToGenerate = <String>[
   'Windows.Win32.System.Com.IMoniker',
   'Windows.Win32.System.Com.IPersist',
   'Windows.Win32.System.Com.IPersistFile',
-  'Windows.Win32.System.Ole.IPersistMemory',
+  'Windows.Win32.System.Com.IPersistMemory',
   'Windows.Win32.System.Com.IPersistStream',
   'Windows.Win32.System.Ole.IProvideClassInfo',
   'Windows.Win32.System.Com.IRunningObjectTable',
   'Windows.Win32.System.Com.IUri',
-  'Windows.Win32.System.Ole.Automation.IDispatch',
-  'Windows.Win32.System.Ole.Automation.IEnumVARIANT',
-  'Windows.Win32.System.Ole.Automation.IErrorInfo',
-  'Windows.Win32.System.Ole.Automation.ISupportErrorInfo',
-  'Windows.Win32.System.Ole.Automation.ITypeInfo',
+  'Windows.Win32.System.Com.IDispatch',
+  'Windows.Win32.System.Ole.IEnumVARIANT',
+  'Windows.Win32.System.Com.IErrorInfo',
+  'Windows.Win32.System.Ole.ISupportErrorInfo',
+  'Windows.Win32.System.Com.ITypeInfo',
   'Windows.Win32.System.WinRT.IInspectable',
   'Windows.Win32.System.Wmi.IEnumWbemClassObject',
   'Windows.Win32.System.Wmi.IWbemClassObject',
@@ -101,31 +102,23 @@ void main(List<String> args) {
   final classDirectory = Directory(argResults['classDirectory'] as String);
   // final testDirectory = Directory(argResults['testDirectory'] as String);
 
-  for (final type in interfacesToGenerate) {
-    final mdTypeDef = scope.findTypeDef(type);
+  for (final interface in interfacesToGenerate) {
+    final typeDef = scope.findTypeDef(interface);
+    if (typeDef == null) throw Exception("Can't find $interface");
 
-    if (mdTypeDef == null) throw Exception("Can't find $type");
+    InterfaceProjection interfaceProjection;
+    interfaceProjection = InterfaceProjection(typeDef);
 
-    // final clsid =
-    //     scope.findTypeDef(classNameForInterfaceName(type))?.guid ?? '';
+    // In v2, we put classes and interfaces in the same file.
+    final className = ClassProjection.generateClassName(typeDef);
+    if (scope.findTypeDef(className) != null) {
+      interfaceProjection = ClassProjection.fromInterface(typeDef);
+    }
 
-    // final parentInterface = mdTypeDef.interfaces.isNotEmpty
-    //     ? mdTypeDef.interfaces.first.name.split('.').last
-    //     : '';
-
-    final interfaceProjection = InterfaceProjection(mdTypeDef);
-    // // = ClassProjector(mdTypeDef).projection
-    //   ..inherits = parentInterface
-    //   // ..vtableStart = vTableStart(mdTypeDef)
-    //   ..sourceType = SourceType.com
-    //   ..generateClass = clsid.isNotEmpty
-    //   ..clsid = clsid
-    //   ..className = stripAnsiUnicodeSuffix(type.split('.').last.substring(1));
-
-    // final dartClass = TypePrinter.printProjection(classProjection);
     final dartClass = interfaceProjection.toString();
 
-    final classOutputFilename = stripAnsiUnicodeSuffix(type.split('.').last);
+    final classOutputFilename =
+        stripAnsiUnicodeSuffix(interface.split('.').last);
     final outputFile =
         File('${classDirectory.uri.toFilePath()}$classOutputFilename.dart');
 

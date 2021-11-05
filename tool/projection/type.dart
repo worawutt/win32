@@ -1,6 +1,7 @@
 import 'package:winmd/winmd.dart' as winmd;
 
 import 'utils.dart';
+import 'win32_typemap.dart';
 
 class TypeTuple {
   final String nativeType;
@@ -27,6 +28,7 @@ const Map<winmd.BaseType, TypeTuple> baseNativeMapping = {
   winmd.BaseType.UintPtr: TypeTuple('IntPtr', 'int', attribute: '@IntPtr()'),
   winmd.BaseType.Char: TypeTuple('Uint16', 'int', attribute: '@Uint16()'),
 };
+
 const Map<String, TypeTuple> specialTypes = {
   'Windows.Win32.Foundation.BSTR':
       TypeTuple('Pointer<Utf16>', 'Pointer<Utf16>'),

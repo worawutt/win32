@@ -13,7 +13,6 @@ import '../constants.dart';
 import '../exceptions.dart';
 import '../guid.dart';
 import '../macros.dart';
-import '../ole32.dart';
 import '../utils.dart';
 
 /// @nodoc

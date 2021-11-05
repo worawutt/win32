@@ -64,6 +64,7 @@ import 'callbacks.dart';
 import 'com/IDispatch.dart';
 import 'com/IUnknown.dart';
 import 'combase.dart';
+import 'guid.dart';
 import 'oleaut32.dart';
 import 'structs.dart';
 ''';
@@ -85,12 +86,8 @@ int generateStructs(Win32API win32) {
     }
 
     writer.writeStringSync(wrapCommentText(win32struct.comment));
+    writer.writeStringSync('\n///\n');
 
-    writer.writeStringSync('\n///\n/// {@category Struct}\n');
-    final packingAlignment = typedef.classLayout.packingAlignment;
-    if (packingAlignment != null && packingAlignment > 0) {
-      writer.writeStringSync('@Packed($packingAlignment)\n');
-    }
     final projectedStruct = StructProjection(typedef, struct);
     writer.writeStringSync(projectedStruct.toString());
     structsGenerated++;

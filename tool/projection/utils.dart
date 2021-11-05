@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:winmd/winmd.dart';
 
 import '../namespace/exclusions.dart';
+import 'type.dart';
 
 const dartKeywords = <String>[
   // Keywords from https://dart.dev/guides/language/language-tour#keywords.
@@ -23,20 +24,21 @@ const dartKeywords = <String>[
   'Unsized', 'Void', 'Packed', 'Handle',
 ];
 
-bool typePretendsToBeAnsi(String typeName) => [
-      'DATA',
-      'SCHEMA',
-      'AREA',
-      'M128A',
-      'CIECHROMA'
-    ].contains(typeName.split('.').last);
+bool typePretendsToBeAnsi(String typeName) {
+  final falseAnsiEndings = ['DATA', 'SCHEMA', 'AREA', 'M128A', 'CIECHROMA'];
+  for (final word in falseAnsiEndings) {
+    if (typeName.endsWith(word)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 /// Strip the Unicode / ANSI suffix from the name. For example,`MessageBoxW`
 /// should become `MessageBox`. Heuristic approach.
 String stripAnsiUnicodeSuffix(String typeName) {
   if (typeName.startsWith('Pointer<')) {
-    final wrappedType =
-        typeName.substring(8, typeName.length - 1); // Pointer<X> => X
+    final wrappedType = stripPointer(typeName);
     return 'Pointer<${stripAnsiUnicodeSuffix(wrappedType)}>';
   }
   if (typePretendsToBeAnsi(typeName)) {
@@ -47,6 +49,18 @@ String stripAnsiUnicodeSuffix(String typeName) {
   }
   return typeName;
 }
+
+/// Convert a *typeProjection into a typeProjection
+TypeProjection dereference(TypeProjection pointer) {
+  if (pointer.typeIdentifier.typeArg != null) {
+    return TypeProjection(pointer.typeIdentifier.typeArg!);
+  } else {
+    throw Exception('Type $pointer cannot be dereferenced.');
+  }
+}
+
+String stripPointer(String typeName) =>
+    typeName.substring(8, typeName.length - 1); // Pointer<X> => X
 
 bool typedefIsAnsi(TypeDef typedef) =>
     typedef.name.endsWith('A') && !typePretendsToBeAnsi(typedef.name);
@@ -87,7 +101,7 @@ String relativePathToSrcDirectory(File file) {
 }
 
 String importForWin32Type(TypeIdentifier identifier) {
-  if (specialTypes.contains(identifier.name)) {
+  if (excludedTypes.contains(identifier.name)) {
     return 'specialTypes.dart';
   }
 
@@ -136,7 +150,7 @@ String safeName(String name) {
 /// `Pointer<alljoyn_abouticon_handle>`.
 String safeTypename(String name) {
   if (name.startsWith('Pointer<')) {
-    final wrappedType = name.substring(8, name.length - 1); // Pointer<X> => X
+    final wrappedType = stripPointer(name);
     return 'Pointer<${safeTypename(wrappedType)}>';
   }
 
