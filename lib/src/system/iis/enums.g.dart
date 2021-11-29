@@ -1,0 +1,71 @@
+/// {@category Enum}
+class FTP_ACCESS {
+  static const FTP_ACCESS_NONE = 0x00000000;
+  static const FTP_ACCESS_READ = 0x00000001;
+  static const FTP_ACCESS_WRITE = 0x00000002;
+  static const FTP_ACCESS_READ_WRITE = 0x00000003;
+}
+
+/// {@category Enum}
+class FTP_PROCESS_STATUS {
+  static const FTP_PROCESS_CONTINUE = 0x00000000;
+  static const FTP_PROCESS_CLOSE_SESSION = 0x00000001;
+  static const FTP_PROCESS_TERMINATE_SESSION = 0x00000002;
+  static const FTP_PROCESS_REJECT_COMMAND = 0x00000003;
+}
+
+/// {@category Enum}
+class HTTP_TRACE_TYPE {
+  static const HTTP_TRACE_TYPE_BYTE = 0x00000011;
+  static const HTTP_TRACE_TYPE_USHORT = 0x00000012;
+  static const HTTP_TRACE_TYPE_ULONG = 0x00000013;
+  static const HTTP_TRACE_TYPE_ULONGLONG = 0x00000015;
+  static const HTTP_TRACE_TYPE_CHAR = 0x00000010;
+  static const HTTP_TRACE_TYPE_SHORT = 0x00000002;
+  static const HTTP_TRACE_TYPE_LONG = 0x00000003;
+  static const HTTP_TRACE_TYPE_LONGLONG = 0x00000014;
+  static const HTTP_TRACE_TYPE_LPCWSTR = 0x0000001f;
+  static const HTTP_TRACE_TYPE_LPCSTR = 0x0000001e;
+  static const HTTP_TRACE_TYPE_LPCGUID = 0x00000048;
+  static const HTTP_TRACE_TYPE_BOOL = 0x0000000b;
+}
+
+/// {@category Enum}
+class METADATATYPES {
+  static const ALL_METADATA = 0x00000000;
+  static const DWORD_METADATA = 0x00000001;
+  static const STRING_METADATA = 0x00000002;
+  static const BINARY_METADATA = 0x00000003;
+  static const EXPANDSZ_METADATA = 0x00000004;
+  static const MULTISZ_METADATA = 0x00000005;
+  static const INVALID_END_METADATA = 0x00000006;
+}
+
+/// {@category Enum}
+class SF_PROPERTY_IIS {
+  static const SF_PROPERTY_SSL_CTXT = 0x00000000;
+  static const SF_PROPERTY_INSTANCE_NUM_ID = 0x00000001;
+}
+
+/// {@category Enum}
+class SF_REQ_TYPE {
+  static const SF_REQ_SEND_RESPONSE_HEADER = 0x00000000;
+  static const SF_REQ_ADD_HEADERS_ON_DENIAL = 0x00000001;
+  static const SF_REQ_SET_NEXT_READ_SIZE = 0x00000002;
+  static const SF_REQ_SET_PROXY_INFO = 0x00000003;
+  static const SF_REQ_GET_CONNID = 0x00000004;
+  static const SF_REQ_SET_CERTIFICATE_INFO = 0x00000005;
+  static const SF_REQ_GET_PROPERTY = 0x00000006;
+  static const SF_REQ_NORMALIZE_URL = 0x00000007;
+  static const SF_REQ_DISABLE_NOTIFICATIONS = 0x00000008;
+}
+
+/// {@category Enum}
+class SF_STATUS_TYPE {
+  static const SF_STATUS_REQ_FINISHED = 0x08000000;
+  static const SF_STATUS_REQ_FINISHED_KEEP_CONN = 0x08000001;
+  static const SF_STATUS_REQ_NEXT_NOTIFICATION = 0x08000002;
+  static const SF_STATUS_REQ_HANDLED_NOTIFICATION = 0x08000003;
+  static const SF_STATUS_REQ_ERROR = 0x08000004;
+  static const SF_STATUS_REQ_READ_NEXT = 0x08000005;
+}
