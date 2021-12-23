@@ -1,27 +1,34 @@
-const excludedNamespaces = <String>[
-  // 'Data.Xml',
-  // 'Devices.DeviceAndDriverInstallation',
-  // 'Devices.Enumeration',
-  // 'Devices.Fax',
-  // 'Devices.Geolocation',
-  // 'Devices.HumanInterfaceDevice',
-  // 'Devices.Tapi',
-  // 'Devices.Usb',
-  // 'Globalization',
-  // 'Graphics.Direct2D',
-  // 'Graphics.DirectComposition',
-  // 'Graphics.DirectShow',
-  // 'Graphics.DirectWrite',
-  // 'Graphics.Dwm',
-  // 'Graphics.'
-];
+const excludedNamespaces = <String>{
+  // We're focusing on client APIs, rather than server-centric APIs like IIS.
+  // We're also excluding APIs that are no longer well supported, like the old
+  // Trident MSHTML engine.
+  'Windows.Win32.AI.MachineLearning.DirectML',
+  'Windows.Win32.AI.MachineLearning.WinML',
+  'Windows.Win32.System.Diagnostics.Debug.WebApp',
+  'Windows.Win32.Devices.AllJoyn',
+  'Windows.Win32.Networking.ActiveDirectory',
+  'Windows.Win32.Networking.Clustering',
+  'Windows.Win32.Networking.WinHttp',
+  'Windows.Win32.NetworkManagement.Dhcp',
+  'Windows.Win32.NetworkManagement.InternetConnectionWizard',
+  'Windows.Win32.NetworkManagement.Rras',
+  'Windows.Win32.Storage.IndexServer',
+  'Windows.Win32.System.Iis',
+  'Windows.Win32.System.Search',
+  'Windows.Win32.System.ServerBackup',
+  'Windows.Win32.System.SideShow',
+  'Windows.Win32.System.WinRT.AllJoyn',
+  'Windows.Win32.System.WinRT.Holographic',
+  'Windows.Win32.System.WinRT.ML',
+  'Windows.Win32.Web.MsHtml',
+};
 
-const excludedFunctions = <String>[
+const excludedFunctions = <String>{
   // Duplicates
   '_TrackMouseEvent',
-];
+};
 
-const excludedStructs = <String>[
+const excludedStructs = <String>{
   'Windows.Win32.System.Com.VARIANT',
   'Windows.Win32.System.Com.StructuredStorage.PROPVARIANT',
   'Windows.Win32.System.IO.OVERLAPPED',
@@ -39,17 +46,35 @@ const excludedStructs = <String>[
   'Windows.Win32.System.Diagnostics.Debug.SYMBOL_INFO',
   'Windows.Win32.System.Diagnostics.Debug.SYMBOL_INFO_PACKAGE',
   'Windows.Win32.System.Diagnostics.Debug.SYMSRV_INDEX_INFO',
+  'Windows.Win32.System.Diagnostics.ToolHelp.MODULEENTRY32',
+  'Windows.Win32.System.Diagnostics.ToolHelp.PROCESSENTRY32',
 
+  // Other ANSI structs where the 'A' is not a suffix.
   'Windows.Win32.UI.Controls.PROPSHEETPAGEA_V1',
   'Windows.Win32.UI.Controls.PROPSHEETPAGEA_V2',
   'Windows.Win32.UI.Controls.PROPSHEETPAGEA_V3',
-];
+  'Windows.Win32.Media.Audio.DirectMusic.DSPROPERTY_DIRECTSOUNDDEVICE_ENUMERATE_A_DATA',
 
-const excludedCallbacks = <String>[];
+  // Duplicated definitions.
+  'Windows.Win32.Media.DeviceManager._BITMAPINFOHEADER',
+  'Windows.Win32.Media.DeviceManager._VIDEOINFOHEADER',
+  'Windows.Win32.Media.DeviceManager._WAVEFORMATEX',
+  'Windows.Win32.Devices.Fax.IStiDeviceW',
+};
 
-const excludedImports = <String>[];
+const excludedConstants = <String>{
+  '_IID_IXmlReader',
+  '_IID_IXmlResolver',
+  '_IID_IXmlWriter',
+};
 
-const excludedComInterfaces = <String>[
+const excludedGuidConstants = <String>{
+  'Windows.Win32.UI.Shell.ShellLink',
+};
+
+const excludedCallbacks = <String>{};
+
+const excludedComInterfaces = <String>{
   // TODO: We may be able to remove this from the list.
   'Windows.Win32.System.Com.IUnknown',
 
@@ -59,65 +84,47 @@ const excludedComInterfaces = <String>[
   'Windows.Win32.System.Mmc._Application',
   'Windows.Win32.System.Mmc.Document',
 
+  // The "real" versions of these are prefixed with _.
+  'Windows.Win32.Devices.Fax.IFaxAccountNotify',
+  'Windows.Win32.Devices.Fax.IFaxServerNotify2',
+
+  // These are incorrectly declared in the metadata as interfaces.
+  'Windows.Win32.System.ComponentServices.ObjectContext',
+  'Windows.Win32.System.ComponentServices.ObjectControl',
+  'Windows.Win32.System.ComponentServices.SecurityProperty',
+  'Windows.Win32.System.Performance.DICounterItem',
+  'Windows.Win32.System.Performance.DILogFileItem',
+  'Windows.Win32.System.Performance.DISystemMonitor',
+  'Windows.Win32.System.Performance.DISystemMonitorEvents',
+};
+
+const excludedComClasses = <String>{
   // Windows.Win32.Devices.Fax._IFaxAccountNotify is the "real" one.
   'Windows.Win32.Devices.Fax.IFaxAccountNotify',
 
   // Windows.Win32.Devices.Fax._IFaxServerNotify2 is the "real" one.
   'Windows.Win32.Devices.Fax.IFaxServerNotify2',
-];
 
-const specialTypes = [...excludedStructs, ...excludedComInterfaces];
+  'Windows.Win32.Media.DirectShow.DvbParentalRatingDescriptor',
+};
 
-// // Working around https://github.com/dart-lang/sdk/issues/46644
-// const ignorePackingDirectives = <String>[
-//   'Windows.Win32.System.SystemServices.DEVICEDUMP_SECTION_HEADER',
-//   'Windows.Win32.System.SystemServices.DEVICEDUMP_STORAGEDEVICE_DATA',
-//   'Windows.Win32.System.SystemServices.SENDCMDINPARAMS',
-//   // 'Windows.Win32.Media.Multimedia.AUXCAPS2W',
-//   // 'Windows.Win32.Media.Multimedia.EXBMINFOHEADER',
-//   // 'Windows.Win32.Media.Multimedia.JOYCAPS2W',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_CAPTURE_PARMSW',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_COPY_PARMS',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_CUT_PARMS',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_DELETE_PARMS',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_PASTE_PARMS',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_RECORD_PARMS',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_RECT_PARMS',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_RESTORE_PARMSW',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_SAVE_PARMSW',
-//   // 'Windows.Win32.Media.Multimedia.MCI_DGV_UPDATE_PARMS',
-//   // 'Windows.Win32.Media.Multimedia.MIDIINCAPS2W',
-//   // 'Windows.Win32.Media.Multimedia.MIDIOUTCAPS2W',
-//   // 'Windows.Win32.Media.Multimedia.MIXERCAPS2W',
-//   // 'Windows.Win32.Media.Multimedia.WAVEFORMATEXTENSIBLE',
-//   // 'Windows.Win32.Media.Multimedia.WAVEINCAPS2W',
-//   // 'Windows.Win32.Media.Multimedia.WAVEOUTCAPS2W',
-//   // 'Windows.Win32.Media.Multimedia.joyreguservalues_tag',
+const specialTypes = {...excludedStructs, ...excludedComInterfaces};
 
-//   // From metadata.
+// Imports that are in excluded namespaces
+const excludedImports = {
+  // System.Search
+  'IStemmer.dart',
+  'ICondition.dart',
+};
 
-//   // TODO: Use most restrictive packing parent for child. For example,
-//   //   Nesting the non-packed or less tightly packed struct 'JET_LOGTIME' in a
-//   //   packed struct 'JET_SIGNATURE' is not supported.
-//   'Windows.Win32.Devices.Bluetooth.BTH_QUERY_SERVICE',
-//   'Windows.Win32.Devices.Bluetooth.SOCKADDR_BTH',
-//   'Windows.Win32.Devices.Bluetooth.RFCOMM_COMMAND',
-//   'Windows.Win32.Devices.DeviceAndDriverInstallation.CS_DES',
-//   'Windows.Win32.Devices.HumanInterfaceDevice.JOYREGHWVALUES',
-//   'Windows.Win32.Devices.Tapi.LINEAGENTCAPS',
-//   'Windows.Win32.Devices.Tapi.LINEAGENTINFO',
-//   'Windows.Win32.Devices.Tapi.LINEAGENTSESSIONENTRY',
-//   'Windows.Win32.Devices.Tapi.LINEAGENTSESSIONINFO',
-//   'Windows.Win32.Devices.Tapi.LINECALLSTATUS',
-//   'Windows.Win32.Devices.Tapi.LINEDEVCAPS',
-//   'Windows.Win32.Devices.Tapi.PHONECAPS',
-//   'Windows.Win32.NetworkManagement.Rras.RASCONN',
-//   'Windows.Win32.NetworkManagement.Rras.RASIKEV2_PROJECTION_INFO',
-//   'Windows.Win32.Security.Authentication.Identity.Core.MSV_1_0_REMOTE_SUPPLEMENTAL_CREDENTIAL',
-//   'Windows.Win32.Security.Authentication.Identity.Core.USER_ALL_INFORMATION',
-//   'Windows.Win32.System.Diagnostics.Debug.MINIDUMP_MODULE',
-//   'Windows.Win32.Ui.Shell.FILEDESCRIPTOR',
-//   'Windows.Win32.Ui.Shell.AUTO_SCROLL_DATA',
-//   'Windows.Win32.Ui.Shell.DROPFILES',
-//   'Windows.Win32.Storage.StructuredStorage.JET_SIGNATURE',
-// ];
+/// Used to manually add back in imports where needed.
+String specialHeaders(String pathToSrc, String interfaceName) {
+  // WAVEFORMATEX and VIDEOINFOHEADER are duplicated in Media.DeviceManager, so
+  // we remove their generation above, and manually add back the right import in
+  // DeviceManager APIs.
+  if (interfaceName.startsWith('Windows.Win32.Media.DeviceManager')) {
+    return "import '${pathToSrc}media/audio/structs.g.dart';\n"
+        "import '${pathToSrc}media/directshow/structs.g.dart';\n";
+  }
+  return '';
+}
