@@ -14,8 +14,38 @@ import 'enums.g.dart';
 
 import '../../combase.dart';
 import '../../guid.dart';
-import '../../foundation/structs.g.dart'; // -----------------------------------------------------------------------
+import '../../foundation/structs.g.dart';
+import '../../security/structs.g.dart';
+import '../../system/registry/structs.g.dart'; // -----------------------------------------------------------------------
 
+// kernel32.dll
+// -----------------------------------------------------------------------
+final _kernel32 = DynamicLibrary.open('kernel32.dll');
+
+int GetAppContainerNamedObjectPath(
+        int Token,
+        int AppContainerSid,
+        int ObjectPathLength,
+        Pointer<Utf16> ObjectPath,
+        Pointer<Uint32> ReturnLength) =>
+    _GetAppContainerNamedObjectPath(
+        Token, AppContainerSid, ObjectPathLength, ObjectPath, ReturnLength);
+
+late final _GetAppContainerNamedObjectPath = _kernel32.lookupFunction<
+    Int32 Function(
+        IntPtr Token,
+        IntPtr AppContainerSid,
+        Uint32 ObjectPathLength,
+        Pointer<Utf16> ObjectPath,
+        Pointer<Uint32> ReturnLength),
+    int Function(
+        int Token,
+        int AppContainerSid,
+        int ObjectPathLength,
+        Pointer<Utf16> ObjectPath,
+        Pointer<Uint32> ReturnLength)>('GetAppContainerNamedObjectPath');
+
+// -----------------------------------------------------------------------
 // api-ms-win-security-isolatedcontainer-l1-1-1.dll
 // -----------------------------------------------------------------------
 final _api_ms_win_security_isolatedcontainer_l1_1_1 =
@@ -47,3 +77,115 @@ late final _IsProcessInIsolatedContainer =
             Int32 Function(Pointer<Int32> isProcessInIsolatedContainer),
             int Function(Pointer<Int32> isProcessInIsolatedContainer)>(
         'IsProcessInIsolatedContainer');
+
+// -----------------------------------------------------------------------
+// isolatedwindowsenvironmentutils.dll
+// -----------------------------------------------------------------------
+final _isolatedwindowsenvironmentutils =
+    DynamicLibrary.open('isolatedwindowsenvironmentutils.dll');
+
+int IsProcessInIsolatedWindowsEnvironment(
+        Pointer<Int32> isProcessInIsolatedWindowsEnvironment) =>
+    _IsProcessInIsolatedWindowsEnvironment(
+        isProcessInIsolatedWindowsEnvironment);
+
+late final _IsProcessInIsolatedWindowsEnvironment =
+    _isolatedwindowsenvironmentutils
+        .lookupFunction<
+                Int32 Function(
+                    Pointer<Int32> isProcessInIsolatedWindowsEnvironment),
+                int Function(
+                    Pointer<Int32> isProcessInIsolatedWindowsEnvironment)>(
+            'IsProcessInIsolatedWindowsEnvironment');
+
+// -----------------------------------------------------------------------
+// userenv.dll
+// -----------------------------------------------------------------------
+final _userenv = DynamicLibrary.open('userenv.dll');
+
+int CreateAppContainerProfile(
+        Pointer<Utf16> pszAppContainerName,
+        Pointer<Utf16> pszDisplayName,
+        Pointer<Utf16> pszDescription,
+        Pointer<SID_AND_ATTRIBUTES> pCapabilities,
+        int dwCapabilityCount,
+        Pointer<IntPtr> ppSidAppContainerSid) =>
+    _CreateAppContainerProfile(pszAppContainerName, pszDisplayName,
+        pszDescription, pCapabilities, dwCapabilityCount, ppSidAppContainerSid);
+
+late final _CreateAppContainerProfile = _userenv.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> pszAppContainerName,
+        Pointer<Utf16> pszDisplayName,
+        Pointer<Utf16> pszDescription,
+        Pointer<SID_AND_ATTRIBUTES> pCapabilities,
+        Uint32 dwCapabilityCount,
+        Pointer<IntPtr> ppSidAppContainerSid),
+    int Function(
+        Pointer<Utf16> pszAppContainerName,
+        Pointer<Utf16> pszDisplayName,
+        Pointer<Utf16> pszDescription,
+        Pointer<SID_AND_ATTRIBUTES> pCapabilities,
+        int dwCapabilityCount,
+        Pointer<IntPtr> ppSidAppContainerSid)>('CreateAppContainerProfile');
+
+int DeleteAppContainerProfile(Pointer<Utf16> pszAppContainerName) =>
+    _DeleteAppContainerProfile(pszAppContainerName);
+
+late final _DeleteAppContainerProfile = _userenv.lookupFunction<
+    Int32 Function(Pointer<Utf16> pszAppContainerName),
+    int Function(
+        Pointer<Utf16> pszAppContainerName)>('DeleteAppContainerProfile');
+
+int DeriveAppContainerSidFromAppContainerName(
+        Pointer<Utf16> pszAppContainerName,
+        Pointer<IntPtr> ppsidAppContainerSid) =>
+    _DeriveAppContainerSidFromAppContainerName(
+        pszAppContainerName, ppsidAppContainerSid);
+
+late final _DeriveAppContainerSidFromAppContainerName = _userenv.lookupFunction<
+        Int32 Function(Pointer<Utf16> pszAppContainerName,
+            Pointer<IntPtr> ppsidAppContainerSid),
+        int Function(Pointer<Utf16> pszAppContainerName,
+            Pointer<IntPtr> ppsidAppContainerSid)>(
+    'DeriveAppContainerSidFromAppContainerName');
+
+int DeriveRestrictedAppContainerSidFromAppContainerSidAndRestrictedName(
+        int psidAppContainerSid,
+        Pointer<Utf16> pszRestrictedAppContainerName,
+        Pointer<IntPtr> ppsidRestrictedAppContainerSid) =>
+    _DeriveRestrictedAppContainerSidFromAppContainerSidAndRestrictedName(
+        psidAppContainerSid,
+        pszRestrictedAppContainerName,
+        ppsidRestrictedAppContainerSid);
+
+late final _DeriveRestrictedAppContainerSidFromAppContainerSidAndRestrictedName =
+    _userenv.lookupFunction<
+            Int32 Function(
+                IntPtr psidAppContainerSid,
+                Pointer<Utf16> pszRestrictedAppContainerName,
+                Pointer<IntPtr> ppsidRestrictedAppContainerSid),
+            int Function(
+                int psidAppContainerSid,
+                Pointer<Utf16> pszRestrictedAppContainerName,
+                Pointer<IntPtr> ppsidRestrictedAppContainerSid)>(
+        'DeriveRestrictedAppContainerSidFromAppContainerSidAndRestrictedName');
+
+int GetAppContainerFolderPath(
+        Pointer<Utf16> pszAppContainerSid, Pointer<Pointer<Utf16>> ppszPath) =>
+    _GetAppContainerFolderPath(pszAppContainerSid, ppszPath);
+
+late final _GetAppContainerFolderPath = _userenv.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> pszAppContainerSid, Pointer<Pointer<Utf16>> ppszPath),
+    int Function(Pointer<Utf16> pszAppContainerSid,
+        Pointer<Pointer<Utf16>> ppszPath)>('GetAppContainerFolderPath');
+
+int GetAppContainerRegistryLocation(
+        int desiredAccess, Pointer<IntPtr> phAppContainerKey) =>
+    _GetAppContainerRegistryLocation(desiredAccess, phAppContainerKey);
+
+late final _GetAppContainerRegistryLocation = _userenv.lookupFunction<
+    Int32 Function(Uint32 desiredAccess, Pointer<IntPtr> phAppContainerKey),
+    int Function(int desiredAccess,
+        Pointer<IntPtr> phAppContainerKey)>('GetAppContainerRegistryLocation');

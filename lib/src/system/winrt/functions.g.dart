@@ -15,16 +15,45 @@ import 'enums.g.dart';
 import '../../combase.dart';
 import '../../guid.dart';
 import '../../system/winrt/structs.g.dart';
+import '../../system/com/IUnknown.dart';
+import '../../system/winrt/IAgileReference.dart';
 import '../../foundation/structs.g.dart';
 import '../../system/winrt/callbacks.g.dart';
 import '../../system/winrt/IInspectable.dart';
 import '../../system/winrt/IApartmentShutdown.dart';
 import '../../system/com/marshal/IMarshal.dart';
 import '../../system/winrt/IRestrictedErrorInfo.dart';
-import '../../system/com/IUnknown.dart';
 import '../../system/winrt/IRoMetaDataLocator.dart';
 import '../../system/com/IStream.dart'; // -----------------------------------------------------------------------
 
+// ole32.dll
+// -----------------------------------------------------------------------
+final _ole32 = DynamicLibrary.open('ole32.dll');
+
+int CoDecodeProxy(int dwClientPid, int ui64ProxyAddress,
+        Pointer<ServerInformation> pServerInformation) =>
+    _CoDecodeProxy(dwClientPid, ui64ProxyAddress, pServerInformation);
+
+late final _CoDecodeProxy = _ole32.lookupFunction<
+    Int32 Function(Uint32 dwClientPid, Uint64 ui64ProxyAddress,
+        Pointer<ServerInformation> pServerInformation),
+    int Function(int dwClientPid, int ui64ProxyAddress,
+        Pointer<ServerInformation> pServerInformation)>('CoDecodeProxy');
+
+int RoGetAgileReference(
+        int options,
+        Pointer<GUID> riid,
+        Pointer<COMObject> pUnk,
+        Pointer<Pointer<COMObject>> ppAgileReference) =>
+    _RoGetAgileReference(options, riid, pUnk, ppAgileReference);
+
+late final _RoGetAgileReference = _ole32.lookupFunction<
+    Int32 Function(Int32 options, Pointer<GUID> riid, Pointer<COMObject> pUnk,
+        Pointer<Pointer<COMObject>> ppAgileReference),
+    int Function(int options, Pointer<GUID> riid, Pointer<COMObject> pUnk,
+        Pointer<Pointer<COMObject>> ppAgileReference)>('RoGetAgileReference');
+
+// -----------------------------------------------------------------------
 // api-ms-win-core-winrt-string-l1-1-0.dll
 // -----------------------------------------------------------------------
 final _api_ms_win_core_winrt_string_l1_1_0 =
@@ -347,6 +376,22 @@ late final _WindowsInspectString2 =
             Pointer<Uint64> targetStringAddress)>('WindowsInspectString2');
 
 // -----------------------------------------------------------------------
+// coremessaging.dll
+// -----------------------------------------------------------------------
+final _coremessaging = DynamicLibrary.open('coremessaging.dll');
+
+int CreateDispatcherQueueController(DispatcherQueueOptions options,
+        Pointer<Pointer<COMObject>> dispatcherQueueController) =>
+    _CreateDispatcherQueueController(options, dispatcherQueueController);
+
+late final _CreateDispatcherQueueController = _coremessaging.lookupFunction<
+        Int32 Function(DispatcherQueueOptions options,
+            Pointer<Pointer<COMObject>> dispatcherQueueController),
+        int Function(DispatcherQueueOptions options,
+            Pointer<Pointer<COMObject>> dispatcherQueueController)>(
+    'CreateDispatcherQueueController');
+
+// -----------------------------------------------------------------------
 // api-ms-win-core-winrt-l1-1-0.dll
 // -----------------------------------------------------------------------
 final _api_ms_win_core_winrt_l1_1_0 =
@@ -657,6 +702,21 @@ late final _RoReportUnhandledError =
         Int32 Function(Pointer<COMObject> pRestrictedErrorInfo),
         int Function(
             Pointer<COMObject> pRestrictedErrorInfo)>('RoReportUnhandledError');
+
+// -----------------------------------------------------------------------
+// rometadata.dll
+// -----------------------------------------------------------------------
+final _rometadata = DynamicLibrary.open('rometadata.dll');
+
+int MetaDataGetDispenser(
+        Pointer<GUID> rclsid, Pointer<GUID> riid, Pointer<Pointer> ppv) =>
+    _MetaDataGetDispenser(rclsid, riid, ppv);
+
+late final _MetaDataGetDispenser = _rometadata.lookupFunction<
+    Int32 Function(
+        Pointer<GUID> rclsid, Pointer<GUID> riid, Pointer<Pointer> ppv),
+    int Function(Pointer<GUID> rclsid, Pointer<GUID> riid,
+        Pointer<Pointer> ppv)>('MetaDataGetDispenser');
 
 // -----------------------------------------------------------------------
 // api-ms-win-core-winrt-roparameterizediid-l1-1-0.dll

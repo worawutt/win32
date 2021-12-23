@@ -14,8 +14,24 @@ import 'enums.g.dart';
 
 import '../../combase.dart';
 import '../../guid.dart';
-import '../../system/com/IUnknown.dart'; // -----------------------------------------------------------------------
+import '../../system/com/structs.g.dart';
+import '../../system/com/IUnknown.dart';
+import '../../system/componentservices/IDispenserManager.dart'; // -----------------------------------------------------------------------
 
+// ole32.dll
+// -----------------------------------------------------------------------
+final _ole32 = DynamicLibrary.open('ole32.dll');
+
+int CoGetDefaultContext(
+        int aptType, Pointer<GUID> riid, Pointer<Pointer> ppv) =>
+    _CoGetDefaultContext(aptType, riid, ppv);
+
+late final _CoGetDefaultContext = _ole32.lookupFunction<
+    Int32 Function(Int32 aptType, Pointer<GUID> riid, Pointer<Pointer> ppv),
+    int Function(int aptType, Pointer<GUID> riid,
+        Pointer<Pointer> ppv)>('CoGetDefaultContext');
+
+// -----------------------------------------------------------------------
 // comsvcs.dll
 // -----------------------------------------------------------------------
 final _comsvcs = DynamicLibrary.open('comsvcs.dll');
@@ -71,3 +87,15 @@ Pointer SafeRef(Pointer<GUID> rid, Pointer<COMObject> pUnk) =>
 late final _SafeRef = _comsvcs.lookupFunction<
     Pointer Function(Pointer<GUID> rid, Pointer<COMObject> pUnk),
     Pointer Function(Pointer<GUID> rid, Pointer<COMObject> pUnk)>('SafeRef');
+
+// -----------------------------------------------------------------------
+// mtxdm.dll
+// -----------------------------------------------------------------------
+final _mtxdm = DynamicLibrary.open('mtxdm.dll');
+
+int GetDispenserManager(Pointer<Pointer<COMObject>> param0) =>
+    _GetDispenserManager(param0);
+
+late final _GetDispenserManager = _mtxdm.lookupFunction<
+    Int32 Function(Pointer<Pointer<COMObject>> param0),
+    int Function(Pointer<Pointer<COMObject>> param0)>('GetDispenserManager');

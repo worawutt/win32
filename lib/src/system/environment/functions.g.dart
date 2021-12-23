@@ -17,6 +17,218 @@ import '../../guid.dart';
 import '../../foundation/structs.g.dart';
 import '../../system/environment/structs.g.dart'; // -----------------------------------------------------------------------
 
+// kernel32.dll
+// -----------------------------------------------------------------------
+final _kernel32 = DynamicLibrary.open('kernel32.dll');
+
+Pointer CreateEnclave(
+        int hProcess,
+        Pointer lpAddress,
+        int dwSize,
+        int dwInitialCommitment,
+        int flEnclaveType,
+        Pointer lpEnclaveInformation,
+        int dwInfoLength,
+        Pointer<Uint32> lpEnclaveError) =>
+    _CreateEnclave(hProcess, lpAddress, dwSize, dwInitialCommitment,
+        flEnclaveType, lpEnclaveInformation, dwInfoLength, lpEnclaveError);
+
+late final _CreateEnclave = _kernel32.lookupFunction<
+    Pointer Function(
+        IntPtr hProcess,
+        Pointer lpAddress,
+        IntPtr dwSize,
+        IntPtr dwInitialCommitment,
+        Uint32 flEnclaveType,
+        Pointer lpEnclaveInformation,
+        Uint32 dwInfoLength,
+        Pointer<Uint32> lpEnclaveError),
+    Pointer Function(
+        int hProcess,
+        Pointer lpAddress,
+        int dwSize,
+        int dwInitialCommitment,
+        int flEnclaveType,
+        Pointer lpEnclaveInformation,
+        int dwInfoLength,
+        Pointer<Uint32> lpEnclaveError)>('CreateEnclave');
+
+int ExpandEnvironmentStrings(
+        Pointer<Utf16> lpSrc, Pointer<Utf16> lpDst, int nSize) =>
+    _ExpandEnvironmentStrings(lpSrc, lpDst, nSize);
+
+late final _ExpandEnvironmentStrings = _kernel32.lookupFunction<
+    Uint32 Function(Pointer<Utf16> lpSrc, Pointer<Utf16> lpDst, Uint32 nSize),
+    int Function(Pointer<Utf16> lpSrc, Pointer<Utf16> lpDst,
+        int nSize)>('ExpandEnvironmentStringsW');
+
+int FreeEnvironmentStrings(Pointer<Utf16> penv) =>
+    _FreeEnvironmentStrings(penv);
+
+late final _FreeEnvironmentStrings = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> penv),
+    int Function(Pointer<Utf16> penv)>('FreeEnvironmentStringsW');
+
+Pointer<Utf16> GetCommandLine() => _GetCommandLine();
+
+late final _GetCommandLine = _kernel32.lookupFunction<Pointer<Utf16> Function(),
+    Pointer<Utf16> Function()>('GetCommandLineW');
+
+int GetCurrentDirectory(int nBufferLength, Pointer<Utf16> lpBuffer) =>
+    _GetCurrentDirectory(nBufferLength, lpBuffer);
+
+late final _GetCurrentDirectory = _kernel32.lookupFunction<
+    Uint32 Function(Uint32 nBufferLength, Pointer<Utf16> lpBuffer),
+    int Function(
+        int nBufferLength, Pointer<Utf16> lpBuffer)>('GetCurrentDirectoryW');
+
+Pointer<Utf16> GetEnvironmentStrings() => _GetEnvironmentStrings();
+
+late final _GetEnvironmentStrings = _kernel32.lookupFunction<
+    Pointer<Utf16> Function(),
+    Pointer<Utf16> Function()>('GetEnvironmentStringsW');
+
+int GetEnvironmentVariable(
+        Pointer<Utf16> lpName, Pointer<Utf16> lpBuffer, int nSize) =>
+    _GetEnvironmentVariable(lpName, lpBuffer, nSize);
+
+late final _GetEnvironmentVariable = _kernel32.lookupFunction<
+    Uint32 Function(
+        Pointer<Utf16> lpName, Pointer<Utf16> lpBuffer, Uint32 nSize),
+    int Function(Pointer<Utf16> lpName, Pointer<Utf16> lpBuffer,
+        int nSize)>('GetEnvironmentVariableW');
+
+int InitializeEnclave(
+        int hProcess,
+        Pointer lpAddress,
+        Pointer lpEnclaveInformation,
+        int dwInfoLength,
+        Pointer<Uint32> lpEnclaveError) =>
+    _InitializeEnclave(hProcess, lpAddress, lpEnclaveInformation, dwInfoLength,
+        lpEnclaveError);
+
+late final _InitializeEnclave = _kernel32.lookupFunction<
+    Int32 Function(
+        IntPtr hProcess,
+        Pointer lpAddress,
+        Pointer lpEnclaveInformation,
+        Uint32 dwInfoLength,
+        Pointer<Uint32> lpEnclaveError),
+    int Function(int hProcess, Pointer lpAddress, Pointer lpEnclaveInformation,
+        int dwInfoLength, Pointer<Uint32> lpEnclaveError)>('InitializeEnclave');
+
+int IsEnclaveTypeSupported(int flEnclaveType) =>
+    _IsEnclaveTypeSupported(flEnclaveType);
+
+late final _IsEnclaveTypeSupported = _kernel32.lookupFunction<
+    Int32 Function(Uint32 flEnclaveType),
+    int Function(int flEnclaveType)>('IsEnclaveTypeSupported');
+
+int LoadEnclaveData(
+        int hProcess,
+        Pointer lpAddress,
+        Pointer lpBuffer,
+        int nSize,
+        int flProtect,
+        Pointer lpPageInformation,
+        int dwInfoLength,
+        Pointer<IntPtr> lpNumberOfBytesWritten,
+        Pointer<Uint32> lpEnclaveError) =>
+    _LoadEnclaveData(
+        hProcess,
+        lpAddress,
+        lpBuffer,
+        nSize,
+        flProtect,
+        lpPageInformation,
+        dwInfoLength,
+        lpNumberOfBytesWritten,
+        lpEnclaveError);
+
+late final _LoadEnclaveData = _kernel32.lookupFunction<
+    Int32 Function(
+        IntPtr hProcess,
+        Pointer lpAddress,
+        Pointer lpBuffer,
+        IntPtr nSize,
+        Uint32 flProtect,
+        Pointer lpPageInformation,
+        Uint32 dwInfoLength,
+        Pointer<IntPtr> lpNumberOfBytesWritten,
+        Pointer<Uint32> lpEnclaveError),
+    int Function(
+        int hProcess,
+        Pointer lpAddress,
+        Pointer lpBuffer,
+        int nSize,
+        int flProtect,
+        Pointer lpPageInformation,
+        int dwInfoLength,
+        Pointer<IntPtr> lpNumberOfBytesWritten,
+        Pointer<Uint32> lpEnclaveError)>('LoadEnclaveData');
+
+int NeedCurrentDirectoryForExePath(Pointer<Utf16> ExeName) =>
+    _NeedCurrentDirectoryForExePath(ExeName);
+
+late final _NeedCurrentDirectoryForExePath = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> ExeName),
+    int Function(Pointer<Utf16> ExeName)>('NeedCurrentDirectoryForExePathW');
+
+int SetCurrentDirectory(Pointer<Utf16> lpPathName) =>
+    _SetCurrentDirectory(lpPathName);
+
+late final _SetCurrentDirectory = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpPathName),
+    int Function(Pointer<Utf16> lpPathName)>('SetCurrentDirectoryW');
+
+int SetEnvironmentStrings(Pointer<Utf16> NewEnvironment) =>
+    _SetEnvironmentStrings(NewEnvironment);
+
+late final _SetEnvironmentStrings = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> NewEnvironment),
+    int Function(Pointer<Utf16> NewEnvironment)>('SetEnvironmentStringsW');
+
+int SetEnvironmentVariable(Pointer<Utf16> lpName, Pointer<Utf16> lpValue) =>
+    _SetEnvironmentVariable(lpName, lpValue);
+
+late final _SetEnvironmentVariable = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpName, Pointer<Utf16> lpValue),
+    int Function(Pointer<Utf16> lpName,
+        Pointer<Utf16> lpValue)>('SetEnvironmentVariableW');
+
+// -----------------------------------------------------------------------
+// userenv.dll
+// -----------------------------------------------------------------------
+final _userenv = DynamicLibrary.open('userenv.dll');
+
+int CreateEnvironmentBlock(
+        Pointer<Pointer> lpEnvironment, int hToken, int bInherit) =>
+    _CreateEnvironmentBlock(lpEnvironment, hToken, bInherit);
+
+late final _CreateEnvironmentBlock = _userenv.lookupFunction<
+    Int32 Function(
+        Pointer<Pointer> lpEnvironment, IntPtr hToken, Int32 bInherit),
+    int Function(Pointer<Pointer> lpEnvironment, int hToken,
+        int bInherit)>('CreateEnvironmentBlock');
+
+int DestroyEnvironmentBlock(Pointer lpEnvironment) =>
+    _DestroyEnvironmentBlock(lpEnvironment);
+
+late final _DestroyEnvironmentBlock = _userenv.lookupFunction<
+    Int32 Function(Pointer lpEnvironment),
+    int Function(Pointer lpEnvironment)>('DestroyEnvironmentBlock');
+
+int ExpandEnvironmentStringsForUser(
+        int hToken, Pointer<Utf16> lpSrc, Pointer<Utf16> lpDest, int dwSize) =>
+    _ExpandEnvironmentStringsForUser(hToken, lpSrc, lpDest, dwSize);
+
+late final _ExpandEnvironmentStringsForUser = _userenv.lookupFunction<
+    Int32 Function(IntPtr hToken, Pointer<Utf16> lpSrc, Pointer<Utf16> lpDest,
+        Uint32 dwSize),
+    int Function(int hToken, Pointer<Utf16> lpSrc, Pointer<Utf16> lpDest,
+        int dwSize)>('ExpandEnvironmentStringsForUserW');
+
+// -----------------------------------------------------------------------
 // api-ms-win-core-enclave-l1-1-1.dll
 // -----------------------------------------------------------------------
 final _api_ms_win_core_enclave_l1_1_1 =

@@ -22,6 +22,8 @@ import '../../graphics/direct3d11/ID3D11Device.dart';
 import '../../graphics/direct3d11/ID3D11DeviceContext.dart';
 import '../../graphics/dxgi/structs.g.dart';
 import '../../graphics/dxgi/IDXGISwapChain.dart';
+import '../../graphics/direct3d11/ID3D11ShaderTrace.dart';
+import '../../graphics/direct3d/ID3DBlob.dart';
 import '../../graphics/direct3d11/ID3DX11FFT.dart';
 import '../../graphics/direct3d11/ID3DX11Scan.dart';
 import '../../graphics/direct3d11/ID3DX11SegmentedScan.dart'; // -----------------------------------------------------------------------
@@ -123,6 +125,40 @@ late final _D3D11CreateDeviceAndSwapChain = _d3d11.lookupFunction<
             Pointer<Int32> pFeatureLevel,
             Pointer<Pointer<COMObject>> ppImmediateContext)>(
     'D3D11CreateDeviceAndSwapChain');
+
+// -----------------------------------------------------------------------
+// d3dcompiler_47.dll
+// -----------------------------------------------------------------------
+final _d3dcompiler_47 = DynamicLibrary.open('d3dcompiler_47.dll');
+
+int D3DDisassemble11Trace(
+        Pointer pSrcData,
+        int SrcDataSize,
+        Pointer<COMObject> pTrace,
+        int StartStep,
+        int NumSteps,
+        int Flags,
+        Pointer<Pointer<COMObject>> ppDisassembly) =>
+    _D3DDisassemble11Trace(pSrcData, SrcDataSize, pTrace, StartStep, NumSteps,
+        Flags, ppDisassembly);
+
+late final _D3DDisassemble11Trace = _d3dcompiler_47.lookupFunction<
+    Int32 Function(
+        Pointer pSrcData,
+        IntPtr SrcDataSize,
+        Pointer<COMObject> pTrace,
+        Uint32 StartStep,
+        Uint32 NumSteps,
+        Uint32 Flags,
+        Pointer<Pointer<COMObject>> ppDisassembly),
+    int Function(
+        Pointer pSrcData,
+        int SrcDataSize,
+        Pointer<COMObject> pTrace,
+        int StartStep,
+        int NumSteps,
+        int Flags,
+        Pointer<Pointer<COMObject>> ppDisassembly)>('D3DDisassemble11Trace');
 
 // -----------------------------------------------------------------------
 // d3dcsx.dll

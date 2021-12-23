@@ -14,10 +14,1566 @@ import 'enums.g.dart';
 
 import '../combase.dart';
 import '../guid.dart';
+import '../graphics/gdi/structs.g.dart';
 import '../globalization/structs.g.dart';
 import '../foundation/structs.g.dart';
 import '../globalization/callbacks.g.dart'; // -----------------------------------------------------------------------
 
+// gdi32.dll
+// -----------------------------------------------------------------------
+final _gdi32 = DynamicLibrary.open('gdi32.dll');
+
+int GetTextCharset(int hdc) => _GetTextCharset(hdc);
+
+late final _GetTextCharset =
+    _gdi32.lookupFunction<Int32 Function(IntPtr hdc), int Function(int hdc)>(
+        'GetTextCharset');
+
+int GetTextCharsetInfo(int hdc, Pointer<FONTSIGNATURE> lpSig, int dwFlags) =>
+    _GetTextCharsetInfo(hdc, lpSig, dwFlags);
+
+late final _GetTextCharsetInfo = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, Pointer<FONTSIGNATURE> lpSig, Uint32 dwFlags),
+    int Function(int hdc, Pointer<FONTSIGNATURE> lpSig,
+        int dwFlags)>('GetTextCharsetInfo');
+
+int TranslateCharsetInfo(
+        Pointer<Uint32> lpSrc, Pointer<CHARSETINFO> lpCs, int dwFlags) =>
+    _TranslateCharsetInfo(lpSrc, lpCs, dwFlags);
+
+late final _TranslateCharsetInfo = _gdi32.lookupFunction<
+    Int32 Function(
+        Pointer<Uint32> lpSrc, Pointer<CHARSETINFO> lpCs, Uint32 dwFlags),
+    int Function(Pointer<Uint32> lpSrc, Pointer<CHARSETINFO> lpCs,
+        int dwFlags)>('TranslateCharsetInfo');
+
+// -----------------------------------------------------------------------
+// kernel32.dll
+// -----------------------------------------------------------------------
+final _kernel32 = DynamicLibrary.open('kernel32.dll');
+
+int CompareStringEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwCmpFlags,
+        Pointer<Utf16> lpString1,
+        int cchCount1,
+        Pointer<Utf16> lpString2,
+        int cchCount2,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        int lParam) =>
+    _CompareStringEx(lpLocaleName, dwCmpFlags, lpString1, cchCount1, lpString2,
+        cchCount2, lpVersionInformation, lpReserved, lParam);
+
+late final _CompareStringEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwCmpFlags,
+        Pointer<Utf16> lpString1,
+        Int32 cchCount1,
+        Pointer<Utf16> lpString2,
+        Int32 cchCount2,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        IntPtr lParam),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwCmpFlags,
+        Pointer<Utf16> lpString1,
+        int cchCount1,
+        Pointer<Utf16> lpString2,
+        int cchCount2,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        int lParam)>('CompareStringEx');
+
+int CompareStringOrdinal(Pointer<Utf16> lpString1, int cchCount1,
+        Pointer<Utf16> lpString2, int cchCount2, int bIgnoreCase) =>
+    _CompareStringOrdinal(
+        lpString1, cchCount1, lpString2, cchCount2, bIgnoreCase);
+
+late final _CompareStringOrdinal = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpString1, Int32 cchCount1,
+        Pointer<Utf16> lpString2, Int32 cchCount2, Int32 bIgnoreCase),
+    int Function(
+        Pointer<Utf16> lpString1,
+        int cchCount1,
+        Pointer<Utf16> lpString2,
+        int cchCount2,
+        int bIgnoreCase)>('CompareStringOrdinal');
+
+int CompareString(int Locale, int dwCmpFlags, Pointer<Utf16> lpString1,
+        int cchCount1, Pointer<Utf16> lpString2, int cchCount2) =>
+    _CompareString(
+        Locale, dwCmpFlags, lpString1, cchCount1, lpString2, cchCount2);
+
+late final _CompareString = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 dwCmpFlags, Pointer<Utf16> lpString1,
+        Int32 cchCount1, Pointer<Utf16> lpString2, Int32 cchCount2),
+    int Function(
+        int Locale,
+        int dwCmpFlags,
+        Pointer<Utf16> lpString1,
+        int cchCount1,
+        Pointer<Utf16> lpString2,
+        int cchCount2)>('CompareStringW');
+
+int ConvertDefaultLocale(int Locale) => _ConvertDefaultLocale(Locale);
+
+late final _ConvertDefaultLocale = _kernel32.lookupFunction<
+    Uint32 Function(Uint32 Locale),
+    int Function(int Locale)>('ConvertDefaultLocale');
+
+int EnumCalendarInfoExEx(
+        Pointer<NativeFunction<CALINFO_ENUMPROCEXEX>> pCalInfoEnumProcExEx,
+        Pointer<Utf16> lpLocaleName,
+        int Calendar,
+        Pointer<Utf16> lpReserved,
+        int CalType,
+        int lParam) =>
+    _EnumCalendarInfoExEx(pCalInfoEnumProcExEx, lpLocaleName, Calendar,
+        lpReserved, CalType, lParam);
+
+late final _EnumCalendarInfoExEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<CALINFO_ENUMPROCEXEX>> pCalInfoEnumProcExEx,
+        Pointer<Utf16> lpLocaleName,
+        Uint32 Calendar,
+        Pointer<Utf16> lpReserved,
+        Uint32 CalType,
+        IntPtr lParam),
+    int Function(
+        Pointer<NativeFunction<CALINFO_ENUMPROCEXEX>> pCalInfoEnumProcExEx,
+        Pointer<Utf16> lpLocaleName,
+        int Calendar,
+        Pointer<Utf16> lpReserved,
+        int CalType,
+        int lParam)>('EnumCalendarInfoExEx');
+
+int EnumCalendarInfoEx(
+        Pointer<NativeFunction<CALINFO_ENUMPROCEXW>> lpCalInfoEnumProcEx,
+        int Locale,
+        int Calendar,
+        int CalType) =>
+    _EnumCalendarInfoEx(lpCalInfoEnumProcEx, Locale, Calendar, CalType);
+
+late final _EnumCalendarInfoEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<CALINFO_ENUMPROCEXW>> lpCalInfoEnumProcEx,
+        Uint32 Locale,
+        Uint32 Calendar,
+        Uint32 CalType),
+    int Function(
+        Pointer<NativeFunction<CALINFO_ENUMPROCEXW>> lpCalInfoEnumProcEx,
+        int Locale,
+        int Calendar,
+        int CalType)>('EnumCalendarInfoExW');
+
+int EnumCalendarInfo(
+        Pointer<NativeFunction<CALINFO_ENUMPROCW>> lpCalInfoEnumProc,
+        int Locale,
+        int Calendar,
+        int CalType) =>
+    _EnumCalendarInfo(lpCalInfoEnumProc, Locale, Calendar, CalType);
+
+late final _EnumCalendarInfo = _kernel32.lookupFunction<
+    Int32 Function(Pointer<NativeFunction<CALINFO_ENUMPROCW>> lpCalInfoEnumProc,
+        Uint32 Locale, Uint32 Calendar, Uint32 CalType),
+    int Function(Pointer<NativeFunction<CALINFO_ENUMPROCW>> lpCalInfoEnumProc,
+        int Locale, int Calendar, int CalType)>('EnumCalendarInfoW');
+
+int EnumDateFormatsExEx(
+        Pointer<NativeFunction<DATEFMT_ENUMPROCEXEX>> lpDateFmtEnumProcExEx,
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        int lParam) =>
+    _EnumDateFormatsExEx(lpDateFmtEnumProcExEx, lpLocaleName, dwFlags, lParam);
+
+late final _EnumDateFormatsExEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<DATEFMT_ENUMPROCEXEX>> lpDateFmtEnumProcExEx,
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFlags,
+        IntPtr lParam),
+    int Function(
+        Pointer<NativeFunction<DATEFMT_ENUMPROCEXEX>> lpDateFmtEnumProcExEx,
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        int lParam)>('EnumDateFormatsExEx');
+
+int EnumDateFormatsEx(
+        Pointer<NativeFunction<DATEFMT_ENUMPROCEXW>> lpDateFmtEnumProcEx,
+        int Locale,
+        int dwFlags) =>
+    _EnumDateFormatsEx(lpDateFmtEnumProcEx, Locale, dwFlags);
+
+late final _EnumDateFormatsEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<DATEFMT_ENUMPROCEXW>> lpDateFmtEnumProcEx,
+        Uint32 Locale,
+        Uint32 dwFlags),
+    int Function(
+        Pointer<NativeFunction<DATEFMT_ENUMPROCEXW>> lpDateFmtEnumProcEx,
+        int Locale,
+        int dwFlags)>('EnumDateFormatsExW');
+
+int EnumDateFormats(
+        Pointer<NativeFunction<DATEFMT_ENUMPROCW>> lpDateFmtEnumProc,
+        int Locale,
+        int dwFlags) =>
+    _EnumDateFormats(lpDateFmtEnumProc, Locale, dwFlags);
+
+late final _EnumDateFormats = _kernel32.lookupFunction<
+    Int32 Function(Pointer<NativeFunction<DATEFMT_ENUMPROCW>> lpDateFmtEnumProc,
+        Uint32 Locale, Uint32 dwFlags),
+    int Function(Pointer<NativeFunction<DATEFMT_ENUMPROCW>> lpDateFmtEnumProc,
+        int Locale, int dwFlags)>('EnumDateFormatsW');
+
+int EnumLanguageGroupLocales(
+        Pointer<NativeFunction<LANGGROUPLOCALE_ENUMPROCW>>
+            lpLangGroupLocaleEnumProc,
+        int LanguageGroup,
+        int dwFlags,
+        int lParam) =>
+    _EnumLanguageGroupLocales(
+        lpLangGroupLocaleEnumProc, LanguageGroup, dwFlags, lParam);
+
+late final _EnumLanguageGroupLocales = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<LANGGROUPLOCALE_ENUMPROCW>>
+            lpLangGroupLocaleEnumProc,
+        Uint32 LanguageGroup,
+        Uint32 dwFlags,
+        IntPtr lParam),
+    int Function(
+        Pointer<NativeFunction<LANGGROUPLOCALE_ENUMPROCW>>
+            lpLangGroupLocaleEnumProc,
+        int LanguageGroup,
+        int dwFlags,
+        int lParam)>('EnumLanguageGroupLocalesW');
+
+int EnumSystemCodePages(
+        Pointer<NativeFunction<CODEPAGE_ENUMPROCW>> lpCodePageEnumProc,
+        int dwFlags) =>
+    _EnumSystemCodePages(lpCodePageEnumProc, dwFlags);
+
+late final _EnumSystemCodePages = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<CODEPAGE_ENUMPROCW>> lpCodePageEnumProc,
+        Uint32 dwFlags),
+    int Function(Pointer<NativeFunction<CODEPAGE_ENUMPROCW>> lpCodePageEnumProc,
+        int dwFlags)>('EnumSystemCodePagesW');
+
+int EnumSystemGeoID(int GeoClass, int ParentGeoId,
+        Pointer<NativeFunction<GEO_ENUMPROC>> lpGeoEnumProc) =>
+    _EnumSystemGeoID(GeoClass, ParentGeoId, lpGeoEnumProc);
+
+late final _EnumSystemGeoID = _kernel32.lookupFunction<
+        Int32 Function(Uint32 GeoClass, Int32 ParentGeoId,
+            Pointer<NativeFunction<GEO_ENUMPROC>> lpGeoEnumProc),
+        int Function(int GeoClass, int ParentGeoId,
+            Pointer<NativeFunction<GEO_ENUMPROC>> lpGeoEnumProc)>(
+    'EnumSystemGeoID');
+
+int EnumSystemGeoNames(int geoClass,
+        Pointer<NativeFunction<GEO_ENUMNAMEPROC>> geoEnumProc, int data) =>
+    _EnumSystemGeoNames(geoClass, geoEnumProc, data);
+
+late final _EnumSystemGeoNames = _kernel32.lookupFunction<
+    Int32 Function(Uint32 geoClass,
+        Pointer<NativeFunction<GEO_ENUMNAMEPROC>> geoEnumProc, IntPtr data),
+    int Function(
+        int geoClass,
+        Pointer<NativeFunction<GEO_ENUMNAMEPROC>> geoEnumProc,
+        int data)>('EnumSystemGeoNames');
+
+int EnumSystemLanguageGroups(
+        Pointer<NativeFunction<LANGUAGEGROUP_ENUMPROCW>>
+            lpLanguageGroupEnumProc,
+        int dwFlags,
+        int lParam) =>
+    _EnumSystemLanguageGroups(lpLanguageGroupEnumProc, dwFlags, lParam);
+
+late final _EnumSystemLanguageGroups = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<LANGUAGEGROUP_ENUMPROCW>>
+            lpLanguageGroupEnumProc,
+        Uint32 dwFlags,
+        IntPtr lParam),
+    int Function(
+        Pointer<NativeFunction<LANGUAGEGROUP_ENUMPROCW>>
+            lpLanguageGroupEnumProc,
+        int dwFlags,
+        int lParam)>('EnumSystemLanguageGroupsW');
+
+int EnumSystemLocalesEx(
+        Pointer<NativeFunction<LOCALE_ENUMPROCEX>> lpLocaleEnumProcEx,
+        int dwFlags,
+        int lParam,
+        Pointer lpReserved) =>
+    _EnumSystemLocalesEx(lpLocaleEnumProcEx, dwFlags, lParam, lpReserved);
+
+late final _EnumSystemLocalesEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<LOCALE_ENUMPROCEX>> lpLocaleEnumProcEx,
+        Uint32 dwFlags,
+        IntPtr lParam,
+        Pointer lpReserved),
+    int Function(Pointer<NativeFunction<LOCALE_ENUMPROCEX>> lpLocaleEnumProcEx,
+        int dwFlags, int lParam, Pointer lpReserved)>('EnumSystemLocalesEx');
+
+int EnumSystemLocales(
+        Pointer<NativeFunction<LOCALE_ENUMPROCW>> lpLocaleEnumProc,
+        int dwFlags) =>
+    _EnumSystemLocales(lpLocaleEnumProc, dwFlags);
+
+late final _EnumSystemLocales = _kernel32.lookupFunction<
+    Int32 Function(Pointer<NativeFunction<LOCALE_ENUMPROCW>> lpLocaleEnumProc,
+        Uint32 dwFlags),
+    int Function(Pointer<NativeFunction<LOCALE_ENUMPROCW>> lpLocaleEnumProc,
+        int dwFlags)>('EnumSystemLocalesW');
+
+int EnumTimeFormatsEx(
+        Pointer<NativeFunction<TIMEFMT_ENUMPROCEX>> lpTimeFmtEnumProcEx,
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        int lParam) =>
+    _EnumTimeFormatsEx(lpTimeFmtEnumProcEx, lpLocaleName, dwFlags, lParam);
+
+late final _EnumTimeFormatsEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<TIMEFMT_ENUMPROCEX>> lpTimeFmtEnumProcEx,
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFlags,
+        IntPtr lParam),
+    int Function(
+        Pointer<NativeFunction<TIMEFMT_ENUMPROCEX>> lpTimeFmtEnumProcEx,
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        int lParam)>('EnumTimeFormatsEx');
+
+int EnumTimeFormats(
+        Pointer<NativeFunction<TIMEFMT_ENUMPROCW>> lpTimeFmtEnumProc,
+        int Locale,
+        int dwFlags) =>
+    _EnumTimeFormats(lpTimeFmtEnumProc, Locale, dwFlags);
+
+late final _EnumTimeFormats = _kernel32.lookupFunction<
+    Int32 Function(Pointer<NativeFunction<TIMEFMT_ENUMPROCW>> lpTimeFmtEnumProc,
+        Uint32 Locale, Uint32 dwFlags),
+    int Function(Pointer<NativeFunction<TIMEFMT_ENUMPROCW>> lpTimeFmtEnumProc,
+        int Locale, int dwFlags)>('EnumTimeFormatsW');
+
+int EnumUILanguages(
+        Pointer<NativeFunction<UILANGUAGE_ENUMPROCW>> lpUILanguageEnumProc,
+        int dwFlags,
+        int lParam) =>
+    _EnumUILanguages(lpUILanguageEnumProc, dwFlags, lParam);
+
+late final _EnumUILanguages = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<NativeFunction<UILANGUAGE_ENUMPROCW>> lpUILanguageEnumProc,
+        Uint32 dwFlags,
+        IntPtr lParam),
+    int Function(
+        Pointer<NativeFunction<UILANGUAGE_ENUMPROCW>> lpUILanguageEnumProc,
+        int dwFlags,
+        int lParam)>('EnumUILanguagesW');
+
+int FindNLSString(
+        int Locale,
+        int dwFindNLSStringFlags,
+        Pointer<Utf16> lpStringSource,
+        int cchSource,
+        Pointer<Utf16> lpStringValue,
+        int cchValue,
+        Pointer<Int32> pcchFound) =>
+    _FindNLSString(Locale, dwFindNLSStringFlags, lpStringSource, cchSource,
+        lpStringValue, cchValue, pcchFound);
+
+late final _FindNLSString = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 Locale,
+        Uint32 dwFindNLSStringFlags,
+        Pointer<Utf16> lpStringSource,
+        Int32 cchSource,
+        Pointer<Utf16> lpStringValue,
+        Int32 cchValue,
+        Pointer<Int32> pcchFound),
+    int Function(
+        int Locale,
+        int dwFindNLSStringFlags,
+        Pointer<Utf16> lpStringSource,
+        int cchSource,
+        Pointer<Utf16> lpStringValue,
+        int cchValue,
+        Pointer<Int32> pcchFound)>('FindNLSString');
+
+int FindNLSStringEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwFindNLSStringFlags,
+        Pointer<Utf16> lpStringSource,
+        int cchSource,
+        Pointer<Utf16> lpStringValue,
+        int cchValue,
+        Pointer<Int32> pcchFound,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        int sortHandle) =>
+    _FindNLSStringEx(
+        lpLocaleName,
+        dwFindNLSStringFlags,
+        lpStringSource,
+        cchSource,
+        lpStringValue,
+        cchValue,
+        pcchFound,
+        lpVersionInformation,
+        lpReserved,
+        sortHandle);
+
+late final _FindNLSStringEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFindNLSStringFlags,
+        Pointer<Utf16> lpStringSource,
+        Int32 cchSource,
+        Pointer<Utf16> lpStringValue,
+        Int32 cchValue,
+        Pointer<Int32> pcchFound,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        IntPtr sortHandle),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwFindNLSStringFlags,
+        Pointer<Utf16> lpStringSource,
+        int cchSource,
+        Pointer<Utf16> lpStringValue,
+        int cchValue,
+        Pointer<Int32> pcchFound,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        int sortHandle)>('FindNLSStringEx');
+
+int FindStringOrdinal(
+        int dwFindStringOrdinalFlags,
+        Pointer<Utf16> lpStringSource,
+        int cchSource,
+        Pointer<Utf16> lpStringValue,
+        int cchValue,
+        int bIgnoreCase) =>
+    _FindStringOrdinal(dwFindStringOrdinalFlags, lpStringSource, cchSource,
+        lpStringValue, cchValue, bIgnoreCase);
+
+late final _FindStringOrdinal = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFindStringOrdinalFlags,
+        Pointer<Utf16> lpStringSource,
+        Int32 cchSource,
+        Pointer<Utf16> lpStringValue,
+        Int32 cchValue,
+        Int32 bIgnoreCase),
+    int Function(
+        int dwFindStringOrdinalFlags,
+        Pointer<Utf16> lpStringSource,
+        int cchSource,
+        Pointer<Utf16> lpStringValue,
+        int cchValue,
+        int bIgnoreCase)>('FindStringOrdinal');
+
+int FoldString(int dwMapFlags, Pointer<Utf16> lpSrcStr, int cchSrc,
+        Pointer<Utf16> lpDestStr, int cchDest) =>
+    _FoldString(dwMapFlags, lpSrcStr, cchSrc, lpDestStr, cchDest);
+
+late final _FoldString = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwMapFlags, Pointer<Utf16> lpSrcStr, Int32 cchSrc,
+        Pointer<Utf16> lpDestStr, Int32 cchDest),
+    int Function(int dwMapFlags, Pointer<Utf16> lpSrcStr, int cchSrc,
+        Pointer<Utf16> lpDestStr, int cchDest)>('FoldStringW');
+
+int GetACP() => _GetACP();
+
+late final _GetACP =
+    _kernel32.lookupFunction<Uint32 Function(), int Function()>('GetACP');
+
+int GetCPInfo(int CodePage, Pointer<CPINFO> lpCPInfo) =>
+    _GetCPInfo(CodePage, lpCPInfo);
+
+late final _GetCPInfo = _kernel32.lookupFunction<
+    Int32 Function(Uint32 CodePage, Pointer<CPINFO> lpCPInfo),
+    int Function(int CodePage, Pointer<CPINFO> lpCPInfo)>('GetCPInfo');
+
+int GetCPInfoEx(int CodePage, int dwFlags, Pointer<CPINFOEX> lpCPInfoEx) =>
+    _GetCPInfoEx(CodePage, dwFlags, lpCPInfoEx);
+
+late final _GetCPInfoEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 CodePage, Uint32 dwFlags, Pointer<CPINFOEX> lpCPInfoEx),
+    int Function(int CodePage, int dwFlags,
+        Pointer<CPINFOEX> lpCPInfoEx)>('GetCPInfoExW');
+
+int GetCalendarInfoEx(
+        Pointer<Utf16> lpLocaleName,
+        int Calendar,
+        Pointer<Utf16> lpReserved,
+        int CalType,
+        Pointer<Utf16> lpCalData,
+        int cchData,
+        Pointer<Uint32> lpValue) =>
+    _GetCalendarInfoEx(lpLocaleName, Calendar, lpReserved, CalType, lpCalData,
+        cchData, lpValue);
+
+late final _GetCalendarInfoEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 Calendar,
+        Pointer<Utf16> lpReserved,
+        Uint32 CalType,
+        Pointer<Utf16> lpCalData,
+        Int32 cchData,
+        Pointer<Uint32> lpValue),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int Calendar,
+        Pointer<Utf16> lpReserved,
+        int CalType,
+        Pointer<Utf16> lpCalData,
+        int cchData,
+        Pointer<Uint32> lpValue)>('GetCalendarInfoEx');
+
+int GetCalendarInfo(int Locale, int Calendar, int CalType,
+        Pointer<Utf16> lpCalData, int cchData, Pointer<Uint32> lpValue) =>
+    _GetCalendarInfo(Locale, Calendar, CalType, lpCalData, cchData, lpValue);
+
+late final _GetCalendarInfo = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 Calendar, Uint32 CalType,
+        Pointer<Utf16> lpCalData, Int32 cchData, Pointer<Uint32> lpValue),
+    int Function(
+        int Locale,
+        int Calendar,
+        int CalType,
+        Pointer<Utf16> lpCalData,
+        int cchData,
+        Pointer<Uint32> lpValue)>('GetCalendarInfoW');
+
+int GetCurrencyFormatEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<CURRENCYFMT> lpFormat,
+        Pointer<Utf16> lpCurrencyStr,
+        int cchCurrency) =>
+    _GetCurrencyFormatEx(
+        lpLocaleName, dwFlags, lpValue, lpFormat, lpCurrencyStr, cchCurrency);
+
+late final _GetCurrencyFormatEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<CURRENCYFMT> lpFormat,
+        Pointer<Utf16> lpCurrencyStr,
+        Int32 cchCurrency),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<CURRENCYFMT> lpFormat,
+        Pointer<Utf16> lpCurrencyStr,
+        int cchCurrency)>('GetCurrencyFormatEx');
+
+int GetCurrencyFormat(
+        int Locale,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<CURRENCYFMT> lpFormat,
+        Pointer<Utf16> lpCurrencyStr,
+        int cchCurrency) =>
+    _GetCurrencyFormat(
+        Locale, dwFlags, lpValue, lpFormat, lpCurrencyStr, cchCurrency);
+
+late final _GetCurrencyFormat = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 Locale,
+        Uint32 dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<CURRENCYFMT> lpFormat,
+        Pointer<Utf16> lpCurrencyStr,
+        Int32 cchCurrency),
+    int Function(
+        int Locale,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<CURRENCYFMT> lpFormat,
+        Pointer<Utf16> lpCurrencyStr,
+        int cchCurrency)>('GetCurrencyFormatW');
+
+int GetDateFormatEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpDate,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDateStr,
+        int cchDate,
+        Pointer<Utf16> lpCalendar) =>
+    _GetDateFormatEx(lpLocaleName, dwFlags, lpDate, lpFormat, lpDateStr,
+        cchDate, lpCalendar);
+
+late final _GetDateFormatEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFlags,
+        Pointer<SYSTEMTIME> lpDate,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDateStr,
+        Int32 cchDate,
+        Pointer<Utf16> lpCalendar),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpDate,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDateStr,
+        int cchDate,
+        Pointer<Utf16> lpCalendar)>('GetDateFormatEx');
+
+int GetDateFormat(int Locale, int dwFlags, Pointer<SYSTEMTIME> lpDate,
+        Pointer<Utf16> lpFormat, Pointer<Utf16> lpDateStr, int cchDate) =>
+    _GetDateFormat(Locale, dwFlags, lpDate, lpFormat, lpDateStr, cchDate);
+
+late final _GetDateFormat = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 dwFlags, Pointer<SYSTEMTIME> lpDate,
+        Pointer<Utf16> lpFormat, Pointer<Utf16> lpDateStr, Int32 cchDate),
+    int Function(
+        int Locale,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpDate,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDateStr,
+        int cchDate)>('GetDateFormatW');
+
+int GetDurationFormat(
+        int Locale,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpDuration,
+        int ullDuration,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDurationStr,
+        int cchDuration) =>
+    _GetDurationFormat(Locale, dwFlags, lpDuration, ullDuration, lpFormat,
+        lpDurationStr, cchDuration);
+
+late final _GetDurationFormat = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 Locale,
+        Uint32 dwFlags,
+        Pointer<SYSTEMTIME> lpDuration,
+        Uint64 ullDuration,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDurationStr,
+        Int32 cchDuration),
+    int Function(
+        int Locale,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpDuration,
+        int ullDuration,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDurationStr,
+        int cchDuration)>('GetDurationFormat');
+
+int GetDurationFormatEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpDuration,
+        int ullDuration,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDurationStr,
+        int cchDuration) =>
+    _GetDurationFormatEx(lpLocaleName, dwFlags, lpDuration, ullDuration,
+        lpFormat, lpDurationStr, cchDuration);
+
+late final _GetDurationFormatEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFlags,
+        Pointer<SYSTEMTIME> lpDuration,
+        Uint64 ullDuration,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDurationStr,
+        Int32 cchDuration),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpDuration,
+        int ullDuration,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpDurationStr,
+        int cchDuration)>('GetDurationFormatEx');
+
+int GetFileMUIInfo(int dwFlags, Pointer<Utf16> pcwszFilePath,
+        Pointer<FILEMUIINFO> pFileMUIInfo, Pointer<Uint32> pcbFileMUIInfo) =>
+    _GetFileMUIInfo(dwFlags, pcwszFilePath, pFileMUIInfo, pcbFileMUIInfo);
+
+late final _GetFileMUIInfo = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwFlags, Pointer<Utf16> pcwszFilePath,
+        Pointer<FILEMUIINFO> pFileMUIInfo, Pointer<Uint32> pcbFileMUIInfo),
+    int Function(
+        int dwFlags,
+        Pointer<Utf16> pcwszFilePath,
+        Pointer<FILEMUIINFO> pFileMUIInfo,
+        Pointer<Uint32> pcbFileMUIInfo)>('GetFileMUIInfo');
+
+int GetFileMUIPath(
+        int dwFlags,
+        Pointer<Utf16> pcwszFilePath,
+        Pointer<Utf16> pwszLanguage,
+        Pointer<Uint32> pcchLanguage,
+        Pointer<Utf16> pwszFileMUIPath,
+        Pointer<Uint32> pcchFileMUIPath,
+        Pointer<Uint64> pululEnumerator) =>
+    _GetFileMUIPath(dwFlags, pcwszFilePath, pwszLanguage, pcchLanguage,
+        pwszFileMUIPath, pcchFileMUIPath, pululEnumerator);
+
+late final _GetFileMUIPath = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Utf16> pcwszFilePath,
+        Pointer<Utf16> pwszLanguage,
+        Pointer<Uint32> pcchLanguage,
+        Pointer<Utf16> pwszFileMUIPath,
+        Pointer<Uint32> pcchFileMUIPath,
+        Pointer<Uint64> pululEnumerator),
+    int Function(
+        int dwFlags,
+        Pointer<Utf16> pcwszFilePath,
+        Pointer<Utf16> pwszLanguage,
+        Pointer<Uint32> pcchLanguage,
+        Pointer<Utf16> pwszFileMUIPath,
+        Pointer<Uint32> pcchFileMUIPath,
+        Pointer<Uint64> pululEnumerator)>('GetFileMUIPath');
+
+int GetGeoInfoEx(Pointer<Utf16> location, int geoType, Pointer<Utf16> geoData,
+        int geoDataCount) =>
+    _GetGeoInfoEx(location, geoType, geoData, geoDataCount);
+
+late final _GetGeoInfoEx = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> location, Uint32 geoType,
+        Pointer<Utf16> geoData, Int32 geoDataCount),
+    int Function(Pointer<Utf16> location, int geoType, Pointer<Utf16> geoData,
+        int geoDataCount)>('GetGeoInfoEx');
+
+int GetGeoInfo(int Location, int GeoType, Pointer<Utf16> lpGeoData, int cchData,
+        int LangId) =>
+    _GetGeoInfo(Location, GeoType, lpGeoData, cchData, LangId);
+
+late final _GetGeoInfo = _kernel32.lookupFunction<
+    Int32 Function(Int32 Location, Uint32 GeoType, Pointer<Utf16> lpGeoData,
+        Int32 cchData, Uint16 LangId),
+    int Function(int Location, int GeoType, Pointer<Utf16> lpGeoData,
+        int cchData, int LangId)>('GetGeoInfoW');
+
+int GetLocaleInfoEx(Pointer<Utf16> lpLocaleName, int LCType,
+        Pointer<Utf16> lpLCData, int cchData) =>
+    _GetLocaleInfoEx(lpLocaleName, LCType, lpLCData, cchData);
+
+late final _GetLocaleInfoEx = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpLocaleName, Uint32 LCType,
+        Pointer<Utf16> lpLCData, Int32 cchData),
+    int Function(Pointer<Utf16> lpLocaleName, int LCType,
+        Pointer<Utf16> lpLCData, int cchData)>('GetLocaleInfoEx');
+
+int GetLocaleInfo(
+        int Locale, int LCType, Pointer<Utf16> lpLCData, int cchData) =>
+    _GetLocaleInfo(Locale, LCType, lpLCData, cchData);
+
+late final _GetLocaleInfo = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 Locale, Uint32 LCType, Pointer<Utf16> lpLCData, Int32 cchData),
+    int Function(int Locale, int LCType, Pointer<Utf16> lpLCData,
+        int cchData)>('GetLocaleInfoW');
+
+int GetNLSVersion(int Function, int Locale,
+        Pointer<NLSVERSIONINFO> lpVersionInformation) =>
+    _GetNLSVersion(Function, Locale, lpVersionInformation);
+
+late final _GetNLSVersion = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Function, Uint32 Locale,
+        Pointer<NLSVERSIONINFO> lpVersionInformation),
+    int Function(int Function, int Locale,
+        Pointer<NLSVERSIONINFO> lpVersionInformation)>('GetNLSVersion');
+
+int GetNLSVersionEx(int function, Pointer<Utf16> lpLocaleName,
+        Pointer<NLSVERSIONINFOEX> lpVersionInformation) =>
+    _GetNLSVersionEx(function, lpLocaleName, lpVersionInformation);
+
+late final _GetNLSVersionEx = _kernel32.lookupFunction<
+    Int32 Function(Uint32 function, Pointer<Utf16> lpLocaleName,
+        Pointer<NLSVERSIONINFOEX> lpVersionInformation),
+    int Function(int function, Pointer<Utf16> lpLocaleName,
+        Pointer<NLSVERSIONINFOEX> lpVersionInformation)>('GetNLSVersionEx');
+
+int GetNumberFormatEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<NUMBERFMT> lpFormat,
+        Pointer<Utf16> lpNumberStr,
+        int cchNumber) =>
+    _GetNumberFormatEx(
+        lpLocaleName, dwFlags, lpValue, lpFormat, lpNumberStr, cchNumber);
+
+late final _GetNumberFormatEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<NUMBERFMT> lpFormat,
+        Pointer<Utf16> lpNumberStr,
+        Int32 cchNumber),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<NUMBERFMT> lpFormat,
+        Pointer<Utf16> lpNumberStr,
+        int cchNumber)>('GetNumberFormatEx');
+
+int GetNumberFormat(
+        int Locale,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<NUMBERFMT> lpFormat,
+        Pointer<Utf16> lpNumberStr,
+        int cchNumber) =>
+    _GetNumberFormat(
+        Locale, dwFlags, lpValue, lpFormat, lpNumberStr, cchNumber);
+
+late final _GetNumberFormat = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 Locale,
+        Uint32 dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<NUMBERFMT> lpFormat,
+        Pointer<Utf16> lpNumberStr,
+        Int32 cchNumber),
+    int Function(
+        int Locale,
+        int dwFlags,
+        Pointer<Utf16> lpValue,
+        Pointer<NUMBERFMT> lpFormat,
+        Pointer<Utf16> lpNumberStr,
+        int cchNumber)>('GetNumberFormatW');
+
+int GetOEMCP() => _GetOEMCP();
+
+late final _GetOEMCP =
+    _kernel32.lookupFunction<Uint32 Function(), int Function()>('GetOEMCP');
+
+int GetProcessPreferredUILanguages(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer) =>
+    _GetProcessPreferredUILanguages(
+        dwFlags, pulNumLanguages, pwszLanguagesBuffer, pcchLanguagesBuffer);
+
+late final _GetProcessPreferredUILanguages = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer),
+    int Function(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer)>('GetProcessPreferredUILanguages');
+
+int GetStringScripts(int dwFlags, Pointer<Utf16> lpString, int cchString,
+        Pointer<Utf16> lpScripts, int cchScripts) =>
+    _GetStringScripts(dwFlags, lpString, cchString, lpScripts, cchScripts);
+
+late final _GetStringScripts = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwFlags, Pointer<Utf16> lpString, Int32 cchString,
+        Pointer<Utf16> lpScripts, Int32 cchScripts),
+    int Function(int dwFlags, Pointer<Utf16> lpString, int cchString,
+        Pointer<Utf16> lpScripts, int cchScripts)>('GetStringScripts');
+
+int GetStringTypeEx(int Locale, int dwInfoType, Pointer<Utf16> lpSrcStr,
+        int cchSrc, Pointer<Uint16> lpCharType) =>
+    _GetStringTypeEx(Locale, dwInfoType, lpSrcStr, cchSrc, lpCharType);
+
+late final _GetStringTypeEx = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 dwInfoType, Pointer<Utf16> lpSrcStr,
+        Int32 cchSrc, Pointer<Uint16> lpCharType),
+    int Function(int Locale, int dwInfoType, Pointer<Utf16> lpSrcStr,
+        int cchSrc, Pointer<Uint16> lpCharType)>('GetStringTypeExW');
+
+int GetStringType(int dwInfoType, Pointer<Utf16> lpSrcStr, int cchSrc,
+        Pointer<Uint16> lpCharType) =>
+    _GetStringType(dwInfoType, lpSrcStr, cchSrc, lpCharType);
+
+late final _GetStringType = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwInfoType, Pointer<Utf16> lpSrcStr, Int32 cchSrc,
+        Pointer<Uint16> lpCharType),
+    int Function(int dwInfoType, Pointer<Utf16> lpSrcStr, int cchSrc,
+        Pointer<Uint16> lpCharType)>('GetStringTypeW');
+
+int GetSystemDefaultLCID() => _GetSystemDefaultLCID();
+
+late final _GetSystemDefaultLCID = _kernel32
+    .lookupFunction<Uint32 Function(), int Function()>('GetSystemDefaultLCID');
+
+int GetSystemDefaultLangID() => _GetSystemDefaultLangID();
+
+late final _GetSystemDefaultLangID =
+    _kernel32.lookupFunction<Uint16 Function(), int Function()>(
+        'GetSystemDefaultLangID');
+
+int GetSystemDefaultLocaleName(
+        Pointer<Utf16> lpLocaleName, int cchLocaleName) =>
+    _GetSystemDefaultLocaleName(lpLocaleName, cchLocaleName);
+
+late final _GetSystemDefaultLocaleName = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpLocaleName, Int32 cchLocaleName),
+    int Function(Pointer<Utf16> lpLocaleName,
+        int cchLocaleName)>('GetSystemDefaultLocaleName');
+
+int GetSystemDefaultUILanguage() => _GetSystemDefaultUILanguage();
+
+late final _GetSystemDefaultUILanguage =
+    _kernel32.lookupFunction<Uint16 Function(), int Function()>(
+        'GetSystemDefaultUILanguage');
+
+int GetSystemPreferredUILanguages(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer) =>
+    _GetSystemPreferredUILanguages(
+        dwFlags, pulNumLanguages, pwszLanguagesBuffer, pcchLanguagesBuffer);
+
+late final _GetSystemPreferredUILanguages = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer),
+    int Function(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer)>('GetSystemPreferredUILanguages');
+
+int GetThreadLocale() => _GetThreadLocale();
+
+late final _GetThreadLocale = _kernel32
+    .lookupFunction<Uint32 Function(), int Function()>('GetThreadLocale');
+
+int GetThreadPreferredUILanguages(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer) =>
+    _GetThreadPreferredUILanguages(
+        dwFlags, pulNumLanguages, pwszLanguagesBuffer, pcchLanguagesBuffer);
+
+late final _GetThreadPreferredUILanguages = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer),
+    int Function(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer)>('GetThreadPreferredUILanguages');
+
+int GetThreadUILanguage() => _GetThreadUILanguage();
+
+late final _GetThreadUILanguage = _kernel32
+    .lookupFunction<Uint16 Function(), int Function()>('GetThreadUILanguage');
+
+int GetTimeFormatEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpTime,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpTimeStr,
+        int cchTime) =>
+    _GetTimeFormatEx(
+        lpLocaleName, dwFlags, lpTime, lpFormat, lpTimeStr, cchTime);
+
+late final _GetTimeFormatEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwFlags,
+        Pointer<SYSTEMTIME> lpTime,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpTimeStr,
+        Int32 cchTime),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpTime,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpTimeStr,
+        int cchTime)>('GetTimeFormatEx');
+
+int GetTimeFormat(int Locale, int dwFlags, Pointer<SYSTEMTIME> lpTime,
+        Pointer<Utf16> lpFormat, Pointer<Utf16> lpTimeStr, int cchTime) =>
+    _GetTimeFormat(Locale, dwFlags, lpTime, lpFormat, lpTimeStr, cchTime);
+
+late final _GetTimeFormat = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 dwFlags, Pointer<SYSTEMTIME> lpTime,
+        Pointer<Utf16> lpFormat, Pointer<Utf16> lpTimeStr, Int32 cchTime),
+    int Function(
+        int Locale,
+        int dwFlags,
+        Pointer<SYSTEMTIME> lpTime,
+        Pointer<Utf16> lpFormat,
+        Pointer<Utf16> lpTimeStr,
+        int cchTime)>('GetTimeFormatW');
+
+int GetUILanguageInfo(
+        int dwFlags,
+        Pointer<Utf16> pwmszLanguage,
+        Pointer<Utf16> pwszFallbackLanguages,
+        Pointer<Uint32> pcchFallbackLanguages,
+        Pointer<Uint32> pAttributes) =>
+    _GetUILanguageInfo(dwFlags, pwmszLanguage, pwszFallbackLanguages,
+        pcchFallbackLanguages, pAttributes);
+
+late final _GetUILanguageInfo = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Utf16> pwmszLanguage,
+        Pointer<Utf16> pwszFallbackLanguages,
+        Pointer<Uint32> pcchFallbackLanguages,
+        Pointer<Uint32> pAttributes),
+    int Function(
+        int dwFlags,
+        Pointer<Utf16> pwmszLanguage,
+        Pointer<Utf16> pwszFallbackLanguages,
+        Pointer<Uint32> pcchFallbackLanguages,
+        Pointer<Uint32> pAttributes)>('GetUILanguageInfo');
+
+int GetUserDefaultGeoName(Pointer<Utf16> geoName, int geoNameCount) =>
+    _GetUserDefaultGeoName(geoName, geoNameCount);
+
+late final _GetUserDefaultGeoName = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> geoName, Int32 geoNameCount),
+    int Function(
+        Pointer<Utf16> geoName, int geoNameCount)>('GetUserDefaultGeoName');
+
+int GetUserDefaultLCID() => _GetUserDefaultLCID();
+
+late final _GetUserDefaultLCID = _kernel32
+    .lookupFunction<Uint32 Function(), int Function()>('GetUserDefaultLCID');
+
+int GetUserDefaultLangID() => _GetUserDefaultLangID();
+
+late final _GetUserDefaultLangID = _kernel32
+    .lookupFunction<Uint16 Function(), int Function()>('GetUserDefaultLangID');
+
+int GetUserDefaultLocaleName(Pointer<Utf16> lpLocaleName, int cchLocaleName) =>
+    _GetUserDefaultLocaleName(lpLocaleName, cchLocaleName);
+
+late final _GetUserDefaultLocaleName = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpLocaleName, Int32 cchLocaleName),
+    int Function(Pointer<Utf16> lpLocaleName,
+        int cchLocaleName)>('GetUserDefaultLocaleName');
+
+int GetUserDefaultUILanguage() => _GetUserDefaultUILanguage();
+
+late final _GetUserDefaultUILanguage =
+    _kernel32.lookupFunction<Uint16 Function(), int Function()>(
+        'GetUserDefaultUILanguage');
+
+int GetUserGeoID(int GeoClass) => _GetUserGeoID(GeoClass);
+
+late final _GetUserGeoID = _kernel32.lookupFunction<
+    Int32 Function(Uint32 GeoClass),
+    int Function(int GeoClass)>('GetUserGeoID');
+
+int GetUserPreferredUILanguages(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer) =>
+    _GetUserPreferredUILanguages(
+        dwFlags, pulNumLanguages, pwszLanguagesBuffer, pcchLanguagesBuffer);
+
+late final _GetUserPreferredUILanguages = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer),
+    int Function(
+        int dwFlags,
+        Pointer<Uint32> pulNumLanguages,
+        Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pcchLanguagesBuffer)>('GetUserPreferredUILanguages');
+
+int IdnToNameprepUnicode(
+        int dwFlags,
+        Pointer<Utf16> lpUnicodeCharStr,
+        int cchUnicodeChar,
+        Pointer<Utf16> lpNameprepCharStr,
+        int cchNameprepChar) =>
+    _IdnToNameprepUnicode(dwFlags, lpUnicodeCharStr, cchUnicodeChar,
+        lpNameprepCharStr, cchNameprepChar);
+
+late final _IdnToNameprepUnicode = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Utf16> lpUnicodeCharStr,
+        Int32 cchUnicodeChar,
+        Pointer<Utf16> lpNameprepCharStr,
+        Int32 cchNameprepChar),
+    int Function(
+        int dwFlags,
+        Pointer<Utf16> lpUnicodeCharStr,
+        int cchUnicodeChar,
+        Pointer<Utf16> lpNameprepCharStr,
+        int cchNameprepChar)>('IdnToNameprepUnicode');
+
+int IsDBCSLeadByte(int TestChar) => _IsDBCSLeadByte(TestChar);
+
+late final _IsDBCSLeadByte = _kernel32.lookupFunction<
+    Int32 Function(Uint8 TestChar),
+    int Function(int TestChar)>('IsDBCSLeadByte');
+
+int IsDBCSLeadByteEx(int CodePage, int TestChar) =>
+    _IsDBCSLeadByteEx(CodePage, TestChar);
+
+late final _IsDBCSLeadByteEx = _kernel32.lookupFunction<
+    Int32 Function(Uint32 CodePage, Uint8 TestChar),
+    int Function(int CodePage, int TestChar)>('IsDBCSLeadByteEx');
+
+int IsNLSDefinedString(
+        int Function,
+        int dwFlags,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer<Utf16> lpString,
+        int cchStr) =>
+    _IsNLSDefinedString(
+        Function, dwFlags, lpVersionInformation, lpString, cchStr);
+
+late final _IsNLSDefinedString = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 Function,
+        Uint32 dwFlags,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer<Utf16> lpString,
+        Int32 cchStr),
+    int Function(
+        int Function,
+        int dwFlags,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer<Utf16> lpString,
+        int cchStr)>('IsNLSDefinedString');
+
+int IsNormalizedString(int NormForm, Pointer<Utf16> lpString, int cwLength) =>
+    _IsNormalizedString(NormForm, lpString, cwLength);
+
+late final _IsNormalizedString = _kernel32.lookupFunction<
+    Int32 Function(Int32 NormForm, Pointer<Utf16> lpString, Int32 cwLength),
+    int Function(int NormForm, Pointer<Utf16> lpString,
+        int cwLength)>('IsNormalizedString');
+
+int IsValidCodePage(int CodePage) => _IsValidCodePage(CodePage);
+
+late final _IsValidCodePage = _kernel32.lookupFunction<
+    Int32 Function(Uint32 CodePage),
+    int Function(int CodePage)>('IsValidCodePage');
+
+int IsValidLanguageGroup(int LanguageGroup, int dwFlags) =>
+    _IsValidLanguageGroup(LanguageGroup, dwFlags);
+
+late final _IsValidLanguageGroup = _kernel32.lookupFunction<
+    Int32 Function(Uint32 LanguageGroup, Uint32 dwFlags),
+    int Function(int LanguageGroup, int dwFlags)>('IsValidLanguageGroup');
+
+int IsValidLocale(int Locale, int dwFlags) => _IsValidLocale(Locale, dwFlags);
+
+late final _IsValidLocale = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 dwFlags),
+    int Function(int Locale, int dwFlags)>('IsValidLocale');
+
+int IsValidLocaleName(Pointer<Utf16> lpLocaleName) =>
+    _IsValidLocaleName(lpLocaleName);
+
+late final _IsValidLocaleName = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpLocaleName),
+    int Function(Pointer<Utf16> lpLocaleName)>('IsValidLocaleName');
+
+int IsValidNLSVersion(int function, Pointer<Utf16> lpLocaleName,
+        Pointer<NLSVERSIONINFOEX> lpVersionInformation) =>
+    _IsValidNLSVersion(function, lpLocaleName, lpVersionInformation);
+
+late final _IsValidNLSVersion = _kernel32.lookupFunction<
+    Uint32 Function(Uint32 function, Pointer<Utf16> lpLocaleName,
+        Pointer<NLSVERSIONINFOEX> lpVersionInformation),
+    int Function(int function, Pointer<Utf16> lpLocaleName,
+        Pointer<NLSVERSIONINFOEX> lpVersionInformation)>('IsValidNLSVersion');
+
+int LCIDToLocaleName(
+        int Locale, Pointer<Utf16> lpName, int cchName, int dwFlags) =>
+    _LCIDToLocaleName(Locale, lpName, cchName, dwFlags);
+
+late final _LCIDToLocaleName = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 Locale, Pointer<Utf16> lpName, Int32 cchName, Uint32 dwFlags),
+    int Function(int Locale, Pointer<Utf16> lpName, int cchName,
+        int dwFlags)>('LCIDToLocaleName');
+
+int LCMapStringEx(
+        Pointer<Utf16> lpLocaleName,
+        int dwMapFlags,
+        Pointer<Utf16> lpSrcStr,
+        int cchSrc,
+        Pointer<Utf16> lpDestStr,
+        int cchDest,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        int sortHandle) =>
+    _LCMapStringEx(lpLocaleName, dwMapFlags, lpSrcStr, cchSrc, lpDestStr,
+        cchDest, lpVersionInformation, lpReserved, sortHandle);
+
+late final _LCMapStringEx = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> lpLocaleName,
+        Uint32 dwMapFlags,
+        Pointer<Utf16> lpSrcStr,
+        Int32 cchSrc,
+        Pointer<Utf16> lpDestStr,
+        Int32 cchDest,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        IntPtr sortHandle),
+    int Function(
+        Pointer<Utf16> lpLocaleName,
+        int dwMapFlags,
+        Pointer<Utf16> lpSrcStr,
+        int cchSrc,
+        Pointer<Utf16> lpDestStr,
+        int cchDest,
+        Pointer<NLSVERSIONINFO> lpVersionInformation,
+        Pointer lpReserved,
+        int sortHandle)>('LCMapStringEx');
+
+int LCMapString(int Locale, int dwMapFlags, Pointer<Utf16> lpSrcStr, int cchSrc,
+        Pointer<Utf16> lpDestStr, int cchDest) =>
+    _LCMapString(Locale, dwMapFlags, lpSrcStr, cchSrc, lpDestStr, cchDest);
+
+late final _LCMapString = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 dwMapFlags, Pointer<Utf16> lpSrcStr,
+        Int32 cchSrc, Pointer<Utf16> lpDestStr, Int32 cchDest),
+    int Function(int Locale, int dwMapFlags, Pointer<Utf16> lpSrcStr,
+        int cchSrc, Pointer<Utf16> lpDestStr, int cchDest)>('LCMapStringW');
+
+int LocaleNameToLCID(Pointer<Utf16> lpName, int dwFlags) =>
+    _LocaleNameToLCID(lpName, dwFlags);
+
+late final _LocaleNameToLCID = _kernel32.lookupFunction<
+    Uint32 Function(Pointer<Utf16> lpName, Uint32 dwFlags),
+    int Function(Pointer<Utf16> lpName, int dwFlags)>('LocaleNameToLCID');
+
+int MultiByteToWideChar(int CodePage, int dwFlags, Pointer<Utf8> lpMultiByteStr,
+        int cbMultiByte, Pointer<Utf16> lpWideCharStr, int cchWideChar) =>
+    _MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, cbMultiByte,
+        lpWideCharStr, cchWideChar);
+
+late final _MultiByteToWideChar = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 CodePage,
+        Uint32 dwFlags,
+        Pointer<Utf8> lpMultiByteStr,
+        Int32 cbMultiByte,
+        Pointer<Utf16> lpWideCharStr,
+        Int32 cchWideChar),
+    int Function(
+        int CodePage,
+        int dwFlags,
+        Pointer<Utf8> lpMultiByteStr,
+        int cbMultiByte,
+        Pointer<Utf16> lpWideCharStr,
+        int cchWideChar)>('MultiByteToWideChar');
+
+int NormalizeString(int NormForm, Pointer<Utf16> lpSrcString, int cwSrcLength,
+        Pointer<Utf16> lpDstString, int cwDstLength) =>
+    _NormalizeString(
+        NormForm, lpSrcString, cwSrcLength, lpDstString, cwDstLength);
+
+late final _NormalizeString = _kernel32.lookupFunction<
+    Int32 Function(Int32 NormForm, Pointer<Utf16> lpSrcString,
+        Int32 cwSrcLength, Pointer<Utf16> lpDstString, Int32 cwDstLength),
+    int Function(int NormForm, Pointer<Utf16> lpSrcString, int cwSrcLength,
+        Pointer<Utf16> lpDstString, int cwDstLength)>('NormalizeString');
+
+int NotifyUILanguageChange(
+        int dwFlags,
+        Pointer<Utf16> pcwstrNewLanguage,
+        Pointer<Utf16> pcwstrPreviousLanguage,
+        int dwReserved,
+        Pointer<Uint32> pdwStatusRtrn) =>
+    _NotifyUILanguageChange(dwFlags, pcwstrNewLanguage, pcwstrPreviousLanguage,
+        dwReserved, pdwStatusRtrn);
+
+late final _NotifyUILanguageChange = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Utf16> pcwstrNewLanguage,
+        Pointer<Utf16> pcwstrPreviousLanguage,
+        Uint32 dwReserved,
+        Pointer<Uint32> pdwStatusRtrn),
+    int Function(
+        int dwFlags,
+        Pointer<Utf16> pcwstrNewLanguage,
+        Pointer<Utf16> pcwstrPreviousLanguage,
+        int dwReserved,
+        Pointer<Uint32> pdwStatusRtrn)>('NotifyUILanguageChange');
+
+int ResolveLocaleName(Pointer<Utf16> lpNameToResolve,
+        Pointer<Utf16> lpLocaleName, int cchLocaleName) =>
+    _ResolveLocaleName(lpNameToResolve, lpLocaleName, cchLocaleName);
+
+late final _ResolveLocaleName = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpNameToResolve, Pointer<Utf16> lpLocaleName,
+        Int32 cchLocaleName),
+    int Function(Pointer<Utf16> lpNameToResolve, Pointer<Utf16> lpLocaleName,
+        int cchLocaleName)>('ResolveLocaleName');
+
+void RestoreThreadPreferredUILanguages(int snapshot) =>
+    _RestoreThreadPreferredUILanguages(snapshot);
+
+late final _RestoreThreadPreferredUILanguages = _kernel32.lookupFunction<
+    Void Function(IntPtr snapshot),
+    void Function(int snapshot)>('RestoreThreadPreferredUILanguages');
+
+int SetCalendarInfo(
+        int Locale, int Calendar, int CalType, Pointer<Utf16> lpCalData) =>
+    _SetCalendarInfo(Locale, Calendar, CalType, lpCalData);
+
+late final _SetCalendarInfo = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 Calendar, Uint32 CalType,
+        Pointer<Utf16> lpCalData),
+    int Function(int Locale, int Calendar, int CalType,
+        Pointer<Utf16> lpCalData)>('SetCalendarInfoW');
+
+int SetLocaleInfo(int Locale, int LCType, Pointer<Utf16> lpLCData) =>
+    _SetLocaleInfo(Locale, LCType, lpLCData);
+
+late final _SetLocaleInfo = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale, Uint32 LCType, Pointer<Utf16> lpLCData),
+    int Function(
+        int Locale, int LCType, Pointer<Utf16> lpLCData)>('SetLocaleInfoW');
+
+int SetProcessPreferredUILanguages(int dwFlags,
+        Pointer<Utf16> pwszLanguagesBuffer, Pointer<Uint32> pulNumLanguages) =>
+    _SetProcessPreferredUILanguages(
+        dwFlags, pwszLanguagesBuffer, pulNumLanguages);
+
+late final _SetProcessPreferredUILanguages = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwFlags, Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pulNumLanguages),
+    int Function(int dwFlags, Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pulNumLanguages)>('SetProcessPreferredUILanguages');
+
+int SetThreadLocale(int Locale) => _SetThreadLocale(Locale);
+
+late final _SetThreadLocale = _kernel32.lookupFunction<
+    Int32 Function(Uint32 Locale), int Function(int Locale)>('SetThreadLocale');
+
+int SetThreadPreferredUILanguages(int dwFlags,
+        Pointer<Utf16> pwszLanguagesBuffer, Pointer<Uint32> pulNumLanguages) =>
+    _SetThreadPreferredUILanguages(
+        dwFlags, pwszLanguagesBuffer, pulNumLanguages);
+
+late final _SetThreadPreferredUILanguages = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwFlags, Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pulNumLanguages),
+    int Function(int dwFlags, Pointer<Utf16> pwszLanguagesBuffer,
+        Pointer<Uint32> pulNumLanguages)>('SetThreadPreferredUILanguages');
+
+int SetThreadPreferredUILanguages2(int flags, Pointer<Utf16> languages,
+        Pointer<Uint32> numLanguagesSet, Pointer<IntPtr> snapshot) =>
+    _SetThreadPreferredUILanguages2(
+        flags, languages, numLanguagesSet, snapshot);
+
+late final _SetThreadPreferredUILanguages2 = _kernel32.lookupFunction<
+    Int32 Function(Uint32 flags, Pointer<Utf16> languages,
+        Pointer<Uint32> numLanguagesSet, Pointer<IntPtr> snapshot),
+    int Function(
+        int flags,
+        Pointer<Utf16> languages,
+        Pointer<Uint32> numLanguagesSet,
+        Pointer<IntPtr> snapshot)>('SetThreadPreferredUILanguages2');
+
+int SetThreadUILanguage(int LangId) => _SetThreadUILanguage(LangId);
+
+late final _SetThreadUILanguage = _kernel32.lookupFunction<
+    Uint16 Function(Uint16 LangId),
+    int Function(int LangId)>('SetThreadUILanguage');
+
+int SetUserGeoID(int GeoId) => _SetUserGeoID(GeoId);
+
+late final _SetUserGeoID = _kernel32.lookupFunction<Int32 Function(Int32 GeoId),
+    int Function(int GeoId)>('SetUserGeoID');
+
+int SetUserGeoName(Pointer<Utf16> geoName) => _SetUserGeoName(geoName);
+
+late final _SetUserGeoName = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> geoName),
+    int Function(Pointer<Utf16> geoName)>('SetUserGeoName');
+
+int VerifyScripts(
+        int dwFlags,
+        Pointer<Utf16> lpLocaleScripts,
+        int cchLocaleScripts,
+        Pointer<Utf16> lpTestScripts,
+        int cchTestScripts) =>
+    _VerifyScripts(dwFlags, lpLocaleScripts, cchLocaleScripts, lpTestScripts,
+        cchTestScripts);
+
+late final _VerifyScripts = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Utf16> lpLocaleScripts,
+        Int32 cchLocaleScripts,
+        Pointer<Utf16> lpTestScripts,
+        Int32 cchTestScripts),
+    int Function(
+        int dwFlags,
+        Pointer<Utf16> lpLocaleScripts,
+        int cchLocaleScripts,
+        Pointer<Utf16> lpTestScripts,
+        int cchTestScripts)>('VerifyScripts');
+
+int WideCharToMultiByte(
+        int CodePage,
+        int dwFlags,
+        Pointer<Utf16> lpWideCharStr,
+        int cchWideChar,
+        Pointer<Utf8> lpMultiByteStr,
+        int cbMultiByte,
+        Pointer<Utf8> lpDefaultChar,
+        Pointer<Int32> lpUsedDefaultChar) =>
+    _WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, cchWideChar,
+        lpMultiByteStr, cbMultiByte, lpDefaultChar, lpUsedDefaultChar);
+
+late final _WideCharToMultiByte = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 CodePage,
+        Uint32 dwFlags,
+        Pointer<Utf16> lpWideCharStr,
+        Int32 cchWideChar,
+        Pointer<Utf8> lpMultiByteStr,
+        Int32 cbMultiByte,
+        Pointer<Utf8> lpDefaultChar,
+        Pointer<Int32> lpUsedDefaultChar),
+    int Function(
+        int CodePage,
+        int dwFlags,
+        Pointer<Utf16> lpWideCharStr,
+        int cchWideChar,
+        Pointer<Utf8> lpMultiByteStr,
+        int cbMultiByte,
+        Pointer<Utf8> lpDefaultChar,
+        Pointer<Int32> lpUsedDefaultChar)>('WideCharToMultiByte');
+
+Pointer<Utf16> lstrcat(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2) =>
+    _lstrcat(lpString1, lpString2);
+
+late final _lstrcat = _kernel32.lookupFunction<
+    Pointer<Utf16> Function(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2),
+    Pointer<Utf16> Function(
+        Pointer<Utf16> lpString1, Pointer<Utf16> lpString2)>('lstrcatW');
+
+int lstrcmp(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2) =>
+    _lstrcmp(lpString1, lpString2);
+
+late final _lstrcmp = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2),
+    int Function(
+        Pointer<Utf16> lpString1, Pointer<Utf16> lpString2)>('lstrcmpW');
+
+int lstrcmpi(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2) =>
+    _lstrcmpi(lpString1, lpString2);
+
+late final _lstrcmpi = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2),
+    int Function(
+        Pointer<Utf16> lpString1, Pointer<Utf16> lpString2)>('lstrcmpiW');
+
+Pointer<Utf16> lstrcpy(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2) =>
+    _lstrcpy(lpString1, lpString2);
+
+late final _lstrcpy = _kernel32.lookupFunction<
+    Pointer<Utf16> Function(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2),
+    Pointer<Utf16> Function(
+        Pointer<Utf16> lpString1, Pointer<Utf16> lpString2)>('lstrcpyW');
+
+Pointer<Utf16> lstrcpyn(
+        Pointer<Utf16> lpString1, Pointer<Utf16> lpString2, int iMaxLength) =>
+    _lstrcpyn(lpString1, lpString2, iMaxLength);
+
+late final _lstrcpyn = _kernel32.lookupFunction<
+    Pointer<Utf16> Function(
+        Pointer<Utf16> lpString1, Pointer<Utf16> lpString2, Int32 iMaxLength),
+    Pointer<Utf16> Function(Pointer<Utf16> lpString1, Pointer<Utf16> lpString2,
+        int iMaxLength)>('lstrcpynW');
+
+int lstrlen(Pointer<Utf16> lpString) => _lstrlen(lpString);
+
+late final _lstrlen = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> lpString),
+    int Function(Pointer<Utf16> lpString)>('lstrlenW');
+
+// -----------------------------------------------------------------------
+// normaliz.dll
+// -----------------------------------------------------------------------
+final _normaliz = DynamicLibrary.open('normaliz.dll');
+
+int IdnToAscii(int dwFlags, Pointer<Utf16> lpUnicodeCharStr, int cchUnicodeChar,
+        Pointer<Utf16> lpASCIICharStr, int cchASCIIChar) =>
+    _IdnToAscii(dwFlags, lpUnicodeCharStr, cchUnicodeChar, lpASCIICharStr,
+        cchASCIIChar);
+
+late final _IdnToAscii = _normaliz.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Utf16> lpUnicodeCharStr,
+        Int32 cchUnicodeChar,
+        Pointer<Utf16> lpASCIICharStr,
+        Int32 cchASCIIChar),
+    int Function(
+        int dwFlags,
+        Pointer<Utf16> lpUnicodeCharStr,
+        int cchUnicodeChar,
+        Pointer<Utf16> lpASCIICharStr,
+        int cchASCIIChar)>('IdnToAscii');
+
+int IdnToUnicode(int dwFlags, Pointer<Utf16> lpASCIICharStr, int cchASCIIChar,
+        Pointer<Utf16> lpUnicodeCharStr, int cchUnicodeChar) =>
+    _IdnToUnicode(dwFlags, lpASCIICharStr, cchASCIIChar, lpUnicodeCharStr,
+        cchUnicodeChar);
+
+late final _IdnToUnicode = _normaliz.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        Pointer<Utf16> lpASCIICharStr,
+        Int32 cchASCIIChar,
+        Pointer<Utf16> lpUnicodeCharStr,
+        Int32 cchUnicodeChar),
+    int Function(int dwFlags, Pointer<Utf16> lpASCIICharStr, int cchASCIIChar,
+        Pointer<Utf16> lpUnicodeCharStr, int cchUnicodeChar)>('IdnToUnicode');
+
+// -----------------------------------------------------------------------
 // elscore.dll
 // -----------------------------------------------------------------------
 final _elscore = DynamicLibrary.open('elscore.dll');
@@ -88,6 +1644,929 @@ late final _MappingRecognizeText = _elscore.lookupFunction<
         int dwIndex,
         Pointer<MAPPING_OPTIONS> pOptions,
         Pointer<MAPPING_PROPERTY_BAG> pbag)>('MappingRecognizeText');
+
+// -----------------------------------------------------------------------
+// usp10.dll
+// -----------------------------------------------------------------------
+final _usp10 = DynamicLibrary.open('usp10.dll');
+
+int ScriptApplyDigitSubstitution(Pointer<SCRIPT_DIGITSUBSTITUTE> psds,
+        Pointer<SCRIPT_CONTROL> psc, Pointer<SCRIPT_STATE> pss) =>
+    _ScriptApplyDigitSubstitution(psds, psc, pss);
+
+late final _ScriptApplyDigitSubstitution = _usp10.lookupFunction<
+    Int32 Function(Pointer<SCRIPT_DIGITSUBSTITUTE> psds,
+        Pointer<SCRIPT_CONTROL> psc, Pointer<SCRIPT_STATE> pss),
+    int Function(
+        Pointer<SCRIPT_DIGITSUBSTITUTE> psds,
+        Pointer<SCRIPT_CONTROL> psc,
+        Pointer<SCRIPT_STATE> pss)>('ScriptApplyDigitSubstitution');
+
+int ScriptApplyLogicalWidth(
+        Pointer<Int32> piDx,
+        int cChars,
+        int cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<ABC> pABC,
+        Pointer<Int32> piJustify) =>
+    _ScriptApplyLogicalWidth(piDx, cChars, cGlyphs, pwLogClust, psva, piAdvance,
+        psa, pABC, piJustify);
+
+late final _ScriptApplyLogicalWidth = _usp10.lookupFunction<
+    Int32 Function(
+        Pointer<Int32> piDx,
+        Int32 cChars,
+        Int32 cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<ABC> pABC,
+        Pointer<Int32> piJustify),
+    int Function(
+        Pointer<Int32> piDx,
+        int cChars,
+        int cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<ABC> pABC,
+        Pointer<Int32> piJustify)>('ScriptApplyLogicalWidth');
+
+int ScriptBreak(Pointer<Utf16> pwcChars, int cChars,
+        Pointer<SCRIPT_ANALYSIS> psa, Pointer<SCRIPT_LOGATTR> psla) =>
+    _ScriptBreak(pwcChars, cChars, psa, psla);
+
+late final _ScriptBreak = _usp10.lookupFunction<
+    Int32 Function(Pointer<Utf16> pwcChars, Int32 cChars,
+        Pointer<SCRIPT_ANALYSIS> psa, Pointer<SCRIPT_LOGATTR> psla),
+    int Function(
+        Pointer<Utf16> pwcChars,
+        int cChars,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<SCRIPT_LOGATTR> psla)>('ScriptBreak');
+
+int ScriptCPtoX(
+        int iCP,
+        int fTrailing,
+        int cChars,
+        int cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piX) =>
+    _ScriptCPtoX(
+        iCP, fTrailing, cChars, cGlyphs, pwLogClust, psva, piAdvance, psa, piX);
+
+late final _ScriptCPtoX = _usp10.lookupFunction<
+    Int32 Function(
+        Int32 iCP,
+        Int32 fTrailing,
+        Int32 cChars,
+        Int32 cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piX),
+    int Function(
+        int iCP,
+        int fTrailing,
+        int cChars,
+        int cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piX)>('ScriptCPtoX');
+
+int ScriptCacheGetHeight(
+        int hdc, Pointer<Pointer> psc, Pointer<Int32> tmHeight) =>
+    _ScriptCacheGetHeight(hdc, psc, tmHeight);
+
+late final _ScriptCacheGetHeight = _usp10.lookupFunction<
+    Int32 Function(IntPtr hdc, Pointer<Pointer> psc, Pointer<Int32> tmHeight),
+    int Function(int hdc, Pointer<Pointer> psc,
+        Pointer<Int32> tmHeight)>('ScriptCacheGetHeight');
+
+int ScriptFreeCache(Pointer<Pointer> psc) => _ScriptFreeCache(psc);
+
+late final _ScriptFreeCache = _usp10.lookupFunction<
+    Int32 Function(Pointer<Pointer> psc),
+    int Function(Pointer<Pointer> psc)>('ScriptFreeCache');
+
+int ScriptGetCMap(int hdc, Pointer<Pointer> psc, Pointer<Utf16> pwcInChars,
+        int cChars, int dwFlags, Pointer<Uint16> pwOutGlyphs) =>
+    _ScriptGetCMap(hdc, psc, pwcInChars, cChars, dwFlags, pwOutGlyphs);
+
+late final _ScriptGetCMap = _usp10.lookupFunction<
+    Int32 Function(IntPtr hdc, Pointer<Pointer> psc, Pointer<Utf16> pwcInChars,
+        Int32 cChars, Uint32 dwFlags, Pointer<Uint16> pwOutGlyphs),
+    int Function(int hdc, Pointer<Pointer> psc, Pointer<Utf16> pwcInChars,
+        int cChars, int dwFlags, Pointer<Uint16> pwOutGlyphs)>('ScriptGetCMap');
+
+int ScriptGetFontAlternateGlyphs(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int tagFeature,
+        int wGlyphId,
+        int cMaxAlternates,
+        Pointer<Uint16> pAlternateGlyphs,
+        Pointer<Int32> pcAlternates) =>
+    _ScriptGetFontAlternateGlyphs(hdc, psc, psa, tagScript, tagLangSys,
+        tagFeature, wGlyphId, cMaxAlternates, pAlternateGlyphs, pcAlternates);
+
+late final _ScriptGetFontAlternateGlyphs = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Uint32 tagScript,
+        Uint32 tagLangSys,
+        Uint32 tagFeature,
+        Uint16 wGlyphId,
+        Int32 cMaxAlternates,
+        Pointer<Uint16> pAlternateGlyphs,
+        Pointer<Int32> pcAlternates),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int tagFeature,
+        int wGlyphId,
+        int cMaxAlternates,
+        Pointer<Uint16> pAlternateGlyphs,
+        Pointer<Int32> pcAlternates)>('ScriptGetFontAlternateGlyphs');
+
+int ScriptGetFontFeatureTags(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int cMaxTags,
+        Pointer<Uint32> pFeatureTags,
+        Pointer<Int32> pcTags) =>
+    _ScriptGetFontFeatureTags(
+        hdc, psc, psa, tagScript, tagLangSys, cMaxTags, pFeatureTags, pcTags);
+
+late final _ScriptGetFontFeatureTags = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Uint32 tagScript,
+        Uint32 tagLangSys,
+        Int32 cMaxTags,
+        Pointer<Uint32> pFeatureTags,
+        Pointer<Int32> pcTags),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int cMaxTags,
+        Pointer<Uint32> pFeatureTags,
+        Pointer<Int32> pcTags)>('ScriptGetFontFeatureTags');
+
+int ScriptGetFontLanguageTags(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int cMaxTags,
+        Pointer<Uint32> pLangsysTags,
+        Pointer<Int32> pcTags) =>
+    _ScriptGetFontLanguageTags(
+        hdc, psc, psa, tagScript, cMaxTags, pLangsysTags, pcTags);
+
+late final _ScriptGetFontLanguageTags = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Uint32 tagScript,
+        Int32 cMaxTags,
+        Pointer<Uint32> pLangsysTags,
+        Pointer<Int32> pcTags),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int cMaxTags,
+        Pointer<Uint32> pLangsysTags,
+        Pointer<Int32> pcTags)>('ScriptGetFontLanguageTags');
+
+int ScriptGetFontProperties(
+        int hdc, Pointer<Pointer> psc, Pointer<SCRIPT_FONTPROPERTIES> sfp) =>
+    _ScriptGetFontProperties(hdc, psc, sfp);
+
+late final _ScriptGetFontProperties = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc, Pointer<Pointer> psc, Pointer<SCRIPT_FONTPROPERTIES> sfp),
+    int Function(int hdc, Pointer<Pointer> psc,
+        Pointer<SCRIPT_FONTPROPERTIES> sfp)>('ScriptGetFontProperties');
+
+int ScriptGetFontScriptTags(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int cMaxTags,
+        Pointer<Uint32> pScriptTags,
+        Pointer<Int32> pcTags) =>
+    _ScriptGetFontScriptTags(hdc, psc, psa, cMaxTags, pScriptTags, pcTags);
+
+late final _ScriptGetFontScriptTags = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Int32 cMaxTags,
+        Pointer<Uint32> pScriptTags,
+        Pointer<Int32> pcTags),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int cMaxTags,
+        Pointer<Uint32> pScriptTags,
+        Pointer<Int32> pcTags)>('ScriptGetFontScriptTags');
+
+int ScriptGetGlyphABCWidth(
+        int hdc, Pointer<Pointer> psc, int wGlyph, Pointer<ABC> pABC) =>
+    _ScriptGetGlyphABCWidth(hdc, psc, wGlyph, pABC);
+
+late final _ScriptGetGlyphABCWidth = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc, Pointer<Pointer> psc, Uint16 wGlyph, Pointer<ABC> pABC),
+    int Function(int hdc, Pointer<Pointer> psc, int wGlyph,
+        Pointer<ABC> pABC)>('ScriptGetGlyphABCWidth');
+
+int ScriptGetLogicalWidths(
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int cChars,
+        int cGlyphs,
+        Pointer<Int32> piGlyphWidth,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piDx) =>
+    _ScriptGetLogicalWidths(
+        psa, cChars, cGlyphs, piGlyphWidth, pwLogClust, psva, piDx);
+
+late final _ScriptGetLogicalWidths = _usp10.lookupFunction<
+    Int32 Function(
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Int32 cChars,
+        Int32 cGlyphs,
+        Pointer<Int32> piGlyphWidth,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piDx),
+    int Function(
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int cChars,
+        int cGlyphs,
+        Pointer<Int32> piGlyphWidth,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piDx)>('ScriptGetLogicalWidths');
+
+int ScriptGetProperties(Pointer<Pointer<Pointer<SCRIPT_PROPERTIES>>> ppSp,
+        Pointer<Int32> piNumScripts) =>
+    _ScriptGetProperties(ppSp, piNumScripts);
+
+late final _ScriptGetProperties = _usp10.lookupFunction<
+    Int32 Function(Pointer<Pointer<Pointer<SCRIPT_PROPERTIES>>> ppSp,
+        Pointer<Int32> piNumScripts),
+    int Function(Pointer<Pointer<Pointer<SCRIPT_PROPERTIES>>> ppSp,
+        Pointer<Int32> piNumScripts)>('ScriptGetProperties');
+
+int ScriptIsComplex(Pointer<Utf16> pwcInChars, int cInChars, int dwFlags) =>
+    _ScriptIsComplex(pwcInChars, cInChars, dwFlags);
+
+late final _ScriptIsComplex = _usp10.lookupFunction<
+    Int32 Function(Pointer<Utf16> pwcInChars, Int32 cInChars, Uint32 dwFlags),
+    int Function(Pointer<Utf16> pwcInChars, int cInChars,
+        int dwFlags)>('ScriptIsComplex');
+
+int ScriptItemize(
+        Pointer<Utf16> pwcInChars,
+        int cInChars,
+        int cMaxItems,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<SCRIPT_ITEM> pItems,
+        Pointer<Int32> pcItems) =>
+    _ScriptItemize(
+        pwcInChars, cInChars, cMaxItems, psControl, psState, pItems, pcItems);
+
+late final _ScriptItemize = _usp10.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> pwcInChars,
+        Int32 cInChars,
+        Int32 cMaxItems,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<SCRIPT_ITEM> pItems,
+        Pointer<Int32> pcItems),
+    int Function(
+        Pointer<Utf16> pwcInChars,
+        int cInChars,
+        int cMaxItems,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<SCRIPT_ITEM> pItems,
+        Pointer<Int32> pcItems)>('ScriptItemize');
+
+int ScriptItemizeOpenType(
+        Pointer<Utf16> pwcInChars,
+        int cInChars,
+        int cMaxItems,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<SCRIPT_ITEM> pItems,
+        Pointer<Uint32> pScriptTags,
+        Pointer<Int32> pcItems) =>
+    _ScriptItemizeOpenType(pwcInChars, cInChars, cMaxItems, psControl, psState,
+        pItems, pScriptTags, pcItems);
+
+late final _ScriptItemizeOpenType = _usp10.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> pwcInChars,
+        Int32 cInChars,
+        Int32 cMaxItems,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<SCRIPT_ITEM> pItems,
+        Pointer<Uint32> pScriptTags,
+        Pointer<Int32> pcItems),
+    int Function(
+        Pointer<Utf16> pwcInChars,
+        int cInChars,
+        int cMaxItems,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<SCRIPT_ITEM> pItems,
+        Pointer<Uint32> pScriptTags,
+        Pointer<Int32> pcItems)>('ScriptItemizeOpenType');
+
+int ScriptJustify(Pointer<SCRIPT_VISATTR> psva, Pointer<Int32> piAdvance,
+        int cGlyphs, int iDx, int iMinKashida, Pointer<Int32> piJustify) =>
+    _ScriptJustify(psva, piAdvance, cGlyphs, iDx, iMinKashida, piJustify);
+
+late final _ScriptJustify = _usp10.lookupFunction<
+    Int32 Function(Pointer<SCRIPT_VISATTR> psva, Pointer<Int32> piAdvance,
+        Int32 cGlyphs, Int32 iDx, Int32 iMinKashida, Pointer<Int32> piJustify),
+    int Function(
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        int cGlyphs,
+        int iDx,
+        int iMinKashida,
+        Pointer<Int32> piJustify)>('ScriptJustify');
+
+int ScriptLayout(int cRuns, Pointer<Uint8> pbLevel,
+        Pointer<Int32> piVisualToLogical, Pointer<Int32> piLogicalToVisual) =>
+    _ScriptLayout(cRuns, pbLevel, piVisualToLogical, piLogicalToVisual);
+
+late final _ScriptLayout = _usp10.lookupFunction<
+    Int32 Function(Int32 cRuns, Pointer<Uint8> pbLevel,
+        Pointer<Int32> piVisualToLogical, Pointer<Int32> piLogicalToVisual),
+    int Function(
+        int cRuns,
+        Pointer<Uint8> pbLevel,
+        Pointer<Int32> piVisualToLogical,
+        Pointer<Int32> piLogicalToVisual)>('ScriptLayout');
+
+int ScriptPlace(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<Uint16> pwGlyphs,
+        int cGlyphs,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piAdvance,
+        Pointer<GOFFSET> pGoffset,
+        Pointer<ABC> pABC) =>
+    _ScriptPlace(
+        hdc, psc, pwGlyphs, cGlyphs, psva, psa, piAdvance, pGoffset, pABC);
+
+late final _ScriptPlace = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<Uint16> pwGlyphs,
+        Int32 cGlyphs,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piAdvance,
+        Pointer<GOFFSET> pGoffset,
+        Pointer<ABC> pABC),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<Uint16> pwGlyphs,
+        int cGlyphs,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piAdvance,
+        Pointer<GOFFSET> pGoffset,
+        Pointer<ABC> pABC)>('ScriptPlace');
+
+int ScriptPlaceOpenType(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        Pointer<Int32> rcRangeChars,
+        Pointer<Pointer<textrange_properties>> rpRangeProperties,
+        int cRanges,
+        Pointer<Utf16> pwcChars,
+        Pointer<Uint16> pwLogClust,
+        Pointer<script_charprop> pCharProps,
+        int cChars,
+        Pointer<Uint16> pwGlyphs,
+        Pointer<script_glyphprop> pGlyphProps,
+        int cGlyphs,
+        Pointer<Int32> piAdvance,
+        Pointer<GOFFSET> pGoffset,
+        Pointer<ABC> pABC) =>
+    _ScriptPlaceOpenType(
+        hdc,
+        psc,
+        psa,
+        tagScript,
+        tagLangSys,
+        rcRangeChars,
+        rpRangeProperties,
+        cRanges,
+        pwcChars,
+        pwLogClust,
+        pCharProps,
+        cChars,
+        pwGlyphs,
+        pGlyphProps,
+        cGlyphs,
+        piAdvance,
+        pGoffset,
+        pABC);
+
+late final _ScriptPlaceOpenType = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Uint32 tagScript,
+        Uint32 tagLangSys,
+        Pointer<Int32> rcRangeChars,
+        Pointer<Pointer<textrange_properties>> rpRangeProperties,
+        Int32 cRanges,
+        Pointer<Utf16> pwcChars,
+        Pointer<Uint16> pwLogClust,
+        Pointer<script_charprop> pCharProps,
+        Int32 cChars,
+        Pointer<Uint16> pwGlyphs,
+        Pointer<script_glyphprop> pGlyphProps,
+        Int32 cGlyphs,
+        Pointer<Int32> piAdvance,
+        Pointer<GOFFSET> pGoffset,
+        Pointer<ABC> pABC),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        Pointer<Int32> rcRangeChars,
+        Pointer<Pointer<textrange_properties>> rpRangeProperties,
+        int cRanges,
+        Pointer<Utf16> pwcChars,
+        Pointer<Uint16> pwLogClust,
+        Pointer<script_charprop> pCharProps,
+        int cChars,
+        Pointer<Uint16> pwGlyphs,
+        Pointer<script_glyphprop> pGlyphProps,
+        int cGlyphs,
+        Pointer<Int32> piAdvance,
+        Pointer<GOFFSET> pGoffset,
+        Pointer<ABC> pABC)>('ScriptPlaceOpenType');
+
+int ScriptPositionSingleGlyph(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int tagFeature,
+        int lParameter,
+        int wGlyphId,
+        int iAdvance,
+        GOFFSET GOffset,
+        Pointer<Int32> piOutAdvance,
+        Pointer<GOFFSET> pOutGoffset) =>
+    _ScriptPositionSingleGlyph(hdc, psc, psa, tagScript, tagLangSys, tagFeature,
+        lParameter, wGlyphId, iAdvance, GOffset, piOutAdvance, pOutGoffset);
+
+late final _ScriptPositionSingleGlyph = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Uint32 tagScript,
+        Uint32 tagLangSys,
+        Uint32 tagFeature,
+        Int32 lParameter,
+        Uint16 wGlyphId,
+        Int32 iAdvance,
+        GOFFSET GOffset,
+        Pointer<Int32> piOutAdvance,
+        Pointer<GOFFSET> pOutGoffset),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int tagFeature,
+        int lParameter,
+        int wGlyphId,
+        int iAdvance,
+        GOFFSET GOffset,
+        Pointer<Int32> piOutAdvance,
+        Pointer<GOFFSET> pOutGoffset)>('ScriptPositionSingleGlyph');
+
+int ScriptRecordDigitSubstitution(
+        int Locale, Pointer<SCRIPT_DIGITSUBSTITUTE> psds) =>
+    _ScriptRecordDigitSubstitution(Locale, psds);
+
+late final _ScriptRecordDigitSubstitution = _usp10.lookupFunction<
+    Int32 Function(Uint32 Locale, Pointer<SCRIPT_DIGITSUBSTITUTE> psds),
+    int Function(int Locale,
+        Pointer<SCRIPT_DIGITSUBSTITUTE> psds)>('ScriptRecordDigitSubstitution');
+
+int ScriptShape(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<Utf16> pwcChars,
+        int cChars,
+        int cMaxGlyphs,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Uint16> pwOutGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> pcGlyphs) =>
+    _ScriptShape(hdc, psc, pwcChars, cChars, cMaxGlyphs, psa, pwOutGlyphs,
+        pwLogClust, psva, pcGlyphs);
+
+late final _ScriptShape = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<Utf16> pwcChars,
+        Int32 cChars,
+        Int32 cMaxGlyphs,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Uint16> pwOutGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> pcGlyphs),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<Utf16> pwcChars,
+        int cChars,
+        int cMaxGlyphs,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Uint16> pwOutGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> pcGlyphs)>('ScriptShape');
+
+int ScriptShapeOpenType(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        Pointer<Int32> rcRangeChars,
+        Pointer<Pointer<textrange_properties>> rpRangeProperties,
+        int cRanges,
+        Pointer<Utf16> pwcChars,
+        int cChars,
+        int cMaxGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<script_charprop> pCharProps,
+        Pointer<Uint16> pwOutGlyphs,
+        Pointer<script_glyphprop> pOutGlyphProps,
+        Pointer<Int32> pcGlyphs) =>
+    _ScriptShapeOpenType(
+        hdc,
+        psc,
+        psa,
+        tagScript,
+        tagLangSys,
+        rcRangeChars,
+        rpRangeProperties,
+        cRanges,
+        pwcChars,
+        cChars,
+        cMaxGlyphs,
+        pwLogClust,
+        pCharProps,
+        pwOutGlyphs,
+        pOutGlyphProps,
+        pcGlyphs);
+
+late final _ScriptShapeOpenType = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Uint32 tagScript,
+        Uint32 tagLangSys,
+        Pointer<Int32> rcRangeChars,
+        Pointer<Pointer<textrange_properties>> rpRangeProperties,
+        Int32 cRanges,
+        Pointer<Utf16> pwcChars,
+        Int32 cChars,
+        Int32 cMaxGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<script_charprop> pCharProps,
+        Pointer<Uint16> pwOutGlyphs,
+        Pointer<script_glyphprop> pOutGlyphProps,
+        Pointer<Int32> pcGlyphs),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        Pointer<Int32> rcRangeChars,
+        Pointer<Pointer<textrange_properties>> rpRangeProperties,
+        int cRanges,
+        Pointer<Utf16> pwcChars,
+        int cChars,
+        int cMaxGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<script_charprop> pCharProps,
+        Pointer<Uint16> pwOutGlyphs,
+        Pointer<script_glyphprop> pOutGlyphProps,
+        Pointer<Int32> pcGlyphs)>('ScriptShapeOpenType');
+
+int ScriptStringAnalyse(
+        int hdc,
+        Pointer pString,
+        int cString,
+        int cGlyphs,
+        int iCharset,
+        int dwFlags,
+        int iReqWidth,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<Int32> piDx,
+        Pointer<SCRIPT_TABDEF> pTabdef,
+        Pointer<Uint8> pbInClass,
+        Pointer<Pointer> pssa) =>
+    _ScriptStringAnalyse(hdc, pString, cString, cGlyphs, iCharset, dwFlags,
+        iReqWidth, psControl, psState, piDx, pTabdef, pbInClass, pssa);
+
+late final _ScriptStringAnalyse = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer pString,
+        Int32 cString,
+        Int32 cGlyphs,
+        Int32 iCharset,
+        Uint32 dwFlags,
+        Int32 iReqWidth,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<Int32> piDx,
+        Pointer<SCRIPT_TABDEF> pTabdef,
+        Pointer<Uint8> pbInClass,
+        Pointer<Pointer> pssa),
+    int Function(
+        int hdc,
+        Pointer pString,
+        int cString,
+        int cGlyphs,
+        int iCharset,
+        int dwFlags,
+        int iReqWidth,
+        Pointer<SCRIPT_CONTROL> psControl,
+        Pointer<SCRIPT_STATE> psState,
+        Pointer<Int32> piDx,
+        Pointer<SCRIPT_TABDEF> pTabdef,
+        Pointer<Uint8> pbInClass,
+        Pointer<Pointer> pssa)>('ScriptStringAnalyse');
+
+int ScriptStringCPtoX(Pointer ssa, int icp, int fTrailing, Pointer<Int32> pX) =>
+    _ScriptStringCPtoX(ssa, icp, fTrailing, pX);
+
+late final _ScriptStringCPtoX = _usp10.lookupFunction<
+    Int32 Function(Pointer ssa, Int32 icp, Int32 fTrailing, Pointer<Int32> pX),
+    int Function(Pointer ssa, int icp, int fTrailing,
+        Pointer<Int32> pX)>('ScriptStringCPtoX');
+
+int ScriptStringFree(Pointer<Pointer> pssa) => _ScriptStringFree(pssa);
+
+late final _ScriptStringFree = _usp10.lookupFunction<
+    Int32 Function(Pointer<Pointer> pssa),
+    int Function(Pointer<Pointer> pssa)>('ScriptStringFree');
+
+int ScriptStringGetLogicalWidths(Pointer ssa, Pointer<Int32> piDx) =>
+    _ScriptStringGetLogicalWidths(ssa, piDx);
+
+late final _ScriptStringGetLogicalWidths = _usp10.lookupFunction<
+    Int32 Function(Pointer ssa, Pointer<Int32> piDx),
+    int Function(
+        Pointer ssa, Pointer<Int32> piDx)>('ScriptStringGetLogicalWidths');
+
+int ScriptStringGetOrder(Pointer ssa, Pointer<Uint32> puOrder) =>
+    _ScriptStringGetOrder(ssa, puOrder);
+
+late final _ScriptStringGetOrder = _usp10.lookupFunction<
+    Int32 Function(Pointer ssa, Pointer<Uint32> puOrder),
+    int Function(Pointer ssa, Pointer<Uint32> puOrder)>('ScriptStringGetOrder');
+
+int ScriptStringOut(Pointer ssa, int iX, int iY, int uOptions,
+        Pointer<RECT> prc, int iMinSel, int iMaxSel, int fDisabled) =>
+    _ScriptStringOut(ssa, iX, iY, uOptions, prc, iMinSel, iMaxSel, fDisabled);
+
+late final _ScriptStringOut = _usp10.lookupFunction<
+    Int32 Function(Pointer ssa, Int32 iX, Int32 iY, Uint32 uOptions,
+        Pointer<RECT> prc, Int32 iMinSel, Int32 iMaxSel, Int32 fDisabled),
+    int Function(Pointer ssa, int iX, int iY, int uOptions, Pointer<RECT> prc,
+        int iMinSel, int iMaxSel, int fDisabled)>('ScriptStringOut');
+
+int ScriptStringValidate(Pointer ssa) => _ScriptStringValidate(ssa);
+
+late final _ScriptStringValidate = _usp10.lookupFunction<
+    Int32 Function(Pointer ssa),
+    int Function(Pointer ssa)>('ScriptStringValidate');
+
+int ScriptStringXtoCP(
+        Pointer ssa, int iX, Pointer<Int32> piCh, Pointer<Int32> piTrailing) =>
+    _ScriptStringXtoCP(ssa, iX, piCh, piTrailing);
+
+late final _ScriptStringXtoCP = _usp10.lookupFunction<
+    Int32 Function(
+        Pointer ssa, Int32 iX, Pointer<Int32> piCh, Pointer<Int32> piTrailing),
+    int Function(Pointer ssa, int iX, Pointer<Int32> piCh,
+        Pointer<Int32> piTrailing)>('ScriptStringXtoCP');
+
+Pointer<SCRIPT_LOGATTR> ScriptString_pLogAttr(Pointer ssa) =>
+    _ScriptString_pLogAttr(ssa);
+
+late final _ScriptString_pLogAttr = _usp10.lookupFunction<
+    Pointer<SCRIPT_LOGATTR> Function(Pointer ssa),
+    Pointer<SCRIPT_LOGATTR> Function(Pointer ssa)>('ScriptString_pLogAttr');
+
+Pointer<SIZE> ScriptString_pSize(Pointer ssa) => _ScriptString_pSize(ssa);
+
+late final _ScriptString_pSize = _usp10.lookupFunction<
+    Pointer<SIZE> Function(Pointer ssa),
+    Pointer<SIZE> Function(Pointer ssa)>('ScriptString_pSize');
+
+Pointer<Int32> ScriptString_pcOutChars(Pointer ssa) =>
+    _ScriptString_pcOutChars(ssa);
+
+late final _ScriptString_pcOutChars = _usp10.lookupFunction<
+    Pointer<Int32> Function(Pointer ssa),
+    Pointer<Int32> Function(Pointer ssa)>('ScriptString_pcOutChars');
+
+int ScriptSubstituteSingleGlyph(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int tagFeature,
+        int lParameter,
+        int wGlyphId,
+        Pointer<Uint16> pwOutGlyphId) =>
+    _ScriptSubstituteSingleGlyph(hdc, psc, psa, tagScript, tagLangSys,
+        tagFeature, lParameter, wGlyphId, pwOutGlyphId);
+
+late final _ScriptSubstituteSingleGlyph = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Uint32 tagScript,
+        Uint32 tagLangSys,
+        Uint32 tagFeature,
+        Int32 lParameter,
+        Uint16 wGlyphId,
+        Pointer<Uint16> pwOutGlyphId),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        int tagScript,
+        int tagLangSys,
+        int tagFeature,
+        int lParameter,
+        int wGlyphId,
+        Pointer<Uint16> pwOutGlyphId)>('ScriptSubstituteSingleGlyph');
+
+int ScriptTextOut(
+        int hdc,
+        Pointer<Pointer> psc,
+        int x,
+        int y,
+        int fuOptions,
+        Pointer<RECT> lprc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Utf16> pwcReserved,
+        int iReserved,
+        Pointer<Uint16> pwGlyphs,
+        int cGlyphs,
+        Pointer<Int32> piAdvance,
+        Pointer<Int32> piJustify,
+        Pointer<GOFFSET> pGoffset) =>
+    _ScriptTextOut(hdc, psc, x, y, fuOptions, lprc, psa, pwcReserved, iReserved,
+        pwGlyphs, cGlyphs, piAdvance, piJustify, pGoffset);
+
+late final _ScriptTextOut = _usp10.lookupFunction<
+    Int32 Function(
+        IntPtr hdc,
+        Pointer<Pointer> psc,
+        Int32 x,
+        Int32 y,
+        Uint32 fuOptions,
+        Pointer<RECT> lprc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Utf16> pwcReserved,
+        Int32 iReserved,
+        Pointer<Uint16> pwGlyphs,
+        Int32 cGlyphs,
+        Pointer<Int32> piAdvance,
+        Pointer<Int32> piJustify,
+        Pointer<GOFFSET> pGoffset),
+    int Function(
+        int hdc,
+        Pointer<Pointer> psc,
+        int x,
+        int y,
+        int fuOptions,
+        Pointer<RECT> lprc,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Utf16> pwcReserved,
+        int iReserved,
+        Pointer<Uint16> pwGlyphs,
+        int cGlyphs,
+        Pointer<Int32> piAdvance,
+        Pointer<Int32> piJustify,
+        Pointer<GOFFSET> pGoffset)>('ScriptTextOut');
+
+int ScriptXtoCP(
+        int iX,
+        int cChars,
+        int cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piCP,
+        Pointer<Int32> piTrailing) =>
+    _ScriptXtoCP(iX, cChars, cGlyphs, pwLogClust, psva, piAdvance, psa, piCP,
+        piTrailing);
+
+late final _ScriptXtoCP = _usp10.lookupFunction<
+    Int32 Function(
+        Int32 iX,
+        Int32 cChars,
+        Int32 cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piCP,
+        Pointer<Int32> piTrailing),
+    int Function(
+        int iX,
+        int cChars,
+        int cGlyphs,
+        Pointer<Uint16> pwLogClust,
+        Pointer<SCRIPT_VISATTR> psva,
+        Pointer<Int32> piAdvance,
+        Pointer<SCRIPT_ANALYSIS> psa,
+        Pointer<Int32> piCP,
+        Pointer<Int32> piTrailing)>('ScriptXtoCP');
 
 // -----------------------------------------------------------------------
 // icu.dll
@@ -12060,3 +14539,16 @@ int IsWellFormedTag(Pointer<Utf16> pszTag) => _IsWellFormedTag(pszTag);
 late final _IsWellFormedTag = _bcp47mrm.lookupFunction<
     Uint8 Function(Pointer<Utf16> pszTag),
     int Function(Pointer<Utf16> pszTag)>('IsWellFormedTag');
+
+// -----------------------------------------------------------------------
+// advapi32.dll
+// -----------------------------------------------------------------------
+final _advapi32 = DynamicLibrary.open('advapi32.dll');
+
+int IsTextUnicode(Pointer lpv, int iSize, Pointer<Uint32> lpiResult) =>
+    _IsTextUnicode(lpv, iSize, lpiResult);
+
+late final _IsTextUnicode = _advapi32.lookupFunction<
+    Int32 Function(Pointer lpv, Int32 iSize, Pointer<Uint32> lpiResult),
+    int Function(
+        Pointer lpv, int iSize, Pointer<Uint32> lpiResult)>('IsTextUnicode');

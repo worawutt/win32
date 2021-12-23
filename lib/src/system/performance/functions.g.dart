@@ -15,8 +15,28 @@ import 'enums.g.dart';
 import '../../combase.dart';
 import '../../guid.dart';
 import '../../foundation/structs.g.dart';
-import '../../system/performance/structs.g.dart'; // -----------------------------------------------------------------------
+import '../../system/performance/structs.g.dart';
+import '../../system/performance/callbacks.g.dart'; // -----------------------------------------------------------------------
 
+// kernel32.dll
+// -----------------------------------------------------------------------
+final _kernel32 = DynamicLibrary.open('kernel32.dll');
+
+int QueryPerformanceCounter(Pointer<Int64> lpPerformanceCount) =>
+    _QueryPerformanceCounter(lpPerformanceCount);
+
+late final _QueryPerformanceCounter = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Int64> lpPerformanceCount),
+    int Function(Pointer<Int64> lpPerformanceCount)>('QueryPerformanceCounter');
+
+int QueryPerformanceFrequency(Pointer<Int64> lpFrequency) =>
+    _QueryPerformanceFrequency(lpFrequency);
+
+late final _QueryPerformanceFrequency = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Int64> lpFrequency),
+    int Function(Pointer<Int64> lpFrequency)>('QueryPerformanceFrequency');
+
+// -----------------------------------------------------------------------
 // loadperf.dll
 // -----------------------------------------------------------------------
 final _loadperf = DynamicLibrary.open('loadperf.dll');
@@ -95,6 +115,300 @@ late final _UpdatePerfNameFiles = _loadperf.lookupFunction<
         Pointer<Utf16> szNewHlpFilePath,
         Pointer<Utf16> szLanguageID,
         int dwFlags)>('UpdatePerfNameFilesW');
+
+// -----------------------------------------------------------------------
+// advapi32.dll
+// -----------------------------------------------------------------------
+final _advapi32 = DynamicLibrary.open('advapi32.dll');
+
+int PerfAddCounters(int hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        int cbCounters) =>
+    _PerfAddCounters(hQuery, pCounters, cbCounters);
+
+late final _PerfAddCounters = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        Uint32 cbCounters),
+    int Function(int hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        int cbCounters)>('PerfAddCounters');
+
+int PerfCloseQueryHandle(int hQuery) => _PerfCloseQueryHandle(hQuery);
+
+late final _PerfCloseQueryHandle = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr hQuery),
+    int Function(int hQuery)>('PerfCloseQueryHandle');
+
+Pointer<PERF_COUNTERSET_INSTANCE> PerfCreateInstance(int ProviderHandle,
+        Pointer<GUID> CounterSetGuid, Pointer<Utf16> Name, int Id) =>
+    _PerfCreateInstance(ProviderHandle, CounterSetGuid, Name, Id);
+
+late final _PerfCreateInstance = _advapi32.lookupFunction<
+    Pointer<PERF_COUNTERSET_INSTANCE> Function(IntPtr ProviderHandle,
+        Pointer<GUID> CounterSetGuid, Pointer<Utf16> Name, Uint32 Id),
+    Pointer<PERF_COUNTERSET_INSTANCE> Function(
+        int ProviderHandle,
+        Pointer<GUID> CounterSetGuid,
+        Pointer<Utf16> Name,
+        int Id)>('PerfCreateInstance');
+
+int PerfDecrementULongCounterValue(int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> Instance, int CounterId, int Value) =>
+    _PerfDecrementULongCounterValue(Provider, Instance, CounterId, Value);
+
+late final _PerfDecrementULongCounterValue = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        Uint32 CounterId, Uint32 Value),
+    int Function(int Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId, int Value)>('PerfDecrementULongCounterValue');
+
+int PerfDecrementULongLongCounterValue(int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> Instance, int CounterId, int Value) =>
+    _PerfDecrementULongLongCounterValue(Provider, Instance, CounterId, Value);
+
+late final _PerfDecrementULongLongCounterValue = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        Uint32 CounterId, Uint64 Value),
+    int Function(int Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId, int Value)>('PerfDecrementULongLongCounterValue');
+
+int PerfDeleteCounters(int hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        int cbCounters) =>
+    _PerfDeleteCounters(hQuery, pCounters, cbCounters);
+
+late final _PerfDeleteCounters = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        Uint32 cbCounters),
+    int Function(int hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        int cbCounters)>('PerfDeleteCounters');
+
+int PerfDeleteInstance(
+        int Provider, Pointer<PERF_COUNTERSET_INSTANCE> InstanceBlock) =>
+    _PerfDeleteInstance(Provider, InstanceBlock);
+
+late final _PerfDeleteInstance = _advapi32.lookupFunction<
+    Uint32 Function(
+        IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> InstanceBlock),
+    int Function(int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> InstanceBlock)>('PerfDeleteInstance');
+
+int PerfEnumerateCounterSet(
+        Pointer<Utf16> szMachine,
+        Pointer<GUID> pCounterSetIds,
+        int cCounterSetIds,
+        Pointer<Uint32> pcCounterSetIdsActual) =>
+    _PerfEnumerateCounterSet(
+        szMachine, pCounterSetIds, cCounterSetIds, pcCounterSetIdsActual);
+
+late final _PerfEnumerateCounterSet = _advapi32.lookupFunction<
+    Uint32 Function(Pointer<Utf16> szMachine, Pointer<GUID> pCounterSetIds,
+        Uint32 cCounterSetIds, Pointer<Uint32> pcCounterSetIdsActual),
+    int Function(
+        Pointer<Utf16> szMachine,
+        Pointer<GUID> pCounterSetIds,
+        int cCounterSetIds,
+        Pointer<Uint32> pcCounterSetIdsActual)>('PerfEnumerateCounterSet');
+
+int PerfEnumerateCounterSetInstances(
+        Pointer<Utf16> szMachine,
+        Pointer<GUID> pCounterSetId,
+        Pointer<PERF_INSTANCE_HEADER> pInstances,
+        int cbInstances,
+        Pointer<Uint32> pcbInstancesActual) =>
+    _PerfEnumerateCounterSetInstances(
+        szMachine, pCounterSetId, pInstances, cbInstances, pcbInstancesActual);
+
+late final _PerfEnumerateCounterSetInstances = _advapi32.lookupFunction<
+        Uint32 Function(
+            Pointer<Utf16> szMachine,
+            Pointer<GUID> pCounterSetId,
+            Pointer<PERF_INSTANCE_HEADER> pInstances,
+            Uint32 cbInstances,
+            Pointer<Uint32> pcbInstancesActual),
+        int Function(
+            Pointer<Utf16> szMachine,
+            Pointer<GUID> pCounterSetId,
+            Pointer<PERF_INSTANCE_HEADER> pInstances,
+            int cbInstances,
+            Pointer<Uint32> pcbInstancesActual)>(
+    'PerfEnumerateCounterSetInstances');
+
+int PerfIncrementULongCounterValue(int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> Instance, int CounterId, int Value) =>
+    _PerfIncrementULongCounterValue(Provider, Instance, CounterId, Value);
+
+late final _PerfIncrementULongCounterValue = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        Uint32 CounterId, Uint32 Value),
+    int Function(int Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId, int Value)>('PerfIncrementULongCounterValue');
+
+int PerfIncrementULongLongCounterValue(int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> Instance, int CounterId, int Value) =>
+    _PerfIncrementULongLongCounterValue(Provider, Instance, CounterId, Value);
+
+late final _PerfIncrementULongLongCounterValue = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        Uint32 CounterId, Uint64 Value),
+    int Function(int Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId, int Value)>('PerfIncrementULongLongCounterValue');
+
+int PerfOpenQueryHandle(Pointer<Utf16> szMachine, Pointer<IntPtr> phQuery) =>
+    _PerfOpenQueryHandle(szMachine, phQuery);
+
+late final _PerfOpenQueryHandle = _advapi32.lookupFunction<
+    Uint32 Function(Pointer<Utf16> szMachine, Pointer<IntPtr> phQuery),
+    int Function(Pointer<Utf16> szMachine,
+        Pointer<IntPtr> phQuery)>('PerfOpenQueryHandle');
+
+int PerfQueryCounterData(int hQuery, Pointer<PERF_DATA_HEADER> pCounterBlock,
+        int cbCounterBlock, Pointer<Uint32> pcbCounterBlockActual) =>
+    _PerfQueryCounterData(
+        hQuery, pCounterBlock, cbCounterBlock, pcbCounterBlockActual);
+
+late final _PerfQueryCounterData = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr hQuery, Pointer<PERF_DATA_HEADER> pCounterBlock,
+        Uint32 cbCounterBlock, Pointer<Uint32> pcbCounterBlockActual),
+    int Function(
+        int hQuery,
+        Pointer<PERF_DATA_HEADER> pCounterBlock,
+        int cbCounterBlock,
+        Pointer<Uint32> pcbCounterBlockActual)>('PerfQueryCounterData');
+
+int PerfQueryCounterInfo(int hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        int cbCounters, Pointer<Uint32> pcbCountersActual) =>
+    _PerfQueryCounterInfo(hQuery, pCounters, cbCounters, pcbCountersActual);
+
+late final _PerfQueryCounterInfo = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr hQuery, Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        Uint32 cbCounters, Pointer<Uint32> pcbCountersActual),
+    int Function(
+        int hQuery,
+        Pointer<PERF_COUNTER_IDENTIFIER> pCounters,
+        int cbCounters,
+        Pointer<Uint32> pcbCountersActual)>('PerfQueryCounterInfo');
+
+int PerfQueryCounterSetRegistrationInfo(
+        Pointer<Utf16> szMachine,
+        Pointer<GUID> pCounterSetId,
+        int requestCode,
+        int requestLangId,
+        Pointer<Uint8> pbRegInfo,
+        int cbRegInfo,
+        Pointer<Uint32> pcbRegInfoActual) =>
+    _PerfQueryCounterSetRegistrationInfo(szMachine, pCounterSetId, requestCode,
+        requestLangId, pbRegInfo, cbRegInfo, pcbRegInfoActual);
+
+late final _PerfQueryCounterSetRegistrationInfo = _advapi32.lookupFunction<
+        Uint32 Function(
+            Pointer<Utf16> szMachine,
+            Pointer<GUID> pCounterSetId,
+            Int32 requestCode,
+            Uint32 requestLangId,
+            Pointer<Uint8> pbRegInfo,
+            Uint32 cbRegInfo,
+            Pointer<Uint32> pcbRegInfoActual),
+        int Function(
+            Pointer<Utf16> szMachine,
+            Pointer<GUID> pCounterSetId,
+            int requestCode,
+            int requestLangId,
+            Pointer<Uint8> pbRegInfo,
+            int cbRegInfo,
+            Pointer<Uint32> pcbRegInfoActual)>(
+    'PerfQueryCounterSetRegistrationInfo');
+
+Pointer<PERF_COUNTERSET_INSTANCE> PerfQueryInstance(int ProviderHandle,
+        Pointer<GUID> CounterSetGuid, Pointer<Utf16> Name, int Id) =>
+    _PerfQueryInstance(ProviderHandle, CounterSetGuid, Name, Id);
+
+late final _PerfQueryInstance = _advapi32.lookupFunction<
+    Pointer<PERF_COUNTERSET_INSTANCE> Function(IntPtr ProviderHandle,
+        Pointer<GUID> CounterSetGuid, Pointer<Utf16> Name, Uint32 Id),
+    Pointer<PERF_COUNTERSET_INSTANCE> Function(
+        int ProviderHandle,
+        Pointer<GUID> CounterSetGuid,
+        Pointer<Utf16> Name,
+        int Id)>('PerfQueryInstance');
+
+int PerfSetCounterRefValue(
+        int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId,
+        Pointer Address) =>
+    _PerfSetCounterRefValue(Provider, Instance, CounterId, Address);
+
+late final _PerfSetCounterRefValue = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        Uint32 CounterId, Pointer Address),
+    int Function(int Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId, Pointer Address)>('PerfSetCounterRefValue');
+
+int PerfSetCounterSetInfo(int ProviderHandle,
+        Pointer<PERF_COUNTERSET_INFO> Template, int TemplateSize) =>
+    _PerfSetCounterSetInfo(ProviderHandle, Template, TemplateSize);
+
+late final _PerfSetCounterSetInfo = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr ProviderHandle,
+        Pointer<PERF_COUNTERSET_INFO> Template, Uint32 TemplateSize),
+    int Function(int ProviderHandle, Pointer<PERF_COUNTERSET_INFO> Template,
+        int TemplateSize)>('PerfSetCounterSetInfo');
+
+int PerfSetULongCounterValue(int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> Instance, int CounterId, int Value) =>
+    _PerfSetULongCounterValue(Provider, Instance, CounterId, Value);
+
+late final _PerfSetULongCounterValue = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        Uint32 CounterId, Uint32 Value),
+    int Function(int Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId, int Value)>('PerfSetULongCounterValue');
+
+int PerfSetULongLongCounterValue(int Provider,
+        Pointer<PERF_COUNTERSET_INSTANCE> Instance, int CounterId, int Value) =>
+    _PerfSetULongLongCounterValue(Provider, Instance, CounterId, Value);
+
+late final _PerfSetULongLongCounterValue = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        Uint32 CounterId, Uint64 Value),
+    int Function(int Provider, Pointer<PERF_COUNTERSET_INSTANCE> Instance,
+        int CounterId, int Value)>('PerfSetULongLongCounterValue');
+
+int PerfStartProvider(
+        Pointer<GUID> ProviderGuid,
+        Pointer<NativeFunction<PERFLIBREQUEST>> ControlCallback,
+        Pointer<IntPtr> phProvider) =>
+    _PerfStartProvider(ProviderGuid, ControlCallback, phProvider);
+
+late final _PerfStartProvider = _advapi32.lookupFunction<
+    Uint32 Function(
+        Pointer<GUID> ProviderGuid,
+        Pointer<NativeFunction<PERFLIBREQUEST>> ControlCallback,
+        Pointer<IntPtr> phProvider),
+    int Function(
+        Pointer<GUID> ProviderGuid,
+        Pointer<NativeFunction<PERFLIBREQUEST>> ControlCallback,
+        Pointer<IntPtr> phProvider)>('PerfStartProvider');
+
+int PerfStartProviderEx(
+        Pointer<GUID> ProviderGuid,
+        Pointer<PERF_PROVIDER_CONTEXT> ProviderContext,
+        Pointer<IntPtr> Provider) =>
+    _PerfStartProviderEx(ProviderGuid, ProviderContext, Provider);
+
+late final _PerfStartProviderEx = _advapi32.lookupFunction<
+    Uint32 Function(
+        Pointer<GUID> ProviderGuid,
+        Pointer<PERF_PROVIDER_CONTEXT> ProviderContext,
+        Pointer<IntPtr> Provider),
+    int Function(
+        Pointer<GUID> ProviderGuid,
+        Pointer<PERF_PROVIDER_CONTEXT> ProviderContext,
+        Pointer<IntPtr> Provider)>('PerfStartProviderEx');
+
+int PerfStopProvider(int ProviderHandle) => _PerfStopProvider(ProviderHandle);
+
+late final _PerfStopProvider = _advapi32.lookupFunction<
+    Uint32 Function(IntPtr ProviderHandle),
+    int Function(int ProviderHandle)>('PerfStopProvider');
 
 // -----------------------------------------------------------------------
 // pdh.dll

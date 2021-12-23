@@ -542,3 +542,167 @@ int EvtUpdateBookmark(int Bookmark, int Event) =>
 late final _EvtUpdateBookmark = _wevtapi.lookupFunction<
     Int32 Function(IntPtr Bookmark, IntPtr Event),
     int Function(int Bookmark, int Event)>('EvtUpdateBookmark');
+
+// -----------------------------------------------------------------------
+// advapi32.dll
+// -----------------------------------------------------------------------
+final _advapi32 = DynamicLibrary.open('advapi32.dll');
+
+int BackupEventLog(int hEventLog, Pointer<Utf16> lpBackupFileName) =>
+    _BackupEventLog(hEventLog, lpBackupFileName);
+
+late final _BackupEventLog = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog, Pointer<Utf16> lpBackupFileName),
+    int Function(
+        int hEventLog, Pointer<Utf16> lpBackupFileName)>('BackupEventLogW');
+
+int ClearEventLog(int hEventLog, Pointer<Utf16> lpBackupFileName) =>
+    _ClearEventLog(hEventLog, lpBackupFileName);
+
+late final _ClearEventLog = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog, Pointer<Utf16> lpBackupFileName),
+    int Function(
+        int hEventLog, Pointer<Utf16> lpBackupFileName)>('ClearEventLogW');
+
+int CloseEventLog(int hEventLog) => _CloseEventLog(hEventLog);
+
+late final _CloseEventLog = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog),
+    int Function(int hEventLog)>('CloseEventLog');
+
+int DeregisterEventSource(int hEventLog) => _DeregisterEventSource(hEventLog);
+
+late final _DeregisterEventSource = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog),
+    int Function(int hEventLog)>('DeregisterEventSource');
+
+int GetEventLogInformation(int hEventLog, int dwInfoLevel, Pointer lpBuffer,
+        int cbBufSize, Pointer<Uint32> pcbBytesNeeded) =>
+    _GetEventLogInformation(
+        hEventLog, dwInfoLevel, lpBuffer, cbBufSize, pcbBytesNeeded);
+
+late final _GetEventLogInformation = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog, Uint32 dwInfoLevel, Pointer lpBuffer,
+        Uint32 cbBufSize, Pointer<Uint32> pcbBytesNeeded),
+    int Function(
+        int hEventLog,
+        int dwInfoLevel,
+        Pointer lpBuffer,
+        int cbBufSize,
+        Pointer<Uint32> pcbBytesNeeded)>('GetEventLogInformation');
+
+int GetNumberOfEventLogRecords(
+        int hEventLog, Pointer<Uint32> NumberOfRecords) =>
+    _GetNumberOfEventLogRecords(hEventLog, NumberOfRecords);
+
+late final _GetNumberOfEventLogRecords = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog, Pointer<Uint32> NumberOfRecords),
+    int Function(int hEventLog,
+        Pointer<Uint32> NumberOfRecords)>('GetNumberOfEventLogRecords');
+
+int GetOldestEventLogRecord(int hEventLog, Pointer<Uint32> OldestRecord) =>
+    _GetOldestEventLogRecord(hEventLog, OldestRecord);
+
+late final _GetOldestEventLogRecord = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog, Pointer<Uint32> OldestRecord),
+    int Function(int hEventLog,
+        Pointer<Uint32> OldestRecord)>('GetOldestEventLogRecord');
+
+int NotifyChangeEventLog(int hEventLog, int hEvent) =>
+    _NotifyChangeEventLog(hEventLog, hEvent);
+
+late final _NotifyChangeEventLog = _advapi32.lookupFunction<
+    Int32 Function(IntPtr hEventLog, IntPtr hEvent),
+    int Function(int hEventLog, int hEvent)>('NotifyChangeEventLog');
+
+int OpenBackupEventLog(
+        Pointer<Utf16> lpUNCServerName, Pointer<Utf16> lpFileName) =>
+    _OpenBackupEventLog(lpUNCServerName, lpFileName);
+
+late final _OpenBackupEventLog = _advapi32.lookupFunction<
+    IntPtr Function(Pointer<Utf16> lpUNCServerName, Pointer<Utf16> lpFileName),
+    int Function(Pointer<Utf16> lpUNCServerName,
+        Pointer<Utf16> lpFileName)>('OpenBackupEventLogW');
+
+int OpenEventLog(Pointer<Utf16> lpUNCServerName, Pointer<Utf16> lpSourceName) =>
+    _OpenEventLog(lpUNCServerName, lpSourceName);
+
+late final _OpenEventLog = _advapi32.lookupFunction<
+    IntPtr Function(
+        Pointer<Utf16> lpUNCServerName, Pointer<Utf16> lpSourceName),
+    int Function(Pointer<Utf16> lpUNCServerName,
+        Pointer<Utf16> lpSourceName)>('OpenEventLogW');
+
+int ReadEventLog(
+        int hEventLog,
+        int dwReadFlags,
+        int dwRecordOffset,
+        Pointer lpBuffer,
+        int nNumberOfBytesToRead,
+        Pointer<Uint32> pnBytesRead,
+        Pointer<Uint32> pnMinNumberOfBytesNeeded) =>
+    _ReadEventLog(hEventLog, dwReadFlags, dwRecordOffset, lpBuffer,
+        nNumberOfBytesToRead, pnBytesRead, pnMinNumberOfBytesNeeded);
+
+late final _ReadEventLog = _advapi32.lookupFunction<
+    Int32 Function(
+        IntPtr hEventLog,
+        Uint32 dwReadFlags,
+        Uint32 dwRecordOffset,
+        Pointer lpBuffer,
+        Uint32 nNumberOfBytesToRead,
+        Pointer<Uint32> pnBytesRead,
+        Pointer<Uint32> pnMinNumberOfBytesNeeded),
+    int Function(
+        int hEventLog,
+        int dwReadFlags,
+        int dwRecordOffset,
+        Pointer lpBuffer,
+        int nNumberOfBytesToRead,
+        Pointer<Uint32> pnBytesRead,
+        Pointer<Uint32> pnMinNumberOfBytesNeeded)>('ReadEventLogW');
+
+int RegisterEventSource(
+        Pointer<Utf16> lpUNCServerName, Pointer<Utf16> lpSourceName) =>
+    _RegisterEventSource(lpUNCServerName, lpSourceName);
+
+late final _RegisterEventSource = _advapi32.lookupFunction<
+    IntPtr Function(
+        Pointer<Utf16> lpUNCServerName, Pointer<Utf16> lpSourceName),
+    int Function(Pointer<Utf16> lpUNCServerName,
+        Pointer<Utf16> lpSourceName)>('RegisterEventSourceW');
+
+int ReportEvent(
+        int hEventLog,
+        int wType,
+        int wCategory,
+        int dwEventID,
+        int lpUserSid,
+        int wNumStrings,
+        int dwDataSize,
+        Pointer<Pointer<Utf16>> lpStrings,
+        Pointer lpRawData) =>
+    _ReportEvent(hEventLog, wType, wCategory, dwEventID, lpUserSid, wNumStrings,
+        dwDataSize, lpStrings, lpRawData);
+
+late final _ReportEvent = _advapi32.lookupFunction<
+    Int32 Function(
+        IntPtr hEventLog,
+        Uint16 wType,
+        Uint16 wCategory,
+        Uint32 dwEventID,
+        IntPtr lpUserSid,
+        Uint16 wNumStrings,
+        Uint32 dwDataSize,
+        Pointer<Pointer<Utf16>> lpStrings,
+        Pointer lpRawData),
+    int Function(
+        int hEventLog,
+        int wType,
+        int wCategory,
+        int dwEventID,
+        int lpUserSid,
+        int wNumStrings,
+        int dwDataSize,
+        Pointer<Pointer<Utf16>> lpStrings,
+        Pointer lpRawData)>('ReportEventW');

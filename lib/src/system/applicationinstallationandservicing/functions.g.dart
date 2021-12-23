@@ -2853,3 +2853,155 @@ late final _GetDeltaSignature = _msdelta.lookupFunction<
         Pointer<Utf16> lpSourceName, Pointer<DELTA_HASH> lpHash),
     int Function(int FileTypeSet, int HashAlgId, Pointer<Utf16> lpSourceName,
         Pointer<DELTA_HASH> lpHash)>('GetDeltaSignatureW');
+
+// -----------------------------------------------------------------------
+// kernel32.dll
+// -----------------------------------------------------------------------
+final _kernel32 = DynamicLibrary.open('kernel32.dll');
+
+int ActivateActCtx(int hActCtx, Pointer<IntPtr> lpCookie) =>
+    _ActivateActCtx(hActCtx, lpCookie);
+
+late final _ActivateActCtx = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hActCtx, Pointer<IntPtr> lpCookie),
+    int Function(int hActCtx, Pointer<IntPtr> lpCookie)>('ActivateActCtx');
+
+void AddRefActCtx(int hActCtx) => _AddRefActCtx(hActCtx);
+
+late final _AddRefActCtx = _kernel32.lookupFunction<
+    Void Function(IntPtr hActCtx), void Function(int hActCtx)>('AddRefActCtx');
+
+int CreateActCtx(Pointer<ACTCTX> pActCtx) => _CreateActCtx(pActCtx);
+
+late final _CreateActCtx = _kernel32.lookupFunction<
+    IntPtr Function(Pointer<ACTCTX> pActCtx),
+    int Function(Pointer<ACTCTX> pActCtx)>('CreateActCtxW');
+
+int DeactivateActCtx(int dwFlags, int ulCookie) =>
+    _DeactivateActCtx(dwFlags, ulCookie);
+
+late final _DeactivateActCtx = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwFlags, IntPtr ulCookie),
+    int Function(int dwFlags, int ulCookie)>('DeactivateActCtx');
+
+int FindActCtxSectionGuid(
+        int dwFlags,
+        Pointer<GUID> lpExtensionGuid,
+        int ulSectionId,
+        Pointer<GUID> lpGuidToFind,
+        Pointer<ACTCTX_SECTION_KEYED_DATA> ReturnedData) =>
+    _FindActCtxSectionGuid(
+        dwFlags, lpExtensionGuid, ulSectionId, lpGuidToFind, ReturnedData);
+
+late final _FindActCtxSectionGuid = _kernel32.lookupFunction<
+        Int32 Function(
+            Uint32 dwFlags,
+            Pointer<GUID> lpExtensionGuid,
+            Uint32 ulSectionId,
+            Pointer<GUID> lpGuidToFind,
+            Pointer<ACTCTX_SECTION_KEYED_DATA> ReturnedData),
+        int Function(
+            int dwFlags,
+            Pointer<GUID> lpExtensionGuid,
+            int ulSectionId,
+            Pointer<GUID> lpGuidToFind,
+            Pointer<ACTCTX_SECTION_KEYED_DATA> ReturnedData)>(
+    'FindActCtxSectionGuid');
+
+int FindActCtxSectionString(
+        int dwFlags,
+        Pointer<GUID> lpExtensionGuid,
+        int ulSectionId,
+        Pointer<Utf16> lpStringToFind,
+        Pointer<ACTCTX_SECTION_KEYED_DATA> ReturnedData) =>
+    _FindActCtxSectionString(
+        dwFlags, lpExtensionGuid, ulSectionId, lpStringToFind, ReturnedData);
+
+late final _FindActCtxSectionString = _kernel32.lookupFunction<
+        Int32 Function(
+            Uint32 dwFlags,
+            Pointer<GUID> lpExtensionGuid,
+            Uint32 ulSectionId,
+            Pointer<Utf16> lpStringToFind,
+            Pointer<ACTCTX_SECTION_KEYED_DATA> ReturnedData),
+        int Function(
+            int dwFlags,
+            Pointer<GUID> lpExtensionGuid,
+            int ulSectionId,
+            Pointer<Utf16> lpStringToFind,
+            Pointer<ACTCTX_SECTION_KEYED_DATA> ReturnedData)>(
+    'FindActCtxSectionStringW');
+
+int GetCurrentActCtx(Pointer<IntPtr> lphActCtx) => _GetCurrentActCtx(lphActCtx);
+
+late final _GetCurrentActCtx = _kernel32.lookupFunction<
+    Int32 Function(Pointer<IntPtr> lphActCtx),
+    int Function(Pointer<IntPtr> lphActCtx)>('GetCurrentActCtx');
+
+int QueryActCtxSettings(
+        int dwFlags,
+        int hActCtx,
+        Pointer<Utf16> settingsNameSpace,
+        Pointer<Utf16> settingName,
+        Pointer<Utf16> pvBuffer,
+        int dwBuffer,
+        Pointer<IntPtr> pdwWrittenOrRequired) =>
+    _QueryActCtxSettings(dwFlags, hActCtx, settingsNameSpace, settingName,
+        pvBuffer, dwBuffer, pdwWrittenOrRequired);
+
+late final _QueryActCtxSettings = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        IntPtr hActCtx,
+        Pointer<Utf16> settingsNameSpace,
+        Pointer<Utf16> settingName,
+        Pointer<Utf16> pvBuffer,
+        IntPtr dwBuffer,
+        Pointer<IntPtr> pdwWrittenOrRequired),
+    int Function(
+        int dwFlags,
+        int hActCtx,
+        Pointer<Utf16> settingsNameSpace,
+        Pointer<Utf16> settingName,
+        Pointer<Utf16> pvBuffer,
+        int dwBuffer,
+        Pointer<IntPtr> pdwWrittenOrRequired)>('QueryActCtxSettingsW');
+
+int QueryActCtx(
+        int dwFlags,
+        int hActCtx,
+        Pointer pvSubInstance,
+        int ulInfoClass,
+        Pointer pvBuffer,
+        int cbBuffer,
+        Pointer<IntPtr> pcbWrittenOrRequired) =>
+    _QueryActCtx(dwFlags, hActCtx, pvSubInstance, ulInfoClass, pvBuffer,
+        cbBuffer, pcbWrittenOrRequired);
+
+late final _QueryActCtx = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwFlags,
+        IntPtr hActCtx,
+        Pointer pvSubInstance,
+        Uint32 ulInfoClass,
+        Pointer pvBuffer,
+        IntPtr cbBuffer,
+        Pointer<IntPtr> pcbWrittenOrRequired),
+    int Function(
+        int dwFlags,
+        int hActCtx,
+        Pointer pvSubInstance,
+        int ulInfoClass,
+        Pointer pvBuffer,
+        int cbBuffer,
+        Pointer<IntPtr> pcbWrittenOrRequired)>('QueryActCtxW');
+
+void ReleaseActCtx(int hActCtx) => _ReleaseActCtx(hActCtx);
+
+late final _ReleaseActCtx = _kernel32.lookupFunction<
+    Void Function(IntPtr hActCtx), void Function(int hActCtx)>('ReleaseActCtx');
+
+int ZombifyActCtx(int hActCtx) => _ZombifyActCtx(hActCtx);
+
+late final _ZombifyActCtx = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hActCtx), int Function(int hActCtx)>('ZombifyActCtx');

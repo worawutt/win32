@@ -14,13 +14,621 @@ import 'enums.g.dart';
 
 import '../../../combase.dart';
 import '../../../guid.dart';
-import '../../../system/diagnostics/debug/structs.g.dart';
+import '../../../system/diagnostics/debug/callbacks.g.dart';
 import '../../../foundation/structs.g.dart';
+import '../../../system/diagnostics/debug/structs.g.dart';
 import '../../../system/diagnostics/debug/IDebugHost.dart';
 import '../../../system/diagnostics/debug/IDataModelManager.dart';
-import '../../../system/diagnostics/debug/callbacks.g.dart';
 import '../../../security/wintrust/structs.g.dart'; // -----------------------------------------------------------------------
 
+// kernel32.dll
+// -----------------------------------------------------------------------
+final _kernel32 = DynamicLibrary.open('kernel32.dll');
+
+Pointer AddVectoredContinueHandler(int First,
+        Pointer<NativeFunction<PVECTORED_EXCEPTION_HANDLER>> Handler) =>
+    _AddVectoredContinueHandler(First, Handler);
+
+late final _AddVectoredContinueHandler = _kernel32.lookupFunction<
+        Pointer Function(Uint32 First,
+            Pointer<NativeFunction<PVECTORED_EXCEPTION_HANDLER>> Handler),
+        Pointer Function(int First,
+            Pointer<NativeFunction<PVECTORED_EXCEPTION_HANDLER>> Handler)>(
+    'AddVectoredContinueHandler');
+
+Pointer AddVectoredExceptionHandler(int First,
+        Pointer<NativeFunction<PVECTORED_EXCEPTION_HANDLER>> Handler) =>
+    _AddVectoredExceptionHandler(First, Handler);
+
+late final _AddVectoredExceptionHandler = _kernel32.lookupFunction<
+        Pointer Function(Uint32 First,
+            Pointer<NativeFunction<PVECTORED_EXCEPTION_HANDLER>> Handler),
+        Pointer Function(int First,
+            Pointer<NativeFunction<PVECTORED_EXCEPTION_HANDLER>> Handler)>(
+    'AddVectoredExceptionHandler');
+
+int Beep(int dwFreq, int dwDuration) => _Beep(dwFreq, dwDuration);
+
+late final _Beep = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwFreq, Uint32 dwDuration),
+    int Function(int dwFreq, int dwDuration)>('Beep');
+
+int CheckRemoteDebuggerPresent(
+        int hProcess, Pointer<Int32> pbDebuggerPresent) =>
+    _CheckRemoteDebuggerPresent(hProcess, pbDebuggerPresent);
+
+late final _CheckRemoteDebuggerPresent = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hProcess, Pointer<Int32> pbDebuggerPresent),
+    int Function(int hProcess,
+        Pointer<Int32> pbDebuggerPresent)>('CheckRemoteDebuggerPresent');
+
+int ContinueDebugEvent(int dwProcessId, int dwThreadId, int dwContinueStatus) =>
+    _ContinueDebugEvent(dwProcessId, dwThreadId, dwContinueStatus);
+
+late final _ContinueDebugEvent = _kernel32.lookupFunction<
+    Int32 Function(
+        Uint32 dwProcessId, Uint32 dwThreadId, Uint32 dwContinueStatus),
+    int Function(int dwProcessId, int dwThreadId,
+        int dwContinueStatus)>('ContinueDebugEvent');
+
+int CopyContext(Pointer<CONTEXT> Destination, int ContextFlags,
+        Pointer<CONTEXT> Source) =>
+    _CopyContext(Destination, ContextFlags, Source);
+
+late final _CopyContext = _kernel32.lookupFunction<
+    Int32 Function(Pointer<CONTEXT> Destination, Uint32 ContextFlags,
+        Pointer<CONTEXT> Source),
+    int Function(Pointer<CONTEXT> Destination, int ContextFlags,
+        Pointer<CONTEXT> Source)>('CopyContext');
+
+int DebugActiveProcess(int dwProcessId) => _DebugActiveProcess(dwProcessId);
+
+late final _DebugActiveProcess = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwProcessId),
+    int Function(int dwProcessId)>('DebugActiveProcess');
+
+int DebugActiveProcessStop(int dwProcessId) =>
+    _DebugActiveProcessStop(dwProcessId);
+
+late final _DebugActiveProcessStop = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwProcessId),
+    int Function(int dwProcessId)>('DebugActiveProcessStop');
+
+void DebugBreak() => _DebugBreak();
+
+late final _DebugBreak =
+    _kernel32.lookupFunction<Void Function(), void Function()>('DebugBreak');
+
+int DebugBreakProcess(int Process) => _DebugBreakProcess(Process);
+
+late final _DebugBreakProcess = _kernel32.lookupFunction<
+    Int32 Function(IntPtr Process),
+    int Function(int Process)>('DebugBreakProcess');
+
+int DebugSetProcessKillOnExit(int KillOnExit) =>
+    _DebugSetProcessKillOnExit(KillOnExit);
+
+late final _DebugSetProcessKillOnExit = _kernel32.lookupFunction<
+    Int32 Function(Int32 KillOnExit),
+    int Function(int KillOnExit)>('DebugSetProcessKillOnExit');
+
+Pointer DecodePointer(Pointer Ptr) => _DecodePointer(Ptr);
+
+late final _DecodePointer = _kernel32.lookupFunction<
+    Pointer Function(Pointer Ptr),
+    Pointer Function(Pointer Ptr)>('DecodePointer');
+
+Pointer DecodeSystemPointer(Pointer Ptr) => _DecodeSystemPointer(Ptr);
+
+late final _DecodeSystemPointer = _kernel32.lookupFunction<
+    Pointer Function(Pointer Ptr),
+    Pointer Function(Pointer Ptr)>('DecodeSystemPointer');
+
+Pointer EncodePointer(Pointer Ptr) => _EncodePointer(Ptr);
+
+late final _EncodePointer = _kernel32.lookupFunction<
+    Pointer Function(Pointer Ptr),
+    Pointer Function(Pointer Ptr)>('EncodePointer');
+
+Pointer EncodeSystemPointer(Pointer Ptr) => _EncodeSystemPointer(Ptr);
+
+late final _EncodeSystemPointer = _kernel32.lookupFunction<
+    Pointer Function(Pointer Ptr),
+    Pointer Function(Pointer Ptr)>('EncodeSystemPointer');
+
+void FatalAppExit(int uAction, Pointer<Utf16> lpMessageText) =>
+    _FatalAppExit(uAction, lpMessageText);
+
+late final _FatalAppExit = _kernel32.lookupFunction<
+    Void Function(Uint32 uAction, Pointer<Utf16> lpMessageText),
+    void Function(int uAction, Pointer<Utf16> lpMessageText)>('FatalAppExitW');
+
+void FatalExit(int ExitCode) => _FatalExit(ExitCode);
+
+late final _FatalExit = _kernel32.lookupFunction<Void Function(Int32 ExitCode),
+    void Function(int ExitCode)>('FatalExit');
+
+int FlushInstructionCache(int hProcess, Pointer lpBaseAddress, int dwSize) =>
+    _FlushInstructionCache(hProcess, lpBaseAddress, dwSize);
+
+late final _FlushInstructionCache = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hProcess, Pointer lpBaseAddress, IntPtr dwSize),
+    int Function(int hProcess, Pointer lpBaseAddress,
+        int dwSize)>('FlushInstructionCache');
+
+int FormatMessage(
+        int dwFlags,
+        Pointer lpSource,
+        int dwMessageId,
+        int dwLanguageId,
+        Pointer<Utf16> lpBuffer,
+        int nSize,
+        Pointer<Pointer<Int8>> Arguments) =>
+    _FormatMessage(dwFlags, lpSource, dwMessageId, dwLanguageId, lpBuffer,
+        nSize, Arguments);
+
+late final _FormatMessage = _kernel32.lookupFunction<
+    Uint32 Function(
+        Uint32 dwFlags,
+        Pointer lpSource,
+        Uint32 dwMessageId,
+        Uint32 dwLanguageId,
+        Pointer<Utf16> lpBuffer,
+        Uint32 nSize,
+        Pointer<Pointer<Int8>> Arguments),
+    int Function(
+        int dwFlags,
+        Pointer lpSource,
+        int dwMessageId,
+        int dwLanguageId,
+        Pointer<Utf16> lpBuffer,
+        int nSize,
+        Pointer<Pointer<Int8>> Arguments)>('FormatMessageW');
+
+int GetEnabledXStateFeatures() => _GetEnabledXStateFeatures();
+
+late final _GetEnabledXStateFeatures =
+    _kernel32.lookupFunction<Uint64 Function(), int Function()>(
+        'GetEnabledXStateFeatures');
+
+int GetErrorMode() => _GetErrorMode();
+
+late final _GetErrorMode =
+    _kernel32.lookupFunction<Uint32 Function(), int Function()>('GetErrorMode');
+
+int GetThreadContext(int hThread, Pointer<CONTEXT> lpContext) =>
+    _GetThreadContext(hThread, lpContext);
+
+late final _GetThreadContext = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hThread, Pointer<CONTEXT> lpContext),
+    int Function(int hThread, Pointer<CONTEXT> lpContext)>('GetThreadContext');
+
+int GetThreadErrorMode() => _GetThreadErrorMode();
+
+late final _GetThreadErrorMode = _kernel32
+    .lookupFunction<Uint32 Function(), int Function()>('GetThreadErrorMode');
+
+int GetThreadSelectorEntry(
+        int hThread, int dwSelector, Pointer<LDT_ENTRY> lpSelectorEntry) =>
+    _GetThreadSelectorEntry(hThread, dwSelector, lpSelectorEntry);
+
+late final _GetThreadSelectorEntry = _kernel32.lookupFunction<
+    Int32 Function(
+        IntPtr hThread, Uint32 dwSelector, Pointer<LDT_ENTRY> lpSelectorEntry),
+    int Function(int hThread, int dwSelector,
+        Pointer<LDT_ENTRY> lpSelectorEntry)>('GetThreadSelectorEntry');
+
+int GetXStateFeaturesMask(
+        Pointer<CONTEXT> Context, Pointer<Uint64> FeatureMask) =>
+    _GetXStateFeaturesMask(Context, FeatureMask);
+
+late final _GetXStateFeaturesMask = _kernel32.lookupFunction<
+    Int32 Function(Pointer<CONTEXT> Context, Pointer<Uint64> FeatureMask),
+    int Function(Pointer<CONTEXT> Context,
+        Pointer<Uint64> FeatureMask)>('GetXStateFeaturesMask');
+
+int InitializeContext(Pointer Buffer, int ContextFlags,
+        Pointer<Pointer<CONTEXT>> Context, Pointer<Uint32> ContextLength) =>
+    _InitializeContext(Buffer, ContextFlags, Context, ContextLength);
+
+late final _InitializeContext = _kernel32.lookupFunction<
+    Int32 Function(Pointer Buffer, Uint32 ContextFlags,
+        Pointer<Pointer<CONTEXT>> Context, Pointer<Uint32> ContextLength),
+    int Function(
+        Pointer Buffer,
+        int ContextFlags,
+        Pointer<Pointer<CONTEXT>> Context,
+        Pointer<Uint32> ContextLength)>('InitializeContext');
+
+int InitializeContext2(
+        Pointer Buffer,
+        int ContextFlags,
+        Pointer<Pointer<CONTEXT>> Context,
+        Pointer<Uint32> ContextLength,
+        int XStateCompactionMask) =>
+    _InitializeContext2(
+        Buffer, ContextFlags, Context, ContextLength, XStateCompactionMask);
+
+late final _InitializeContext2 = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer Buffer,
+        Uint32 ContextFlags,
+        Pointer<Pointer<CONTEXT>> Context,
+        Pointer<Uint32> ContextLength,
+        Uint64 XStateCompactionMask),
+    int Function(
+        Pointer Buffer,
+        int ContextFlags,
+        Pointer<Pointer<CONTEXT>> Context,
+        Pointer<Uint32> ContextLength,
+        int XStateCompactionMask)>('InitializeContext2');
+
+int IsDebuggerPresent() => _IsDebuggerPresent();
+
+late final _IsDebuggerPresent = _kernel32
+    .lookupFunction<Int32 Function(), int Function()>('IsDebuggerPresent');
+
+Pointer LocateXStateFeature(
+        Pointer<CONTEXT> Context, int FeatureId, Pointer<Uint32> Length) =>
+    _LocateXStateFeature(Context, FeatureId, Length);
+
+late final _LocateXStateFeature = _kernel32.lookupFunction<
+    Pointer Function(
+        Pointer<CONTEXT> Context, Uint32 FeatureId, Pointer<Uint32> Length),
+    Pointer Function(Pointer<CONTEXT> Context, int FeatureId,
+        Pointer<Uint32> Length)>('LocateXStateFeature');
+
+void OutputDebugString(Pointer<Utf16> lpOutputString) =>
+    _OutputDebugString(lpOutputString);
+
+late final _OutputDebugString = _kernel32.lookupFunction<
+    Void Function(Pointer<Utf16> lpOutputString),
+    void Function(Pointer<Utf16> lpOutputString)>('OutputDebugStringW');
+
+void RaiseException(int dwExceptionCode, int dwExceptionFlags,
+        int nNumberOfArguments, Pointer<IntPtr> lpArguments) =>
+    _RaiseException(
+        dwExceptionCode, dwExceptionFlags, nNumberOfArguments, lpArguments);
+
+late final _RaiseException = _kernel32.lookupFunction<
+    Void Function(Uint32 dwExceptionCode, Uint32 dwExceptionFlags,
+        Uint32 nNumberOfArguments, Pointer<IntPtr> lpArguments),
+    void Function(int dwExceptionCode, int dwExceptionFlags,
+        int nNumberOfArguments, Pointer<IntPtr> lpArguments)>('RaiseException');
+
+void RaiseFailFastException(Pointer<EXCEPTION_RECORD> pExceptionRecord,
+        Pointer<CONTEXT> pContextRecord, int dwFlags) =>
+    _RaiseFailFastException(pExceptionRecord, pContextRecord, dwFlags);
+
+late final _RaiseFailFastException = _kernel32.lookupFunction<
+    Void Function(Pointer<EXCEPTION_RECORD> pExceptionRecord,
+        Pointer<CONTEXT> pContextRecord, Uint32 dwFlags),
+    void Function(
+        Pointer<EXCEPTION_RECORD> pExceptionRecord,
+        Pointer<CONTEXT> pContextRecord,
+        int dwFlags)>('RaiseFailFastException');
+
+int ReadProcessMemory(int hProcess, Pointer lpBaseAddress, Pointer lpBuffer,
+        int nSize, Pointer<IntPtr> lpNumberOfBytesRead) =>
+    _ReadProcessMemory(
+        hProcess, lpBaseAddress, lpBuffer, nSize, lpNumberOfBytesRead);
+
+late final _ReadProcessMemory = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hProcess, Pointer lpBaseAddress, Pointer lpBuffer,
+        IntPtr nSize, Pointer<IntPtr> lpNumberOfBytesRead),
+    int Function(int hProcess, Pointer lpBaseAddress, Pointer lpBuffer,
+        int nSize, Pointer<IntPtr> lpNumberOfBytesRead)>('ReadProcessMemory');
+
+int RemoveVectoredContinueHandler(Pointer $Handle) =>
+    _RemoveVectoredContinueHandler($Handle);
+
+late final _RemoveVectoredContinueHandler = _kernel32.lookupFunction<
+    Uint32 Function(Pointer $Handle),
+    int Function(Pointer $Handle)>('RemoveVectoredContinueHandler');
+
+int RemoveVectoredExceptionHandler(Pointer $Handle) =>
+    _RemoveVectoredExceptionHandler($Handle);
+
+late final _RemoveVectoredExceptionHandler = _kernel32.lookupFunction<
+    Uint32 Function(Pointer $Handle),
+    int Function(Pointer $Handle)>('RemoveVectoredExceptionHandler');
+
+int RtlAddFunctionTable(Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionTable,
+        int EntryCount, int BaseAddress) =>
+    _RtlAddFunctionTable(FunctionTable, EntryCount, BaseAddress);
+
+late final _RtlAddFunctionTable = _kernel32.lookupFunction<
+    Uint8 Function(Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionTable,
+        Uint32 EntryCount, Uint64 BaseAddress),
+    int Function(Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionTable,
+        int EntryCount, int BaseAddress)>('RtlAddFunctionTable');
+
+void RtlCaptureContext(Pointer<CONTEXT> ContextRecord) =>
+    _RtlCaptureContext(ContextRecord);
+
+late final _RtlCaptureContext = _kernel32.lookupFunction<
+    Void Function(Pointer<CONTEXT> ContextRecord),
+    void Function(Pointer<CONTEXT> ContextRecord)>('RtlCaptureContext');
+
+void RtlCaptureContext2(Pointer<CONTEXT> ContextRecord) =>
+    _RtlCaptureContext2(ContextRecord);
+
+late final _RtlCaptureContext2 = _kernel32.lookupFunction<
+    Void Function(Pointer<CONTEXT> ContextRecord),
+    void Function(Pointer<CONTEXT> ContextRecord)>('RtlCaptureContext2');
+
+int RtlCaptureStackBackTrace(int FramesToSkip, int FramesToCapture,
+        Pointer<Pointer> BackTrace, Pointer<Uint32> BackTraceHash) =>
+    _RtlCaptureStackBackTrace(
+        FramesToSkip, FramesToCapture, BackTrace, BackTraceHash);
+
+late final _RtlCaptureStackBackTrace = _kernel32.lookupFunction<
+    Uint16 Function(Uint32 FramesToSkip, Uint32 FramesToCapture,
+        Pointer<Pointer> BackTrace, Pointer<Uint32> BackTraceHash),
+    int Function(
+        int FramesToSkip,
+        int FramesToCapture,
+        Pointer<Pointer> BackTrace,
+        Pointer<Uint32> BackTraceHash)>('RtlCaptureStackBackTrace');
+
+int RtlDeleteFunctionTable(
+        Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionTable) =>
+    _RtlDeleteFunctionTable(FunctionTable);
+
+late final _RtlDeleteFunctionTable = _kernel32.lookupFunction<
+        Uint8 Function(Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionTable),
+        int Function(Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionTable)>(
+    'RtlDeleteFunctionTable');
+
+int RtlInstallFunctionTableCallback(
+        int TableIdentifier,
+        int BaseAddress,
+        int Length,
+        Pointer<NativeFunction<PGET_RUNTIME_FUNCTION_CALLBACK>> Callback,
+        Pointer Context,
+        Pointer<Utf16> OutOfProcessCallbackDll) =>
+    _RtlInstallFunctionTableCallback(TableIdentifier, BaseAddress, Length,
+        Callback, Context, OutOfProcessCallbackDll);
+
+late final _RtlInstallFunctionTableCallback = _kernel32.lookupFunction<
+        Uint8 Function(
+            Uint64 TableIdentifier,
+            Uint64 BaseAddress,
+            Uint32 Length,
+            Pointer<NativeFunction<PGET_RUNTIME_FUNCTION_CALLBACK>> Callback,
+            Pointer Context,
+            Pointer<Utf16> OutOfProcessCallbackDll),
+        int Function(
+            int TableIdentifier,
+            int BaseAddress,
+            int Length,
+            Pointer<NativeFunction<PGET_RUNTIME_FUNCTION_CALLBACK>> Callback,
+            Pointer Context,
+            Pointer<Utf16> OutOfProcessCallbackDll)>(
+    'RtlInstallFunctionTableCallback');
+
+Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> RtlLookupFunctionEntry(
+        int ControlPc,
+        Pointer<Uint64> ImageBase,
+        Pointer<UNWIND_HISTORY_TABLE> HistoryTable) =>
+    _RtlLookupFunctionEntry(ControlPc, ImageBase, HistoryTable);
+
+late final _RtlLookupFunctionEntry = _kernel32.lookupFunction<
+    Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> Function(Uint64 ControlPc,
+        Pointer<Uint64> ImageBase, Pointer<UNWIND_HISTORY_TABLE> HistoryTable),
+    Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> Function(
+        int ControlPc,
+        Pointer<Uint64> ImageBase,
+        Pointer<UNWIND_HISTORY_TABLE> HistoryTable)>('RtlLookupFunctionEntry');
+
+Pointer RtlPcToFileHeader(Pointer PcValue, Pointer<Pointer> BaseOfImage) =>
+    _RtlPcToFileHeader(PcValue, BaseOfImage);
+
+late final _RtlPcToFileHeader = _kernel32.lookupFunction<
+    Pointer Function(Pointer PcValue, Pointer<Pointer> BaseOfImage),
+    Pointer Function(
+        Pointer PcValue, Pointer<Pointer> BaseOfImage)>('RtlPcToFileHeader');
+
+void RtlRaiseException(Pointer<EXCEPTION_RECORD> ExceptionRecord) =>
+    _RtlRaiseException(ExceptionRecord);
+
+late final _RtlRaiseException = _kernel32.lookupFunction<
+    Void Function(Pointer<EXCEPTION_RECORD> ExceptionRecord),
+    void Function(
+        Pointer<EXCEPTION_RECORD> ExceptionRecord)>('RtlRaiseException');
+
+void RtlRestoreContext(Pointer<CONTEXT> ContextRecord,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord) =>
+    _RtlRestoreContext(ContextRecord, ExceptionRecord);
+
+late final _RtlRestoreContext = _kernel32.lookupFunction<
+    Void Function(Pointer<CONTEXT> ContextRecord,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord),
+    void Function(Pointer<CONTEXT> ContextRecord,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord)>('RtlRestoreContext');
+
+void RtlUnwind(Pointer TargetFrame, Pointer TargetIp,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord, Pointer ReturnValue) =>
+    _RtlUnwind(TargetFrame, TargetIp, ExceptionRecord, ReturnValue);
+
+late final _RtlUnwind = _kernel32.lookupFunction<
+    Void Function(Pointer TargetFrame, Pointer TargetIp,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord, Pointer ReturnValue),
+    void Function(
+        Pointer TargetFrame,
+        Pointer TargetIp,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord,
+        Pointer ReturnValue)>('RtlUnwind');
+
+void RtlUnwindEx(
+        Pointer TargetFrame,
+        Pointer TargetIp,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord,
+        Pointer ReturnValue,
+        Pointer<CONTEXT> ContextRecord,
+        Pointer<UNWIND_HISTORY_TABLE> HistoryTable) =>
+    _RtlUnwindEx(TargetFrame, TargetIp, ExceptionRecord, ReturnValue,
+        ContextRecord, HistoryTable);
+
+late final _RtlUnwindEx = _kernel32.lookupFunction<
+    Void Function(
+        Pointer TargetFrame,
+        Pointer TargetIp,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord,
+        Pointer ReturnValue,
+        Pointer<CONTEXT> ContextRecord,
+        Pointer<UNWIND_HISTORY_TABLE> HistoryTable),
+    void Function(
+        Pointer TargetFrame,
+        Pointer TargetIp,
+        Pointer<EXCEPTION_RECORD> ExceptionRecord,
+        Pointer ReturnValue,
+        Pointer<CONTEXT> ContextRecord,
+        Pointer<UNWIND_HISTORY_TABLE> HistoryTable)>('RtlUnwindEx');
+
+Pointer<NativeFunction<EXCEPTION_ROUTINE>> RtlVirtualUnwind(
+        int HandlerType,
+        int ImageBase,
+        int ControlPc,
+        Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionEntry,
+        Pointer<CONTEXT> ContextRecord,
+        Pointer<Pointer> HandlerData,
+        Pointer<Uint64> EstablisherFrame,
+        Pointer<KNONVOLATILE_CONTEXT_POINTERS> ContextPointers) =>
+    _RtlVirtualUnwind(HandlerType, ImageBase, ControlPc, FunctionEntry,
+        ContextRecord, HandlerData, EstablisherFrame, ContextPointers);
+
+late final _RtlVirtualUnwind = _kernel32.lookupFunction<
+        Pointer<NativeFunction<EXCEPTION_ROUTINE>> Function(
+            Uint32 HandlerType,
+            Uint64 ImageBase,
+            Uint64 ControlPc,
+            Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionEntry,
+            Pointer<CONTEXT> ContextRecord,
+            Pointer<Pointer> HandlerData,
+            Pointer<Uint64> EstablisherFrame,
+            Pointer<KNONVOLATILE_CONTEXT_POINTERS> ContextPointers),
+        Pointer<NativeFunction<EXCEPTION_ROUTINE>> Function(
+            int HandlerType,
+            int ImageBase,
+            int ControlPc,
+            Pointer<IMAGE_RUNTIME_FUNCTION_ENTRY> FunctionEntry,
+            Pointer<CONTEXT> ContextRecord,
+            Pointer<Pointer> HandlerData,
+            Pointer<Uint64> EstablisherFrame,
+            Pointer<KNONVOLATILE_CONTEXT_POINTERS> ContextPointers)>(
+    'RtlVirtualUnwind');
+
+int SetErrorMode(int uMode) => _SetErrorMode(uMode);
+
+late final _SetErrorMode = _kernel32.lookupFunction<
+    Uint32 Function(Uint32 uMode), int Function(int uMode)>('SetErrorMode');
+
+int SetThreadContext(int hThread, Pointer<CONTEXT> lpContext) =>
+    _SetThreadContext(hThread, lpContext);
+
+late final _SetThreadContext = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hThread, Pointer<CONTEXT> lpContext),
+    int Function(int hThread, Pointer<CONTEXT> lpContext)>('SetThreadContext');
+
+int SetThreadErrorMode(int dwNewMode, Pointer<Uint32> lpOldMode) =>
+    _SetThreadErrorMode(dwNewMode, lpOldMode);
+
+late final _SetThreadErrorMode = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwNewMode, Pointer<Uint32> lpOldMode),
+    int Function(
+        int dwNewMode, Pointer<Uint32> lpOldMode)>('SetThreadErrorMode');
+
+Pointer<NativeFunction<LPTOP_LEVEL_EXCEPTION_FILTER>>
+    SetUnhandledExceptionFilter(
+            Pointer<NativeFunction<LPTOP_LEVEL_EXCEPTION_FILTER>>
+                lpTopLevelExceptionFilter) =>
+        _SetUnhandledExceptionFilter(lpTopLevelExceptionFilter);
+
+late final _SetUnhandledExceptionFilter = _kernel32.lookupFunction<
+    Pointer<NativeFunction<LPTOP_LEVEL_EXCEPTION_FILTER>> Function(
+        Pointer<NativeFunction<LPTOP_LEVEL_EXCEPTION_FILTER>>
+            lpTopLevelExceptionFilter),
+    Pointer<NativeFunction<LPTOP_LEVEL_EXCEPTION_FILTER>> Function(
+        Pointer<NativeFunction<LPTOP_LEVEL_EXCEPTION_FILTER>>
+            lpTopLevelExceptionFilter)>('SetUnhandledExceptionFilter');
+
+int SetXStateFeaturesMask(Pointer<CONTEXT> Context, int FeatureMask) =>
+    _SetXStateFeaturesMask(Context, FeatureMask);
+
+late final _SetXStateFeaturesMask = _kernel32.lookupFunction<
+    Int32 Function(Pointer<CONTEXT> Context, Uint64 FeatureMask),
+    int Function(
+        Pointer<CONTEXT> Context, int FeatureMask)>('SetXStateFeaturesMask');
+
+int UnhandledExceptionFilter(Pointer<EXCEPTION_POINTERS> ExceptionInfo) =>
+    _UnhandledExceptionFilter(ExceptionInfo);
+
+late final _UnhandledExceptionFilter = _kernel32.lookupFunction<
+    Int32 Function(Pointer<EXCEPTION_POINTERS> ExceptionInfo),
+    int Function(
+        Pointer<EXCEPTION_POINTERS> ExceptionInfo)>('UnhandledExceptionFilter');
+
+int WaitForDebugEvent(Pointer<DEBUG_EVENT> lpDebugEvent, int dwMilliseconds) =>
+    _WaitForDebugEvent(lpDebugEvent, dwMilliseconds);
+
+late final _WaitForDebugEvent = _kernel32.lookupFunction<
+    Int32 Function(Pointer<DEBUG_EVENT> lpDebugEvent, Uint32 dwMilliseconds),
+    int Function(Pointer<DEBUG_EVENT> lpDebugEvent,
+        int dwMilliseconds)>('WaitForDebugEvent');
+
+int WaitForDebugEventEx(
+        Pointer<DEBUG_EVENT> lpDebugEvent, int dwMilliseconds) =>
+    _WaitForDebugEventEx(lpDebugEvent, dwMilliseconds);
+
+late final _WaitForDebugEventEx = _kernel32.lookupFunction<
+    Int32 Function(Pointer<DEBUG_EVENT> lpDebugEvent, Uint32 dwMilliseconds),
+    int Function(Pointer<DEBUG_EVENT> lpDebugEvent,
+        int dwMilliseconds)>('WaitForDebugEventEx');
+
+int Wow64GetThreadContext(int hThread, Pointer<WOW64_CONTEXT> lpContext) =>
+    _Wow64GetThreadContext(hThread, lpContext);
+
+late final _Wow64GetThreadContext = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hThread, Pointer<WOW64_CONTEXT> lpContext),
+    int Function(int hThread,
+        Pointer<WOW64_CONTEXT> lpContext)>('Wow64GetThreadContext');
+
+int Wow64GetThreadSelectorEntry(int hThread, int dwSelector,
+        Pointer<WOW64_LDT_ENTRY> lpSelectorEntry) =>
+    _Wow64GetThreadSelectorEntry(hThread, dwSelector, lpSelectorEntry);
+
+late final _Wow64GetThreadSelectorEntry = _kernel32.lookupFunction<
+        Int32 Function(IntPtr hThread, Uint32 dwSelector,
+            Pointer<WOW64_LDT_ENTRY> lpSelectorEntry),
+        int Function(int hThread, int dwSelector,
+            Pointer<WOW64_LDT_ENTRY> lpSelectorEntry)>(
+    'Wow64GetThreadSelectorEntry');
+
+int Wow64SetThreadContext(int hThread, Pointer<WOW64_CONTEXT> lpContext) =>
+    _Wow64SetThreadContext(hThread, lpContext);
+
+late final _Wow64SetThreadContext = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hThread, Pointer<WOW64_CONTEXT> lpContext),
+    int Function(int hThread,
+        Pointer<WOW64_CONTEXT> lpContext)>('Wow64SetThreadContext');
+
+int WriteProcessMemory(int hProcess, Pointer lpBaseAddress, Pointer lpBuffer,
+        int nSize, Pointer<IntPtr> lpNumberOfBytesWritten) =>
+    _WriteProcessMemory(
+        hProcess, lpBaseAddress, lpBuffer, nSize, lpNumberOfBytesWritten);
+
+late final _WriteProcessMemory = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hProcess, Pointer lpBaseAddress, Pointer lpBuffer,
+        IntPtr nSize, Pointer<IntPtr> lpNumberOfBytesWritten),
+    int Function(
+        int hProcess,
+        Pointer lpBaseAddress,
+        Pointer lpBuffer,
+        int nSize,
+        Pointer<IntPtr> lpNumberOfBytesWritten)>('WriteProcessMemory');
+
+// -----------------------------------------------------------------------
 // ntdll.dll
 // -----------------------------------------------------------------------
 final _ntdll = DynamicLibrary.open('ntdll.dll');
@@ -164,6 +772,72 @@ late final _TerminateProcessOnMemoryExhaustion =
         Void Function(IntPtr FailedAllocationSize),
         void Function(
             int FailedAllocationSize)>('TerminateProcessOnMemoryExhaustion');
+
+// -----------------------------------------------------------------------
+// advapi32.dll
+// -----------------------------------------------------------------------
+final _advapi32 = DynamicLibrary.open('advapi32.dll');
+
+void CloseThreadWaitChainSession(Pointer WctHandle) =>
+    _CloseThreadWaitChainSession(WctHandle);
+
+late final _CloseThreadWaitChainSession = _advapi32.lookupFunction<
+    Void Function(Pointer WctHandle),
+    void Function(Pointer WctHandle)>('CloseThreadWaitChainSession');
+
+int GetThreadWaitChain(
+        Pointer WctHandle,
+        int Context,
+        int Flags,
+        int ThreadId,
+        Pointer<Uint32> NodeCount,
+        Pointer<WAITCHAIN_NODE_INFO> NodeInfoArray,
+        Pointer<Int32> IsCycle) =>
+    _GetThreadWaitChain(
+        WctHandle, Context, Flags, ThreadId, NodeCount, NodeInfoArray, IsCycle);
+
+late final _GetThreadWaitChain = _advapi32.lookupFunction<
+    Int32 Function(
+        Pointer WctHandle,
+        IntPtr Context,
+        Uint32 Flags,
+        Uint32 ThreadId,
+        Pointer<Uint32> NodeCount,
+        Pointer<WAITCHAIN_NODE_INFO> NodeInfoArray,
+        Pointer<Int32> IsCycle),
+    int Function(
+        Pointer WctHandle,
+        int Context,
+        int Flags,
+        int ThreadId,
+        Pointer<Uint32> NodeCount,
+        Pointer<WAITCHAIN_NODE_INFO> NodeInfoArray,
+        Pointer<Int32> IsCycle)>('GetThreadWaitChain');
+
+Pointer OpenThreadWaitChainSession(
+        int Flags, Pointer<NativeFunction<PWAITCHAINCALLBACK>> callback) =>
+    _OpenThreadWaitChainSession(Flags, callback);
+
+late final _OpenThreadWaitChainSession = _advapi32.lookupFunction<
+        Pointer Function(
+            Uint32 Flags, Pointer<NativeFunction<PWAITCHAINCALLBACK>> callback),
+        Pointer Function(
+            int Flags, Pointer<NativeFunction<PWAITCHAINCALLBACK>> callback)>(
+    'OpenThreadWaitChainSession');
+
+void RegisterWaitChainCOMCallback(
+        Pointer<NativeFunction<PCOGETCALLSTATE>> CallStateCallback,
+        Pointer<NativeFunction<PCOGETACTIVATIONSTATE>>
+            ActivationStateCallback) =>
+    _RegisterWaitChainCOMCallback(CallStateCallback, ActivationStateCallback);
+
+late final _RegisterWaitChainCOMCallback = _advapi32.lookupFunction<
+    Void Function(Pointer<NativeFunction<PCOGETCALLSTATE>> CallStateCallback,
+        Pointer<NativeFunction<PCOGETACTIVATIONSTATE>> ActivationStateCallback),
+    void Function(
+        Pointer<NativeFunction<PCOGETCALLSTATE>> CallStateCallback,
+        Pointer<NativeFunction<PCOGETACTIVATIONSTATE>>
+            ActivationStateCallback)>('RegisterWaitChainCOMCallback');
 
 // -----------------------------------------------------------------------
 // dbghelp.dll
@@ -2585,3 +3259,13 @@ late final _UpdateDebugInfoFileEx = _imagehlp.lookupFunction<
         Pointer<Utf8> DebugFilePath,
         Pointer<IMAGE_NT_HEADERS32> NtHeaders,
         int OldCheckSum)>('UpdateDebugInfoFileEx');
+
+// -----------------------------------------------------------------------
+// user32.dll
+// -----------------------------------------------------------------------
+final _user32 = DynamicLibrary.open('user32.dll');
+
+int MessageBeep(int uType) => _MessageBeep(uType);
+
+late final _MessageBeep = _user32.lookupFunction<Int32 Function(Uint32 uType),
+    int Function(int uType)>('MessageBeep');

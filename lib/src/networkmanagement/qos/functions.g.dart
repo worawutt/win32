@@ -168,3 +168,174 @@ late final _QOSStopTrackingClient = _qwave.lookupFunction<
     Int32 Function(IntPtr QOSHandle, Pointer<SOCKADDR> DestAddr, Uint32 Flags),
     int Function(int QOSHandle, Pointer<SOCKADDR> DestAddr,
         int Flags)>('QOSStopTrackingClient');
+
+// -----------------------------------------------------------------------
+// traffic.dll
+// -----------------------------------------------------------------------
+final _traffic = DynamicLibrary.open('traffic.dll');
+
+int TcAddFilter(int FlowHandle, Pointer<TC_GEN_FILTER> pGenericFilter,
+        Pointer<IntPtr> pFilterHandle) =>
+    _TcAddFilter(FlowHandle, pGenericFilter, pFilterHandle);
+
+late final _TcAddFilter = _traffic.lookupFunction<
+    Uint32 Function(IntPtr FlowHandle, Pointer<TC_GEN_FILTER> pGenericFilter,
+        Pointer<IntPtr> pFilterHandle),
+    int Function(int FlowHandle, Pointer<TC_GEN_FILTER> pGenericFilter,
+        Pointer<IntPtr> pFilterHandle)>('TcAddFilter');
+
+int TcAddFlow(int IfcHandle, int ClFlowCtx, int Flags,
+        Pointer<TC_GEN_FLO> pGenericFlow, Pointer<IntPtr> pFlowHandle) =>
+    _TcAddFlow(IfcHandle, ClFlowCtx, Flags, pGenericFlow, pFlowHandle);
+
+late final _TcAddFlow = _traffic.lookupFunction<
+    Uint32 Function(IntPtr IfcHandle, IntPtr ClFlowCtx, Uint32 Flags,
+        Pointer<TC_GEN_FLO> pGenericFlow, Pointer<IntPtr> pFlowHandle),
+    int Function(
+        int IfcHandle,
+        int ClFlowCtx,
+        int Flags,
+        Pointer<TC_GEN_FLO> pGenericFlow,
+        Pointer<IntPtr> pFlowHandle)>('TcAddFlow');
+
+int TcCloseInterface(int IfcHandle) => _TcCloseInterface(IfcHandle);
+
+late final _TcCloseInterface = _traffic.lookupFunction<
+    Uint32 Function(IntPtr IfcHandle),
+    int Function(int IfcHandle)>('TcCloseInterface');
+
+int TcDeleteFilter(int FilterHandle) => _TcDeleteFilter(FilterHandle);
+
+late final _TcDeleteFilter = _traffic.lookupFunction<
+    Uint32 Function(IntPtr FilterHandle),
+    int Function(int FilterHandle)>('TcDeleteFilter');
+
+int TcDeleteFlow(int FlowHandle) => _TcDeleteFlow(FlowHandle);
+
+late final _TcDeleteFlow = _traffic.lookupFunction<
+    Uint32 Function(IntPtr FlowHandle),
+    int Function(int FlowHandle)>('TcDeleteFlow');
+
+int TcDeregisterClient(int ClientHandle) => _TcDeregisterClient(ClientHandle);
+
+late final _TcDeregisterClient = _traffic.lookupFunction<
+    Uint32 Function(IntPtr ClientHandle),
+    int Function(int ClientHandle)>('TcDeregisterClient');
+
+int TcEnumerateFlows(
+        int IfcHandle,
+        Pointer<IntPtr> pEnumHandle,
+        Pointer<Uint32> pFlowCount,
+        Pointer<Uint32> pBufSize,
+        Pointer<ENUMERATION_BUFFER> Buffer) =>
+    _TcEnumerateFlows(IfcHandle, pEnumHandle, pFlowCount, pBufSize, Buffer);
+
+late final _TcEnumerateFlows = _traffic.lookupFunction<
+    Uint32 Function(
+        IntPtr IfcHandle,
+        Pointer<IntPtr> pEnumHandle,
+        Pointer<Uint32> pFlowCount,
+        Pointer<Uint32> pBufSize,
+        Pointer<ENUMERATION_BUFFER> Buffer),
+    int Function(
+        int IfcHandle,
+        Pointer<IntPtr> pEnumHandle,
+        Pointer<Uint32> pFlowCount,
+        Pointer<Uint32> pBufSize,
+        Pointer<ENUMERATION_BUFFER> Buffer)>('TcEnumerateFlows');
+
+int TcEnumerateInterfaces(int ClientHandle, Pointer<Uint32> pBufferSize,
+        Pointer<TC_IFC_DESCRIPTOR> InterfaceBuffer) =>
+    _TcEnumerateInterfaces(ClientHandle, pBufferSize, InterfaceBuffer);
+
+late final _TcEnumerateInterfaces = _traffic.lookupFunction<
+    Uint32 Function(IntPtr ClientHandle, Pointer<Uint32> pBufferSize,
+        Pointer<TC_IFC_DESCRIPTOR> InterfaceBuffer),
+    int Function(int ClientHandle, Pointer<Uint32> pBufferSize,
+        Pointer<TC_IFC_DESCRIPTOR> InterfaceBuffer)>('TcEnumerateInterfaces');
+
+int TcGetFlowName(int FlowHandle, int StrSize, Pointer<Utf16> pFlowName) =>
+    _TcGetFlowName(FlowHandle, StrSize, pFlowName);
+
+late final _TcGetFlowName = _traffic.lookupFunction<
+    Uint32 Function(
+        IntPtr FlowHandle, Uint32 StrSize, Pointer<Utf16> pFlowName),
+    int Function(int FlowHandle, int StrSize,
+        Pointer<Utf16> pFlowName)>('TcGetFlowNameW');
+
+int TcModifyFlow(int FlowHandle, Pointer<TC_GEN_FLO> pGenericFlow) =>
+    _TcModifyFlow(FlowHandle, pGenericFlow);
+
+late final _TcModifyFlow = _traffic.lookupFunction<
+    Uint32 Function(IntPtr FlowHandle, Pointer<TC_GEN_FLO> pGenericFlow),
+    int Function(
+        int FlowHandle, Pointer<TC_GEN_FLO> pGenericFlow)>('TcModifyFlow');
+
+int TcOpenInterface(Pointer<Utf16> pInterfaceName, int ClientHandle,
+        int ClIfcCtx, Pointer<IntPtr> pIfcHandle) =>
+    _TcOpenInterface(pInterfaceName, ClientHandle, ClIfcCtx, pIfcHandle);
+
+late final _TcOpenInterface = _traffic.lookupFunction<
+    Uint32 Function(Pointer<Utf16> pInterfaceName, IntPtr ClientHandle,
+        IntPtr ClIfcCtx, Pointer<IntPtr> pIfcHandle),
+    int Function(Pointer<Utf16> pInterfaceName, int ClientHandle, int ClIfcCtx,
+        Pointer<IntPtr> pIfcHandle)>('TcOpenInterfaceW');
+
+int TcQueryFlow(Pointer<Utf16> pFlowName, Pointer<GUID> pGuidParam,
+        Pointer<Uint32> pBufferSize, Pointer Buffer) =>
+    _TcQueryFlow(pFlowName, pGuidParam, pBufferSize, Buffer);
+
+late final _TcQueryFlow = _traffic.lookupFunction<
+    Uint32 Function(Pointer<Utf16> pFlowName, Pointer<GUID> pGuidParam,
+        Pointer<Uint32> pBufferSize, Pointer Buffer),
+    int Function(Pointer<Utf16> pFlowName, Pointer<GUID> pGuidParam,
+        Pointer<Uint32> pBufferSize, Pointer Buffer)>('TcQueryFlowW');
+
+int TcQueryInterface(int IfcHandle, Pointer<GUID> pGuidParam, int NotifyChange,
+        Pointer<Uint32> pBufferSize, Pointer Buffer) =>
+    _TcQueryInterface(IfcHandle, pGuidParam, NotifyChange, pBufferSize, Buffer);
+
+late final _TcQueryInterface = _traffic.lookupFunction<
+    Uint32 Function(IntPtr IfcHandle, Pointer<GUID> pGuidParam,
+        Uint8 NotifyChange, Pointer<Uint32> pBufferSize, Pointer Buffer),
+    int Function(int IfcHandle, Pointer<GUID> pGuidParam, int NotifyChange,
+        Pointer<Uint32> pBufferSize, Pointer Buffer)>('TcQueryInterface');
+
+int TcRegisterClient(
+        int TciVersion,
+        int ClRegCtx,
+        Pointer<TCI_CLIENT_FUNC_LIST> ClientHandlerList,
+        Pointer<IntPtr> pClientHandle) =>
+    _TcRegisterClient(TciVersion, ClRegCtx, ClientHandlerList, pClientHandle);
+
+late final _TcRegisterClient = _traffic.lookupFunction<
+    Uint32 Function(
+        Uint32 TciVersion,
+        IntPtr ClRegCtx,
+        Pointer<TCI_CLIENT_FUNC_LIST> ClientHandlerList,
+        Pointer<IntPtr> pClientHandle),
+    int Function(
+        int TciVersion,
+        int ClRegCtx,
+        Pointer<TCI_CLIENT_FUNC_LIST> ClientHandlerList,
+        Pointer<IntPtr> pClientHandle)>('TcRegisterClient');
+
+int TcSetFlow(Pointer<Utf16> pFlowName, Pointer<GUID> pGuidParam,
+        int BufferSize, Pointer Buffer) =>
+    _TcSetFlow(pFlowName, pGuidParam, BufferSize, Buffer);
+
+late final _TcSetFlow = _traffic.lookupFunction<
+    Uint32 Function(Pointer<Utf16> pFlowName, Pointer<GUID> pGuidParam,
+        Uint32 BufferSize, Pointer Buffer),
+    int Function(Pointer<Utf16> pFlowName, Pointer<GUID> pGuidParam,
+        int BufferSize, Pointer Buffer)>('TcSetFlowW');
+
+int TcSetInterface(int IfcHandle, Pointer<GUID> pGuidParam, int BufferSize,
+        Pointer Buffer) =>
+    _TcSetInterface(IfcHandle, pGuidParam, BufferSize, Buffer);
+
+late final _TcSetInterface = _traffic.lookupFunction<
+    Uint32 Function(IntPtr IfcHandle, Pointer<GUID> pGuidParam,
+        Uint32 BufferSize, Pointer Buffer),
+    int Function(int IfcHandle, Pointer<GUID> pGuidParam, int BufferSize,
+        Pointer Buffer)>('TcSetInterface');

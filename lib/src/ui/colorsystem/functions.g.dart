@@ -14,10 +14,132 @@ import 'enums.g.dart';
 
 import '../../combase.dart';
 import '../../guid.dart';
-import '../../foundation/structs.g.dart';
+import '../../graphics/gdi/structs.g.dart';
 import '../../ui/colorsystem/structs.g.dart';
-import '../../ui/colorsystem/callbacks.g.dart'; // -----------------------------------------------------------------------
+import '../../ui/colorsystem/callbacks.g.dart';
+import '../../foundation/structs.g.dart'; // -----------------------------------------------------------------------
 
+// gdi32.dll
+// -----------------------------------------------------------------------
+final _gdi32 = DynamicLibrary.open('gdi32.dll');
+
+int CheckColorsInGamut(int hdc, Pointer<RGBTRIPLE> lpRGBTriple,
+        Pointer dlpBuffer, int nCount) =>
+    _CheckColorsInGamut(hdc, lpRGBTriple, dlpBuffer, nCount);
+
+late final _CheckColorsInGamut = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, Pointer<RGBTRIPLE> lpRGBTriple,
+        Pointer dlpBuffer, Uint32 nCount),
+    int Function(int hdc, Pointer<RGBTRIPLE> lpRGBTriple, Pointer dlpBuffer,
+        int nCount)>('CheckColorsInGamut');
+
+int ColorCorrectPalette(int hdc, int hPal, int deFirst, int num) =>
+    _ColorCorrectPalette(hdc, hPal, deFirst, num);
+
+late final _ColorCorrectPalette = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, IntPtr hPal, Uint32 deFirst, Uint32 num),
+    int Function(
+        int hdc, int hPal, int deFirst, int num)>('ColorCorrectPalette');
+
+int ColorMatchToTarget(int hdc, int hdcTarget, int action) =>
+    _ColorMatchToTarget(hdc, hdcTarget, action);
+
+late final _ColorMatchToTarget = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, IntPtr hdcTarget, Int32 action),
+    int Function(int hdc, int hdcTarget, int action)>('ColorMatchToTarget');
+
+int CreateColorSpace(Pointer<LOGCOLORSPACE> lplcs) => _CreateColorSpace(lplcs);
+
+late final _CreateColorSpace = _gdi32.lookupFunction<
+    IntPtr Function(Pointer<LOGCOLORSPACE> lplcs),
+    int Function(Pointer<LOGCOLORSPACE> lplcs)>('CreateColorSpaceW');
+
+int DeleteColorSpace(int hcs) => _DeleteColorSpace(hcs);
+
+late final _DeleteColorSpace =
+    _gdi32.lookupFunction<Int32 Function(IntPtr hcs), int Function(int hcs)>(
+        'DeleteColorSpace');
+
+int EnumICMProfiles(
+        int hdc, Pointer<NativeFunction<ICMENUMPROCW>> proc, int param2) =>
+    _EnumICMProfiles(hdc, proc, param2);
+
+late final _EnumICMProfiles = _gdi32.lookupFunction<
+    Int32 Function(
+        IntPtr hdc, Pointer<NativeFunction<ICMENUMPROCW>> proc, IntPtr param2),
+    int Function(int hdc, Pointer<NativeFunction<ICMENUMPROCW>> proc,
+        int param2)>('EnumICMProfilesW');
+
+int GetColorSpace(int hdc) => _GetColorSpace(hdc);
+
+late final _GetColorSpace =
+    _gdi32.lookupFunction<IntPtr Function(IntPtr hdc), int Function(int hdc)>(
+        'GetColorSpace');
+
+int GetDeviceGammaRamp(int hdc, Pointer lpRamp) =>
+    _GetDeviceGammaRamp(hdc, lpRamp);
+
+late final _GetDeviceGammaRamp = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, Pointer lpRamp),
+    int Function(int hdc, Pointer lpRamp)>('GetDeviceGammaRamp');
+
+int GetICMProfile(
+        int hdc, Pointer<Uint32> pBufSize, Pointer<Utf16> pszFilename) =>
+    _GetICMProfile(hdc, pBufSize, pszFilename);
+
+late final _GetICMProfile = _gdi32.lookupFunction<
+    Int32 Function(
+        IntPtr hdc, Pointer<Uint32> pBufSize, Pointer<Utf16> pszFilename),
+    int Function(int hdc, Pointer<Uint32> pBufSize,
+        Pointer<Utf16> pszFilename)>('GetICMProfileW');
+
+int GetLogColorSpace(
+        int hColorSpace, Pointer<LOGCOLORSPACE> lpBuffer, int nSize) =>
+    _GetLogColorSpace(hColorSpace, lpBuffer, nSize);
+
+late final _GetLogColorSpace = _gdi32.lookupFunction<
+    Int32 Function(
+        IntPtr hColorSpace, Pointer<LOGCOLORSPACE> lpBuffer, Uint32 nSize),
+    int Function(int hColorSpace, Pointer<LOGCOLORSPACE> lpBuffer,
+        int nSize)>('GetLogColorSpaceW');
+
+int SetColorSpace(int hdc, int hcs) => _SetColorSpace(hdc, hcs);
+
+late final _SetColorSpace = _gdi32.lookupFunction<
+    IntPtr Function(IntPtr hdc, IntPtr hcs),
+    int Function(int hdc, int hcs)>('SetColorSpace');
+
+int SetDeviceGammaRamp(int hdc, Pointer lpRamp) =>
+    _SetDeviceGammaRamp(hdc, lpRamp);
+
+late final _SetDeviceGammaRamp = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, Pointer lpRamp),
+    int Function(int hdc, Pointer lpRamp)>('SetDeviceGammaRamp');
+
+int SetICMMode(int hdc, int mode) => _SetICMMode(hdc, mode);
+
+late final _SetICMMode = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, Int32 mode),
+    int Function(int hdc, int mode)>('SetICMMode');
+
+int SetICMProfile(int hdc, Pointer<Utf16> lpFileName) =>
+    _SetICMProfile(hdc, lpFileName);
+
+late final _SetICMProfile = _gdi32.lookupFunction<
+    Int32 Function(IntPtr hdc, Pointer<Utf16> lpFileName),
+    int Function(int hdc, Pointer<Utf16> lpFileName)>('SetICMProfileW');
+
+int UpdateICMRegKey(int reserved, Pointer<Utf16> lpszCMID,
+        Pointer<Utf16> lpszFileName, int command) =>
+    _UpdateICMRegKey(reserved, lpszCMID, lpszFileName, command);
+
+late final _UpdateICMRegKey = _gdi32.lookupFunction<
+    Int32 Function(Uint32 reserved, Pointer<Utf16> lpszCMID,
+        Pointer<Utf16> lpszFileName, Uint32 command),
+    int Function(int reserved, Pointer<Utf16> lpszCMID,
+        Pointer<Utf16> lpszFileName, int command)>('UpdateICMRegKeyW');
+
+// -----------------------------------------------------------------------
 // mscms.dll
 // -----------------------------------------------------------------------
 final _mscms = DynamicLibrary.open('mscms.dll');
@@ -972,3 +1094,321 @@ late final _WcsTranslateColors = _mscms.lookupFunction<
         int cdtOutput,
         int cbOutput,
         Pointer pOutputData)>('WcsTranslateColors');
+
+// -----------------------------------------------------------------------
+// icmui.dll
+// -----------------------------------------------------------------------
+final _icmui = DynamicLibrary.open('icmui.dll');
+
+int SetupColorMatching(Pointer<COLORMATCHSETUP> pcms) =>
+    _SetupColorMatching(pcms);
+
+late final _SetupColorMatching = _icmui.lookupFunction<
+    Int32 Function(Pointer<COLORMATCHSETUP> pcms),
+    int Function(Pointer<COLORMATCHSETUP> pcms)>('SetupColorMatchingW');
+
+// -----------------------------------------------------------------------
+// icm32.dll
+// -----------------------------------------------------------------------
+final _icm32 = DynamicLibrary.open('icm32.dll');
+
+int CMCheckColors(int hcmTransform, Pointer<COLOR> lpaInputColors, int nColors,
+        int ctInput, Pointer<Uint8> lpaResult) =>
+    _CMCheckColors(hcmTransform, lpaInputColors, nColors, ctInput, lpaResult);
+
+late final _CMCheckColors = _icm32.lookupFunction<
+    Int32 Function(IntPtr hcmTransform, Pointer<COLOR> lpaInputColors,
+        Uint32 nColors, Int32 ctInput, Pointer<Uint8> lpaResult),
+    int Function(int hcmTransform, Pointer<COLOR> lpaInputColors, int nColors,
+        int ctInput, Pointer<Uint8> lpaResult)>('CMCheckColors');
+
+int CMCheckColorsInGamut(int hcmTransform, Pointer<RGBTRIPLE> lpaRGBTriple,
+        Pointer<Uint8> lpaResult, int nCount) =>
+    _CMCheckColorsInGamut(hcmTransform, lpaRGBTriple, lpaResult, nCount);
+
+late final _CMCheckColorsInGamut = _icm32.lookupFunction<
+    Int32 Function(IntPtr hcmTransform, Pointer<RGBTRIPLE> lpaRGBTriple,
+        Pointer<Uint8> lpaResult, Uint32 nCount),
+    int Function(int hcmTransform, Pointer<RGBTRIPLE> lpaRGBTriple,
+        Pointer<Uint8> lpaResult, int nCount)>('CMCheckColorsInGamut');
+
+int CMCheckRGBs(
+        int hcmTransform,
+        Pointer lpSrcBits,
+        int bmInput,
+        int dwWidth,
+        int dwHeight,
+        int dwStride,
+        Pointer<Uint8> lpaResult,
+        Pointer<NativeFunction<LPBMCALLBACKFN>> pfnCallback,
+        int ulCallbackData) =>
+    _CMCheckRGBs(hcmTransform, lpSrcBits, bmInput, dwWidth, dwHeight, dwStride,
+        lpaResult, pfnCallback, ulCallbackData);
+
+late final _CMCheckRGBs = _icm32.lookupFunction<
+    Int32 Function(
+        IntPtr hcmTransform,
+        Pointer lpSrcBits,
+        Int32 bmInput,
+        Uint32 dwWidth,
+        Uint32 dwHeight,
+        Uint32 dwStride,
+        Pointer<Uint8> lpaResult,
+        Pointer<NativeFunction<LPBMCALLBACKFN>> pfnCallback,
+        IntPtr ulCallbackData),
+    int Function(
+        int hcmTransform,
+        Pointer lpSrcBits,
+        int bmInput,
+        int dwWidth,
+        int dwHeight,
+        int dwStride,
+        Pointer<Uint8> lpaResult,
+        Pointer<NativeFunction<LPBMCALLBACKFN>> pfnCallback,
+        int ulCallbackData)>('CMCheckRGBs');
+
+int CMConvertColorNameToIndex(int hProfile, Pointer<Pointer<Int8>> paColorName,
+        Pointer<Uint32> paIndex, int dwCount) =>
+    _CMConvertColorNameToIndex(hProfile, paColorName, paIndex, dwCount);
+
+late final _CMConvertColorNameToIndex = _icm32.lookupFunction<
+    Int32 Function(IntPtr hProfile, Pointer<Pointer<Int8>> paColorName,
+        Pointer<Uint32> paIndex, Uint32 dwCount),
+    int Function(int hProfile, Pointer<Pointer<Int8>> paColorName,
+        Pointer<Uint32> paIndex, int dwCount)>('CMConvertColorNameToIndex');
+
+int CMConvertIndexToColorName(int hProfile, Pointer<Uint32> paIndex,
+        Pointer<Pointer<Int8>> paColorName, int dwCount) =>
+    _CMConvertIndexToColorName(hProfile, paIndex, paColorName, dwCount);
+
+late final _CMConvertIndexToColorName = _icm32.lookupFunction<
+    Int32 Function(IntPtr hProfile, Pointer<Uint32> paIndex,
+        Pointer<Pointer<Int8>> paColorName, Uint32 dwCount),
+    int Function(
+        int hProfile,
+        Pointer<Uint32> paIndex,
+        Pointer<Pointer<Int8>> paColorName,
+        int dwCount)>('CMConvertIndexToColorName');
+
+int CMCreateDeviceLinkProfile(
+        Pointer<IntPtr> pahProfiles,
+        int nProfiles,
+        Pointer<Uint32> padwIntents,
+        int nIntents,
+        int dwFlags,
+        Pointer<Pointer<Uint8>> lpProfileData) =>
+    _CMCreateDeviceLinkProfile(
+        pahProfiles, nProfiles, padwIntents, nIntents, dwFlags, lpProfileData);
+
+late final _CMCreateDeviceLinkProfile = _icm32.lookupFunction<
+    Int32 Function(
+        Pointer<IntPtr> pahProfiles,
+        Uint32 nProfiles,
+        Pointer<Uint32> padwIntents,
+        Uint32 nIntents,
+        Uint32 dwFlags,
+        Pointer<Pointer<Uint8>> lpProfileData),
+    int Function(
+        Pointer<IntPtr> pahProfiles,
+        int nProfiles,
+        Pointer<Uint32> padwIntents,
+        int nIntents,
+        int dwFlags,
+        Pointer<Pointer<Uint8>> lpProfileData)>('CMCreateDeviceLinkProfile');
+
+int CMCreateMultiProfileTransform(Pointer<IntPtr> pahProfiles, int nProfiles,
+        Pointer<Uint32> padwIntents, int nIntents, int dwFlags) =>
+    _CMCreateMultiProfileTransform(
+        pahProfiles, nProfiles, padwIntents, nIntents, dwFlags);
+
+late final _CMCreateMultiProfileTransform = _icm32.lookupFunction<
+    IntPtr Function(Pointer<IntPtr> pahProfiles, Uint32 nProfiles,
+        Pointer<Uint32> padwIntents, Uint32 nIntents, Uint32 dwFlags),
+    int Function(
+        Pointer<IntPtr> pahProfiles,
+        int nProfiles,
+        Pointer<Uint32> padwIntents,
+        int nIntents,
+        int dwFlags)>('CMCreateMultiProfileTransform');
+
+int CMCreateProfile(
+        Pointer<LOGCOLORSPACE> lpColorSpace, Pointer<Pointer> lpProfileData) =>
+    _CMCreateProfile(lpColorSpace, lpProfileData);
+
+late final _CMCreateProfile = _icm32.lookupFunction<
+    Int32 Function(
+        Pointer<LOGCOLORSPACE> lpColorSpace, Pointer<Pointer> lpProfileData),
+    int Function(Pointer<LOGCOLORSPACE> lpColorSpace,
+        Pointer<Pointer> lpProfileData)>('CMCreateProfileW');
+
+int CMCreateTransformExt(Pointer<LOGCOLORSPACE> lpColorSpace,
+        Pointer lpDevCharacter, Pointer lpTargetDevCharacter, int dwFlags) =>
+    _CMCreateTransformExt(
+        lpColorSpace, lpDevCharacter, lpTargetDevCharacter, dwFlags);
+
+late final _CMCreateTransformExt = _icm32.lookupFunction<
+    IntPtr Function(Pointer<LOGCOLORSPACE> lpColorSpace, Pointer lpDevCharacter,
+        Pointer lpTargetDevCharacter, Uint32 dwFlags),
+    int Function(Pointer<LOGCOLORSPACE> lpColorSpace, Pointer lpDevCharacter,
+        Pointer lpTargetDevCharacter, int dwFlags)>('CMCreateTransformExtW');
+
+int CMCreateTransform(Pointer<LOGCOLORSPACE> lpColorSpace,
+        Pointer lpDevCharacter, Pointer lpTargetDevCharacter) =>
+    _CMCreateTransform(lpColorSpace, lpDevCharacter, lpTargetDevCharacter);
+
+late final _CMCreateTransform = _icm32.lookupFunction<
+    IntPtr Function(Pointer<LOGCOLORSPACE> lpColorSpace, Pointer lpDevCharacter,
+        Pointer lpTargetDevCharacter),
+    int Function(Pointer<LOGCOLORSPACE> lpColorSpace, Pointer lpDevCharacter,
+        Pointer lpTargetDevCharacter)>('CMCreateTransformW');
+
+int CMDeleteTransform(int hcmTransform) => _CMDeleteTransform(hcmTransform);
+
+late final _CMDeleteTransform = _icm32.lookupFunction<
+    Int32 Function(IntPtr hcmTransform),
+    int Function(int hcmTransform)>('CMDeleteTransform');
+
+int CMGetInfo(int dwInfo) => _CMGetInfo(dwInfo);
+
+late final _CMGetInfo = _icm32.lookupFunction<Uint32 Function(Uint32 dwInfo),
+    int Function(int dwInfo)>('CMGetInfo');
+
+int CMGetNamedProfileInfo(
+        int hProfile, Pointer<NAMED_PROFILE_INFO> pNamedProfileInfo) =>
+    _CMGetNamedProfileInfo(hProfile, pNamedProfileInfo);
+
+late final _CMGetNamedProfileInfo = _icm32.lookupFunction<
+        Int32 Function(
+            IntPtr hProfile, Pointer<NAMED_PROFILE_INFO> pNamedProfileInfo),
+        int Function(
+            int hProfile, Pointer<NAMED_PROFILE_INFO> pNamedProfileInfo)>(
+    'CMGetNamedProfileInfo');
+
+int CMIsProfileValid(int hProfile, Pointer<Int32> lpbValid) =>
+    _CMIsProfileValid(hProfile, lpbValid);
+
+late final _CMIsProfileValid = _icm32.lookupFunction<
+    Int32 Function(IntPtr hProfile, Pointer<Int32> lpbValid),
+    int Function(int hProfile, Pointer<Int32> lpbValid)>('CMIsProfileValid');
+
+int CMTranslateColors(
+        int hcmTransform,
+        Pointer<COLOR> lpaInputColors,
+        int nColors,
+        int ctInput,
+        Pointer<COLOR> lpaOutputColors,
+        int ctOutput) =>
+    _CMTranslateColors(hcmTransform, lpaInputColors, nColors, ctInput,
+        lpaOutputColors, ctOutput);
+
+late final _CMTranslateColors = _icm32.lookupFunction<
+    Int32 Function(
+        IntPtr hcmTransform,
+        Pointer<COLOR> lpaInputColors,
+        Uint32 nColors,
+        Int32 ctInput,
+        Pointer<COLOR> lpaOutputColors,
+        Int32 ctOutput),
+    int Function(
+        int hcmTransform,
+        Pointer<COLOR> lpaInputColors,
+        int nColors,
+        int ctInput,
+        Pointer<COLOR> lpaOutputColors,
+        int ctOutput)>('CMTranslateColors');
+
+int CMTranslateRGB(int hcmTransform, int ColorRef, Pointer<Uint32> lpColorRef,
+        int dwFlags) =>
+    _CMTranslateRGB(hcmTransform, ColorRef, lpColorRef, dwFlags);
+
+late final _CMTranslateRGB = _icm32.lookupFunction<
+    Int32 Function(IntPtr hcmTransform, Uint32 ColorRef,
+        Pointer<Uint32> lpColorRef, Uint32 dwFlags),
+    int Function(int hcmTransform, int ColorRef, Pointer<Uint32> lpColorRef,
+        int dwFlags)>('CMTranslateRGB');
+
+int CMTranslateRGBs(
+        int hcmTransform,
+        Pointer lpSrcBits,
+        int bmInput,
+        int dwWidth,
+        int dwHeight,
+        int dwStride,
+        Pointer lpDestBits,
+        int bmOutput,
+        int dwTranslateDirection) =>
+    _CMTranslateRGBs(hcmTransform, lpSrcBits, bmInput, dwWidth, dwHeight,
+        dwStride, lpDestBits, bmOutput, dwTranslateDirection);
+
+late final _CMTranslateRGBs = _icm32.lookupFunction<
+    Int32 Function(
+        IntPtr hcmTransform,
+        Pointer lpSrcBits,
+        Int32 bmInput,
+        Uint32 dwWidth,
+        Uint32 dwHeight,
+        Uint32 dwStride,
+        Pointer lpDestBits,
+        Int32 bmOutput,
+        Uint32 dwTranslateDirection),
+    int Function(
+        int hcmTransform,
+        Pointer lpSrcBits,
+        int bmInput,
+        int dwWidth,
+        int dwHeight,
+        int dwStride,
+        Pointer lpDestBits,
+        int bmOutput,
+        int dwTranslateDirection)>('CMTranslateRGBs');
+
+int CMTranslateRGBsExt(
+        int hcmTransform,
+        Pointer lpSrcBits,
+        int bmInput,
+        int dwWidth,
+        int dwHeight,
+        int dwInputStride,
+        Pointer lpDestBits,
+        int bmOutput,
+        int dwOutputStride,
+        Pointer<NativeFunction<LPBMCALLBACKFN>> lpfnCallback,
+        int ulCallbackData) =>
+    _CMTranslateRGBsExt(
+        hcmTransform,
+        lpSrcBits,
+        bmInput,
+        dwWidth,
+        dwHeight,
+        dwInputStride,
+        lpDestBits,
+        bmOutput,
+        dwOutputStride,
+        lpfnCallback,
+        ulCallbackData);
+
+late final _CMTranslateRGBsExt = _icm32.lookupFunction<
+    Int32 Function(
+        IntPtr hcmTransform,
+        Pointer lpSrcBits,
+        Int32 bmInput,
+        Uint32 dwWidth,
+        Uint32 dwHeight,
+        Uint32 dwInputStride,
+        Pointer lpDestBits,
+        Int32 bmOutput,
+        Uint32 dwOutputStride,
+        Pointer<NativeFunction<LPBMCALLBACKFN>> lpfnCallback,
+        IntPtr ulCallbackData),
+    int Function(
+        int hcmTransform,
+        Pointer lpSrcBits,
+        int bmInput,
+        int dwWidth,
+        int dwHeight,
+        int dwInputStride,
+        Pointer lpDestBits,
+        int bmOutput,
+        int dwOutputStride,
+        Pointer<NativeFunction<LPBMCALLBACKFN>> lpfnCallback,
+        int ulCallbackData)>('CMTranslateRGBsExt');

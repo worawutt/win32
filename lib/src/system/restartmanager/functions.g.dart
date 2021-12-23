@@ -14,19 +14,60 @@ import 'enums.g.dart';
 
 import '../../combase.dart';
 import '../../guid.dart';
-import '../../system/restartmanager/structs.g.dart';
 import '../../foundation/structs.g.dart';
+import '../../system/restartmanager/structs.g.dart';
 import '../../system/restartmanager/callbacks.g.dart'; // -----------------------------------------------------------------------
 
 // rstrtmgr.dll
 // -----------------------------------------------------------------------
 final _rstrtmgr = DynamicLibrary.open('rstrtmgr.dll');
 
+int RmAddFilter(
+        int dwSessionHandle,
+        Pointer<Utf16> strModuleName,
+        Pointer<RM_UNIQUE_PROCESS> pProcess,
+        Pointer<Utf16> strServiceShortName,
+        int FilterAction) =>
+    _RmAddFilter(dwSessionHandle, strModuleName, pProcess, strServiceShortName,
+        FilterAction);
+
+late final _RmAddFilter = _rstrtmgr.lookupFunction<
+    Uint32 Function(
+        Uint32 dwSessionHandle,
+        Pointer<Utf16> strModuleName,
+        Pointer<RM_UNIQUE_PROCESS> pProcess,
+        Pointer<Utf16> strServiceShortName,
+        Int32 FilterAction),
+    int Function(
+        int dwSessionHandle,
+        Pointer<Utf16> strModuleName,
+        Pointer<RM_UNIQUE_PROCESS> pProcess,
+        Pointer<Utf16> strServiceShortName,
+        int FilterAction)>('RmAddFilter');
+
+int RmCancelCurrentTask(int dwSessionHandle) =>
+    _RmCancelCurrentTask(dwSessionHandle);
+
+late final _RmCancelCurrentTask = _rstrtmgr.lookupFunction<
+    Uint32 Function(Uint32 dwSessionHandle),
+    int Function(int dwSessionHandle)>('RmCancelCurrentTask');
+
 int RmEndSession(int dwSessionHandle) => _RmEndSession(dwSessionHandle);
 
 late final _RmEndSession = _rstrtmgr.lookupFunction<
     Uint32 Function(Uint32 dwSessionHandle),
     int Function(int dwSessionHandle)>('RmEndSession');
+
+int RmGetFilterList(int dwSessionHandle, Pointer<Uint8> pbFilterBuf,
+        int cbFilterBuf, Pointer<Uint32> cbFilterBufNeeded) =>
+    _RmGetFilterList(
+        dwSessionHandle, pbFilterBuf, cbFilterBuf, cbFilterBufNeeded);
+
+late final _RmGetFilterList = _rstrtmgr.lookupFunction<
+    Uint32 Function(Uint32 dwSessionHandle, Pointer<Uint8> pbFilterBuf,
+        Uint32 cbFilterBuf, Pointer<Uint32> cbFilterBufNeeded),
+    int Function(int dwSessionHandle, Pointer<Uint8> pbFilterBuf,
+        int cbFilterBuf, Pointer<Uint32> cbFilterBufNeeded)>('RmGetFilterList');
 
 int RmGetList(
         int dwSessionHandle,
@@ -50,6 +91,16 @@ late final _RmGetList = _rstrtmgr.lookupFunction<
         Pointer<Uint32> pnProcInfo,
         Pointer<RM_PROCESS_INFO> rgAffectedApps,
         Pointer<Uint32> lpdwRebootReasons)>('RmGetList');
+
+int RmJoinSession(
+        Pointer<Uint32> pSessionHandle, Pointer<Utf16> strSessionKey) =>
+    _RmJoinSession(pSessionHandle, strSessionKey);
+
+late final _RmJoinSession = _rstrtmgr.lookupFunction<
+    Uint32 Function(
+        Pointer<Uint32> pSessionHandle, Pointer<Utf16> strSessionKey),
+    int Function(Pointer<Uint32> pSessionHandle,
+        Pointer<Utf16> strSessionKey)>('RmJoinSession');
 
 int RmRegisterResources(
         int dwSessionHandle,
@@ -79,6 +130,26 @@ late final _RmRegisterResources = _rstrtmgr.lookupFunction<
         Pointer<RM_UNIQUE_PROCESS> rgApplications,
         int nServices,
         Pointer<Pointer<Utf16>> rgsServiceNames)>('RmRegisterResources');
+
+int RmRemoveFilter(
+        int dwSessionHandle,
+        Pointer<Utf16> strModuleName,
+        Pointer<RM_UNIQUE_PROCESS> pProcess,
+        Pointer<Utf16> strServiceShortName) =>
+    _RmRemoveFilter(
+        dwSessionHandle, strModuleName, pProcess, strServiceShortName);
+
+late final _RmRemoveFilter = _rstrtmgr.lookupFunction<
+    Uint32 Function(
+        Uint32 dwSessionHandle,
+        Pointer<Utf16> strModuleName,
+        Pointer<RM_UNIQUE_PROCESS> pProcess,
+        Pointer<Utf16> strServiceShortName),
+    int Function(
+        int dwSessionHandle,
+        Pointer<Utf16> strModuleName,
+        Pointer<RM_UNIQUE_PROCESS> pProcess,
+        Pointer<Utf16> strServiceShortName)>('RmRemoveFilter');
 
 int RmRestart(int dwSessionHandle, int dwRestartFlags,
         Pointer<NativeFunction<RM_WRITE_STATUS_CALLBACK>> fnStatus) =>

@@ -236,6 +236,131 @@ late final _WerStoreUploadReport = _wer.lookupFunction<
         Pointer<Int32> pSubmitResult)>('WerStoreUploadReport');
 
 // -----------------------------------------------------------------------
+// kernel32.dll
+// -----------------------------------------------------------------------
+final _kernel32 = DynamicLibrary.open('kernel32.dll');
+
+int WerGetFlags(int hProcess, Pointer<Uint32> pdwFlags) =>
+    _WerGetFlags(hProcess, pdwFlags);
+
+late final _WerGetFlags = _kernel32.lookupFunction<
+    Int32 Function(IntPtr hProcess, Pointer<Uint32> pdwFlags),
+    int Function(int hProcess, Pointer<Uint32> pdwFlags)>('WerGetFlags');
+
+int WerRegisterAdditionalProcess(
+        int processId, int captureExtraInfoForThreadId) =>
+    _WerRegisterAdditionalProcess(processId, captureExtraInfoForThreadId);
+
+late final _WerRegisterAdditionalProcess = _kernel32.lookupFunction<
+    Int32 Function(Uint32 processId, Uint32 captureExtraInfoForThreadId),
+    int Function(int processId,
+        int captureExtraInfoForThreadId)>('WerRegisterAdditionalProcess');
+
+int WerRegisterAppLocalDump(Pointer<Utf16> localAppDataRelativePath) =>
+    _WerRegisterAppLocalDump(localAppDataRelativePath);
+
+late final _WerRegisterAppLocalDump = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> localAppDataRelativePath),
+    int Function(
+        Pointer<Utf16> localAppDataRelativePath)>('WerRegisterAppLocalDump');
+
+int WerRegisterCustomMetadata(Pointer<Utf16> key, Pointer<Utf16> value) =>
+    _WerRegisterCustomMetadata(key, value);
+
+late final _WerRegisterCustomMetadata = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> key, Pointer<Utf16> value),
+    int Function(
+        Pointer<Utf16> key, Pointer<Utf16> value)>('WerRegisterCustomMetadata');
+
+int WerRegisterExcludedMemoryBlock(Pointer address, int size) =>
+    _WerRegisterExcludedMemoryBlock(address, size);
+
+late final _WerRegisterExcludedMemoryBlock = _kernel32.lookupFunction<
+    Int32 Function(Pointer address, Uint32 size),
+    int Function(Pointer address, int size)>('WerRegisterExcludedMemoryBlock');
+
+int WerRegisterFile(Pointer<Utf16> pwzFile, int regFileType, int dwFlags) =>
+    _WerRegisterFile(pwzFile, regFileType, dwFlags);
+
+late final _WerRegisterFile = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> pwzFile, Int32 regFileType, Uint32 dwFlags),
+    int Function(Pointer<Utf16> pwzFile, int regFileType,
+        int dwFlags)>('WerRegisterFile');
+
+int WerRegisterMemoryBlock(Pointer pvAddress, int dwSize) =>
+    _WerRegisterMemoryBlock(pvAddress, dwSize);
+
+late final _WerRegisterMemoryBlock = _kernel32.lookupFunction<
+    Int32 Function(Pointer pvAddress, Uint32 dwSize),
+    int Function(Pointer pvAddress, int dwSize)>('WerRegisterMemoryBlock');
+
+int WerRegisterRuntimeExceptionModule(
+        Pointer<Utf16> pwszOutOfProcessCallbackDll, Pointer pContext) =>
+    _WerRegisterRuntimeExceptionModule(pwszOutOfProcessCallbackDll, pContext);
+
+late final _WerRegisterRuntimeExceptionModule = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> pwszOutOfProcessCallbackDll, Pointer pContext),
+    int Function(Pointer<Utf16> pwszOutOfProcessCallbackDll,
+        Pointer pContext)>('WerRegisterRuntimeExceptionModule');
+
+int WerSetFlags(int dwFlags) => _WerSetFlags(dwFlags);
+
+late final _WerSetFlags = _kernel32.lookupFunction<
+    Int32 Function(Uint32 dwFlags), int Function(int dwFlags)>('WerSetFlags');
+
+int WerUnregisterAdditionalProcess(int processId) =>
+    _WerUnregisterAdditionalProcess(processId);
+
+late final _WerUnregisterAdditionalProcess = _kernel32.lookupFunction<
+    Int32 Function(Uint32 processId),
+    int Function(int processId)>('WerUnregisterAdditionalProcess');
+
+int WerUnregisterAppLocalDump() => _WerUnregisterAppLocalDump();
+
+late final _WerUnregisterAppLocalDump =
+    _kernel32.lookupFunction<Int32 Function(), int Function()>(
+        'WerUnregisterAppLocalDump');
+
+int WerUnregisterCustomMetadata(Pointer<Utf16> key) =>
+    _WerUnregisterCustomMetadata(key);
+
+late final _WerUnregisterCustomMetadata = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> key),
+    int Function(Pointer<Utf16> key)>('WerUnregisterCustomMetadata');
+
+int WerUnregisterExcludedMemoryBlock(Pointer address) =>
+    _WerUnregisterExcludedMemoryBlock(address);
+
+late final _WerUnregisterExcludedMemoryBlock = _kernel32.lookupFunction<
+    Int32 Function(Pointer address),
+    int Function(Pointer address)>('WerUnregisterExcludedMemoryBlock');
+
+int WerUnregisterFile(Pointer<Utf16> pwzFilePath) =>
+    _WerUnregisterFile(pwzFilePath);
+
+late final _WerUnregisterFile = _kernel32.lookupFunction<
+    Int32 Function(Pointer<Utf16> pwzFilePath),
+    int Function(Pointer<Utf16> pwzFilePath)>('WerUnregisterFile');
+
+int WerUnregisterMemoryBlock(Pointer pvAddress) =>
+    _WerUnregisterMemoryBlock(pvAddress);
+
+late final _WerUnregisterMemoryBlock = _kernel32.lookupFunction<
+    Int32 Function(Pointer pvAddress),
+    int Function(Pointer pvAddress)>('WerUnregisterMemoryBlock');
+
+int WerUnregisterRuntimeExceptionModule(
+        Pointer<Utf16> pwszOutOfProcessCallbackDll, Pointer pContext) =>
+    _WerUnregisterRuntimeExceptionModule(pwszOutOfProcessCallbackDll, pContext);
+
+late final _WerUnregisterRuntimeExceptionModule = _kernel32.lookupFunction<
+    Int32 Function(
+        Pointer<Utf16> pwszOutOfProcessCallbackDll, Pointer pContext),
+    int Function(Pointer<Utf16> pwszOutOfProcessCallbackDll,
+        Pointer pContext)>('WerUnregisterRuntimeExceptionModule');
+
+// -----------------------------------------------------------------------
 // faultrep.dll
 // -----------------------------------------------------------------------
 final _faultrep = DynamicLibrary.open('faultrep.dll');
