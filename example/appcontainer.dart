@@ -1,7 +1,8 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
-import 'package:win32/win32.dart';
+import 'package:win32/security.dart';
+import 'package:win32/system.dart';
 
 bool isAppContainer() {
   final phToken = calloc<HANDLE>();

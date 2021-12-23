@@ -4,7 +4,7 @@
 
 // Demonstrates a MessageBox from the console
 
-import 'package:win32/win32.dart';
+import 'package:win32/ui.dart';
 
 void main() {
   final message =
@@ -25,13 +25,13 @@ void main() {
   free(title);
 
   switch (result) {
-    case IDCANCEL:
+    case MESSAGEBOX_RESULT.IDCANCEL:
       print('Cancel pressed');
       break;
-    case IDTRYAGAIN:
+    case MESSAGEBOX_RESULT.IDTRYAGAIN:
       print('Try Again pressed');
       break;
-    case IDCONTINUE:
+    case MESSAGEBOX_RESULT.IDCONTINUE:
       print('Continue pressed');
       break;
   }
