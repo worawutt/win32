@@ -1,3 +1,181 @@
+## 2.3.10
+
+- Add DPI_AWARENESS_CONTEXT enum values.
+
+## 2.3.9
+
+- Add a few minor constants and handle typedefs. Nothing to see here.
+
+## 2.3.8
+
+- Update package:ffi minimum version to 1.1.0, allowing use of arena
+- Hide `Char` within generated structs.g.dart in prep for new FFI feature.
+
+## 2.3.7
+
+- Declare platform support using new `platforms:` declaration in pubspec.yaml
+- Update minimum version to Dart 2.15.0 and use constructor tearoffs
+
+## 2.3.6
+
+- Add RegRenameKey.
+
+## 2.3.5
+
+- Add FileTimeToSystemTime and SystemTimeToFileTime.
+
+## 2.3.4
+
+- Added Windows Subsystem for Linux APIs (#342), with thanks to @ElMoribond.
+  Add a new example that shows how to use them.
+- Added SetEvent (#343) and CreateIcon (#344), with thanks to @untp.
+- Add typedef for `HKEY`.
+- Add more optional lints.
+- Tweaked Explorer example.
+
+## 2.3.3
+
+- Added CreateThread, CreateRemoteThread, CreateRemoteThreadEx() per request
+- Added GetMachineTypeAttributes and added logic for Windows 11.
+
+## 2.3.2
+
+- Added CreateDIBSection per request.
+- Upgraded to latest published Windows metadata from Microsoft, which modifies
+  the signature of some registry-related APIs from Int32 to Uint32 for better
+  accuracy with the original API.
+- Updated to the latest code generator, ported back from the v3 code.
+
+## 2.3.1
+
+- Use automatic code generator for most structs. This may be a breaking change
+  if you use the Bluetooth APIs, since `BLUETOOTH_ADDRESS.rgBytes` is now an
+  `Array<Uint8>` instead of a `List<int>`. This is more accurate, but will
+  require minor code change.
+- Add additional raw input constants
+
+## 2.3.0
+
+- Completely overhauled the metadata generation tooling (tools\projection
+  directory). The code is much better structured, with each layer (type ->
+  parameter -> method -> class) in its own `___Projection` class. Fixed a number
+  of errors in the process, such as the assumption that all enums are of type
+  `Uint32`.
+- Rewrote several complex structs to use the new `Union` FFI type introduced in
+  Dart 2.14 (and updated the minimum version accordingly). Code that uses the
+  `INPUT` struct will need to be slightly modified, since the `mi`/`ki`/`hi`
+  fields are now nested rather than provided as an extension property.
+- Cleaned up some COM `Pointer` types to be more explicit.
+- Add raw input APIs
+- Add low-level keyboard hooks example
+
+## 2.2.10
+
+- Add Windows 11 rounded corner window support along with sample (check Flutter
+  app in example\explorer)
+- Add magnifier APIs and example
+
+## 2.2.9
+
+- Add some missing GDI functions
+
+## 2.2.8
+
+- Add Native Wifi APIs (#299)
+
+## 2.2.7
+
+- Added ResetEvent and complete `OVERLAPPED` struct (#295)
+- Added more virtual memory functions (#297)
+
+## 2.2.6
+
+- Add some requested APIs thanks to contributions from @ilopX, in particular
+  a new sample for enumerating locally installed printers.
+- Added ExtractAssociatedIcon, with thanks to @halildurmus.
+
+## 2.2.5
+
+- Add more DWM APIs, including `DwmSetWindowAttribute`.
+
+## 2.2.4
+
+- Add various DWM and subclassing APIs
+
+## 2.2.3
+
+- Lazily evaluate `lookupFunction` FFI calls for improved performance.
+- Add APIs for hooks and a few extra kernel32 APIs
+- Add some more tests.
+
+## 2.2.2
+
+- Add Windows Spooler library support.
+
+## 2.2.1
+
+- Add initial support for the Windows Socket library (winsock2).
+
+## 2.2.0
+
+- Fixes convertToHString to return an int, since `HSTRING`s are handles. This is
+  a breaking change for any apps that use WinRT APIs, but given the limited
+  availability of WinRT classes that fall into this category, updating only the
+  minor version.
+- Add low-level Device IO and structured storage APIs and diskinfo.dart sample.
+
+## 2.1.5
+
+- Add smart card reader support.
+
+## 2.1.4
+
+- Add helper functions for COM along with extra documentation.
+
+## 2.1.3
+
+- Fix bug in shell COM APIs.
+- Add examples for shortcut creation and named pipes.
+
+## 2.1.2
+
+- Add serial port comms APIs
+- Add additional shell COM APIs
+
+## 2.1.1
+
+- Work around FFI regression in Dart master and dev builds.
+
+## 2.1.0
+
+- Upgrade to Dart 2.13, which supports packed structs and arrays in FFI. This
+  enables support for more automated generation of structs, which in turn
+  increases development velocity for this package.
+
+- Other APIs included in this release include:
+  - More complete Bluetooth support
+  - MIDI support
+  - High DPI support
+  - `IDispatch` support
+  - Many more core user32 APIs
+
+## 2.0.5
+
+- Add some debugging APIs to allow enumerating exported symbols, along with a
+  sample (`dump.dart`).
+- Free memory allocations in samples.
+- Use latest version of Win32 metadata from winmd package, and generate most
+  structs automatically using this metadata.
+- Generate COM helper classes wherever metadata supports it, instead of
+  requiring a manual decorator.
+- Add about 20 new kernel32 APIs.
+
+## 2.0.4
+
+- Add network events, thanks to a contribution from @sunbreak.
+- Update COM vtable generation, thanks to a contribution from @bonukai.
+- Update to use the latest WinMD package.
+
 ## 2.0.3
 
 - Add spellchecking COM APIs, thanks to a contribution from @bonukai.

@@ -13,20 +13,30 @@ import 'dart:io';
 
 import 'package:winmd/winmd.dart';
 
+import '../projection/winrt_interface.dart';
+
+// import '../projection/typeprinter.dart';
+
 final typesToGenerate = [
   'Windows.Foundation.IPropertyValue',
+  'Windows.Foundation.IAsyncAction',
   'Windows.Foundation.IAsyncInfo',
+  'Windows.Foundation.IAsyncOperation`1',
   'Windows.Foundation.IClosable',
   'Windows.Foundation.IStringable',
   'Windows.Gaming.Input.Gamepad',
   'Windows.Globalization.ICalendar',
-  'Windows.Storage.Pickers.IFileOpenPicker'
+  'Windows.Storage.Pickers.IFileOpenPicker',
+  'Windows.Storage.IUserDataPathsStatics',
+  'Windows.Gaming.Input.IGamepadStatics',
+  // 'Windows.Gaming.Input.IGamepadStatics2'
+  'Windows.UI.Notifications.IToastNotificationFactory',
+  'Windows.UI.Notifications.IToastNotificationManagerStatics',
 ];
 
 void main(List<String> args) {
-  final outputDirectory = (args.length == 1)
-      ? Directory(args.first)
-      : Directory('lib/src/generated');
+  final outputDirectory =
+      (args.length == 1) ? Directory(args.first) : Directory('lib/src/com');
 
   for (final type in typesToGenerate) {
     final mdTypeDef = MetadataStore.getMetadataForType(type);
@@ -34,8 +44,8 @@ void main(List<String> args) {
       throw Exception("Can't find type $type.");
     }
 
-    final projection = ClassProjector(mdTypeDef).projection;
-    final dartClass = TypePrinter.printProjection(projection);
+    final projection = WinRTInterfaceProjection(mdTypeDef);
+    final dartClass = projection.toString();
 
     final outputFilename = type.split('.').last;
     final outputFile =

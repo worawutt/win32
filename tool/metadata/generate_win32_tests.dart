@@ -12,13 +12,15 @@ import 'package:winmd/winmd.dart';
 import '../manual_gen/function.dart';
 import '../manual_gen/struct_sizes.dart';
 import '../manual_gen/win32api.dart';
+import '../projection/function.dart';
+import '../projection/type.dart';
 import 'generate_win32.dart';
+import 'win32_functions.dart';
 
 int generateTests(Win32API win32) {
   var testsGenerated = 0;
-  final writer = File('test/api_test.dart').openSync(mode: FileMode.write);
-
-  writer.writeStringSync('''
+  final writer = File('test/api_test.dart').openSync(mode: FileMode.writeOnly)
+    ..writeStringSync('''
 // Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
@@ -35,6 +37,7 @@ import 'package:ffi/ffi.dart';
 import 'package:test/test.dart';
 
 import 'package:win32/win32.dart';
+import 'package:win32/winsock2.dart';
 
 import 'helpers.dart';
 
@@ -43,8 +46,13 @@ void main() {
 ''');
   // Generate a list of libs, e.g. [kernel32, gdi32, ...]
   // The .toSet() removes duplicates.
-  final libraries =
-      win32.functions.values.map((e) => e.dllLibrary).toSet().toList();
+  // GitHub Actions doesn't install Native Wifi API on runners, so we remove
+  // wlanapi manually to prevent test failures.
+  final libraries = win32.functions.values
+      .map((e) => e.dllLibrary)
+      .toSet()
+      .toList()
+    ..removeWhere((library) => library == 'wlanapi');
 
   for (final library in libraries) {
     // API set names aren't legal Dart identifiers, so we rename them
@@ -62,38 +70,29 @@ void main() {
 
       late Method method;
       try {
-        method = methods.firstWhere((m) => methodMatches(
-            m.methodName, filteredFunctionList[function]!.prototype));
+        method = methods.firstWhere((m) =>
+            methodMatches(m.name, filteredFunctionList[function]!.prototype));
       } on StateError {
         continue;
       }
 
-      final prototype = Win32Prototype(function, method, libraryDartName);
+      final prototype = FunctionProjection(method, libraryDartName);
 
       final returnFFIType =
-          TypeProjector(method.returnType.typeIdentifier).nativeType;
+          TypeProjection(method.returnType.typeIdentifier).nativeType;
       final returnDartType =
-          TypeProjector(method.returnType.typeIdentifier).dartType;
+          TypeProjection(method.returnType.typeIdentifier).dartType;
 
       final minimumWindowsVersion =
           filteredFunctionList[function]!.minimumWindowsVersion;
 
-      // Temporary, because of
-      // https://github.com/microsoft/win32metadata/issues/296
-      final nativeParams = prototype.nativeParams
-          .replaceAll('BLUETOOTH_ADDRESS_STRUCT', 'BLUETOOTH_ADDRESS')
-          .replaceAll('BLUETOOTH_DEVICE_INFO_STRUCT', 'BLUETOOTH_DEVICE_INFO');
-      final dartParams = prototype.dartParams
-          .replaceAll('BLUETOOTH_ADDRESS_STRUCT', 'BLUETOOTH_ADDRESS')
-          .replaceAll('BLUETOOTH_DEVICE_INFO_STRUCT', 'BLUETOOTH_DEVICE_INFO');
-
       final test = '''
       test('Can instantiate $function', () {
-        final $libraryDartName = DynamicLibrary.open('$library${library == 'bthprops' ? '.cpl' : '.dll'}');
+        final $libraryDartName = DynamicLibrary.open('${libraryFromDllName(library)}');
         final $function = $libraryDartName.lookupFunction<\n
-          $returnFFIType Function($nativeParams),
-          $returnDartType Function($dartParams)>
-          ('${method.methodName}');
+          $returnFFIType Function(${prototype.nativeParams}),
+          $returnDartType Function(${prototype.dartParams})>
+          ('${method.name}');
         expect($function, isA<Function>());
       });''';
 
@@ -110,17 +109,18 @@ void main() {
     }
     writer.writeStringSync('});\n\n');
   }
-  writer.writeStringSync('}');
-  writer.closeSync();
+  writer
+    ..writeStringSync('}')
+    ..closeSync();
 
   return testsGenerated;
 }
 
 int generateStructSizeTests() {
   var testsGenerated = 0;
-  final writer = File('test/struct_test.dart').openSync(mode: FileMode.write);
-
-  writer.writeStringSync('''
+  final writer = File('test/struct_test.dart')
+      .openSync(mode: FileMode.writeOnly)
+    ..writeStringSync('''
 // Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
@@ -135,14 +135,21 @@ import 'dart:ffi';
 
 import 'package:test/test.dart';
 import 'package:win32/win32.dart';
+import 'package:win32/winsock2.dart';
 
 void main() {
   final is64bitOS = sizeOf<IntPtr>() == 8;
 ''');
 
-  for (final struct
-      in structSize64.keys.where((struct) => !skipStructs.contains(struct))) {
-    writer.writeStringSync('''
+  for (final struct in structSize64.keys) {
+    if (structSize64[struct] == structSize32[struct]) {
+      writer.writeStringSync('''
+  test('Struct $struct is the right size', () {
+    expect(sizeOf<$struct>(), equals(${structSize64[struct]}));
+  });
+    ''');
+    } else {
+      writer.writeStringSync('''
   test('Struct $struct is the right size', () {
     if (is64bitOS) {
       expect(sizeOf<$struct>(), equals(${structSize64[struct]}));
@@ -152,11 +159,13 @@ void main() {
     }
   });
 ''');
+    }
     testsGenerated++;
   }
 
-  writer.writeStringSync('}');
-  writer.closeSync();
+  writer
+    ..writeStringSync('}')
+    ..closeSync();
 
   return testsGenerated;
 }

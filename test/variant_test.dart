@@ -17,24 +17,23 @@ void main() {
   test('Variant time representation from DOS date/time', () {
     // MS-DOS dates are YYYYYYYMMMMDDDDD, where Y is offset from 1980
     const theDate = 29 + (02 << 5) + (24 << 9); // Feb 29th, 2004
-    final varDateTime = calloc<Double>();
-    expect(DosDateTimeToVariantTime(theDate, NULL, varDateTime), equals(TRUE));
+    final pvTime = calloc<DOUBLE>();
+    expect(DosDateTimeToVariantTime(theDate, NULL, pvTime), equals(TRUE));
 
-    final sysDateTime = calloc<SYSTEMTIME>();
+    final lpSystemTime = calloc<SYSTEMTIME>();
+    expect(VariantTimeToSystemTime(pvTime.value, lpSystemTime), equals(TRUE));
+    expect(lpSystemTime.ref.wYear, equals(2004));
+    expect(lpSystemTime.ref.wMonth, equals(2));
+    expect(lpSystemTime.ref.wDay, equals(29));
+
+    final dosDate = calloc<USHORT>();
+    final dosTime = calloc<USHORT>();
     expect(
-        VariantTimeToSystemTime(varDateTime.value, sysDateTime), equals(TRUE));
-    expect(sysDateTime.ref.wYear, equals(2004));
-    expect(sysDateTime.ref.wMonth, equals(2));
-    expect(sysDateTime.ref.wDay, equals(29));
-
-    final dosDate = calloc<Uint16>();
-    final dosTime = calloc<Uint16>();
-    expect(VariantTimeToDosDateTime(varDateTime.value, dosDate, dosTime),
-        equals(TRUE));
+        VariantTimeToDosDateTime(pvTime.value, dosDate, dosTime), equals(TRUE));
     expect(dosDate.value, equals(theDate));
 
-    free(varDateTime);
-    free(sysDateTime);
+    free(pvTime);
+    free(lpSystemTime);
     free(dosDate);
     free(dosTime);
   });
@@ -69,6 +68,24 @@ void main() {
     expect(intVar.ref.intVal, equals(-2147483648));
 
     free(intVar);
+  });
+
+  test('ULONGLONG Variant', () {
+    final bigint = calloc<VARIANT>();
+    VariantInit(bigint);
+    bigint.ref.vt = VARENUM.VT_UI8;
+    bigint.ref.ullVal = BigInt.zero;
+    expect(bigint.ref.ullVal, equals(BigInt.from(0)));
+
+    bigint.ref.ullVal = BigInt.parse('18446744073709551615');
+    final uint64Max = BigInt.parse('FFFFFFFFFFFFFFFF', radix: 16);
+    expect(bigint.ref.ullVal, equals(uint64Max));
+
+    bigint.ref.ullVal = BigInt.parse('8000000000000000', radix: 16);
+    final testValue2 = BigInt.parse('9223372036854775808');
+    expect(bigint.ref.ullVal, equals(testValue2));
+
+    free(bigint);
   });
 
   test('ULONG Variant', () {

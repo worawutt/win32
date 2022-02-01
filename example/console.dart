@@ -35,8 +35,7 @@ String fromCString(Pointer<Uint8> buffer, int maxLength) =>
 Pointer<Uint8> toCString(String buffer) {
   final units = utf8.encode(buffer);
   final result = calloc<Uint8>(units.length);
-  final nativeString = result.asTypedList(units.length);
-  nativeString.setAll(0, units);
+  result.asTypedList(units.length).setAll(0, units);
   return result;
 }
 
@@ -101,9 +100,9 @@ void main() {
   final originalAttributes = bufferInfo.ref.wAttributes;
   SetConsoleTextAttribute(stdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
 
-  final cWritten = calloc<Uint32>();
+  final cWritten = calloc<DWORD>();
   final buffer = calloc<Uint8>(256);
-  final cRead = calloc<Uint32>();
+  final lpNumberOfBytesRead = calloc<DWORD>();
 
   // Write to STDOUT and read from STDIN by using the default
   // modes. Input is echoed automatically, and ReadFile
@@ -119,15 +118,15 @@ void main() {
         normalPrompt.length, // string length
         cWritten, // bytes written
         nullptr); // not overlapped
-    ReadFile(stdin, buffer, 255, cRead, nullptr);
-    final inputString = fromCString(buffer, cRead.value);
+    ReadFile(stdin, buffer, 255, lpNumberOfBytesRead, nullptr);
+    final inputString = fromCString(buffer, lpNumberOfBytesRead.value);
     if (inputString.startsWith('q')) {
       break;
     }
   }
 
   // Turn off the line input and echo input modes
-  final originalConsoleMode = calloc<Uint32>();
+  final originalConsoleMode = calloc<DWORD>();
   GetConsoleMode(stdin, originalConsoleMode);
   final mode =
       originalConsoleMode.value & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
@@ -141,11 +140,13 @@ void main() {
 
     // ReadFile returns when any input is available.
     // WriteFile is used to echo input.
-    if (ReadFile(stdin, buffer, 1, cRead, nullptr) == 0) break;
+    if (ReadFile(stdin, buffer, 1, lpNumberOfBytesRead, nullptr) == 0) break;
 
     if (String.fromCharCode(buffer.value) == '\r') {
       newLine();
-    } else if (WriteFile(stdout, buffer, cRead.value, cWritten, nullptr) == 0) {
+    } else if (WriteFile(
+            stdout, buffer, lpNumberOfBytesRead.value, cWritten, nullptr) ==
+        0) {
       break;
     } else {
       newLine();
@@ -162,6 +163,6 @@ void main() {
   free(bufferInfo);
   free(cWritten);
   free(buffer);
-  free(cRead);
+  free(lpNumberOfBytesRead);
   free(originalConsoleMode);
 }

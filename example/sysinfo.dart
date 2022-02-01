@@ -54,7 +54,7 @@ bool isWindows8OrGreater() => isWindowsVersionAtLeast(6, 2);
 /// Return a value representing the physically installed memory in the computer.
 /// This may not be the same as available memory.
 int getSystemMemoryInMegabytes() {
-  final memory = calloc<Uint64>();
+  final memory = calloc<ULONGLONG>();
 
   try {
     final result = GetPhysicallyInstalledSystemMemory(memory);
@@ -71,13 +71,13 @@ int getSystemMemoryInMegabytes() {
 
 /// Get the computer's fully-qualified DNS name, where available.
 String getComputerName() {
-  final nameLength = calloc<Uint32>();
+  final nameLength = calloc<DWORD>();
   String name;
 
   GetComputerNameEx(
       COMPUTER_NAME_FORMAT.ComputerNameDnsFullyQualified, nullptr, nameLength);
 
-  final namePtr = calloc<Uint16>(nameLength.value).cast<Utf16>();
+  final namePtr = wsalloc(nameLength.value);
 
   try {
     final result = GetComputerNameEx(
@@ -103,19 +103,19 @@ Object getRegistryValue(int key, String subKey, String valueName) {
 
   final subKeyPtr = TEXT(subKey);
   final valueNamePtr = TEXT(valueName);
-  final openKeyPtr = calloc<IntPtr>();
-  final dataType = calloc<Uint32>();
+  final openKeyPtr = calloc<HANDLE>();
+  final dataType = calloc<DWORD>();
 
   // 256 bytes is more than enough, and Windows will throw ERROR_MORE_DATA if
   // not, so there won't be an overrun.
-  final data = calloc<Uint8>(256);
-  final dataSize = calloc<Uint32>()..value = 256;
+  final data = calloc<BYTE>(256);
+  final dataSize = calloc<DWORD>()..value = 256;
 
   try {
     var result = RegOpenKeyEx(key, subKeyPtr, 0, KEY_READ, openKeyPtr);
     if (result == ERROR_SUCCESS) {
-      result = RegQueryValueEx(openKeyPtr.value, valueNamePtr, nullptr,
-          dataType, data.cast(), dataSize);
+      result = RegQueryValueEx(
+          openKeyPtr.value, valueNamePtr, nullptr, dataType, data, dataSize);
 
       if (result == ERROR_SUCCESS) {
         if (dataType.value == REG_DWORD) {
@@ -171,13 +171,13 @@ void printPowerInfo() {
         if (powerStatus.ref.BatteryLifePercent == 255) {
           print(' - Battery status unknown.');
         } else {
-          print(
-              ' - ${powerStatus.ref.BatteryLifePercent}% percent battery remaining.');
+          print(' - ${powerStatus.ref.BatteryLifePercent}% '
+              'percent battery remaining.');
         }
 
         if (powerStatus.ref.BatteryLifeTime != 0xFFFFFFFF) {
-          print(
-              ' - ${powerStatus.ref.BatteryLifeTime / 60} minutes of power estimated to remain.');
+          print(' - ${powerStatus.ref.BatteryLifeTime / 60} minutes of power '
+              'estimated to remain.');
         }
         // New in Windows 10, but should report 0 on older systems
         if (powerStatus.ref.SystemStatusFlag == 1) {
@@ -228,22 +228,22 @@ void printBatteryStatusInfo() {
             ? ' - Battery is discharging.'
             : ' - Battery is not discharging.');
 
-        print(
-            ' - Theoretical max capacity of the battery is ${batteryStatus.ref.MaxCapacity}.');
+        print(' - Theoretical max capacity of the battery is '
+            '${batteryStatus.ref.MaxCapacity}.');
 
-        print(
-            ' - Estimated remaining capacity of the battery is ${batteryStatus.ref.RemainingCapacity}.');
+        print(' - Estimated remaining capacity of the battery is '
+            '${batteryStatus.ref.RemainingCapacity}.');
 
-        print(
-            ' - Charge/discharge rate of the battery is ${batteryStatus.ref.EstimatedTime.abs()} mW.');
+        print(' - Charge/discharge rate of the battery is '
+            '${batteryStatus.ref.EstimatedTime.abs()} mW.');
 
-        print(
-            ' - Estimated time remaining on the battery is ${batteryStatus.ref.EstimatedTime} seconds.');
+        print(' - Estimated time remaining on the battery is '
+            '${batteryStatus.ref.EstimatedTime} seconds.');
 
-        print(
-            ' - Manufacturer suggested low battery alert is at ${batteryStatus.ref.DefaultAlert1} mWh.');
-        print(
-            ' - Manufacturer suggested warning battery alert is at ${batteryStatus.ref.DefaultAlert2} mWh.');
+        print(' - Manufacturer suggested low battery alert is at '
+            '${batteryStatus.ref.DefaultAlert1} mWh.');
+        print(' - Manufacturer suggested warning battery alert is at '
+            '${batteryStatus.ref.DefaultAlert2} mWh.');
       }
     }
   } finally {
@@ -268,11 +268,15 @@ void main() {
       'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\',
       'CurrentBuildNumber') as String);
   if (buildNumber >= 10240) print(' - Windows 10');
+  if (buildNumber >= 22000) print(' - Windows 11');
 
   print('\nWindows build number is: $buildNumber');
 
-  print(
-      '\nRAM physically installed on this computer: ${getSystemMemoryInMegabytes()}MB');
+  print('\nRAM physically installed on this computer: '
+      '${getSystemMemoryInMegabytes()}MB');
+
+  print('\nActive processors on the system: '
+      '${GetActiveProcessorCount(ALL_PROCESSOR_GROUPS)}');
   print('Computer name is: ${getComputerName()}\n');
 
   printPowerInfo();

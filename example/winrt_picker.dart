@@ -5,19 +5,24 @@
 // File Open Picker from Dart
 
 import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
-void main() {
+void main() async {
   winrtInitialize();
 
   final object = CreateObject(
       'Windows.Storage.Pickers.FileOpenPicker', IID_IFileOpenPicker);
 
-  final picker = IFileOpenPicker(object);
-  picker.ViewMode = PickerViewMode.Thumbnail;
+  final picker = IFileOpenPicker(object)..ViewMode = PickerViewMode.Thumbnail;
 
-  // Need to add the results of the async operation
-  picker.PickSingleFileAsync(nullptr);
+  final result = calloc<Pointer>();
+
+  // Does not work yet
+  picker.PickSingleFileAsync(result);
+
+  await Future<void>.delayed(const Duration(seconds: 5));
 
   winrtUninitialize();
   print('Complete');

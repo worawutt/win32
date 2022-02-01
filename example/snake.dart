@@ -17,9 +17,6 @@ import 'dart:math' show Random;
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
-// Win32-specific vars
-final hInstance = GetModuleHandle(nullptr);
-
 late int hWnd;
 const IDT_TIMER1 = 1;
 const IDT_TIMER2 = 2;
@@ -105,8 +102,8 @@ void setApple() {
   data[appleY][appleX] = 0;
 
   // get a random x, y coordinate on the gameboard
-  final x = randRange(0, (bitmapWidth ~/ 10));
-  final y = randRange(0, (bitmapHeight ~/ 10));
+  final x = randRange(0, bitmapWidth ~/ 10);
+  final y = randRange(0, bitmapHeight ~/ 10);
 
   // set to 1 to represent apple
   if (data[y][x] == 0) {
@@ -144,8 +141,6 @@ void moveSnake() {
   // unset old
   // set direction on new
   final lastBlock = Point();
-  lastBlock.x = 0;
-  lastBlock.y = 0;
 
   for (var i = 0; i < snakePoints.length; i++) {
     data[snakePoints[i].y][snakePoints[i].x] = 0;
@@ -168,7 +163,7 @@ void moveSnake() {
         // left
         snakePoints[i].x -= 1;
         if (snakePoints[i].x < 0) {
-          snakePoints[i].x = (bitmapWidth ~/ 10);
+          snakePoints[i].x = bitmapWidth ~/ 10;
         }
       } else if (direction.y == 1) {
         // down
@@ -190,8 +185,9 @@ void moveSnake() {
       snakePoints[i].y = lastBlock.y;
     }
 
-    lastBlock.x = tempX;
-    lastBlock.y = tempY;
+    lastBlock
+      ..x = tempX
+      ..y = tempY;
 
     data[snakePoints[i].y][snakePoints[i].x] = 2;
   }
@@ -548,7 +544,9 @@ int mainWindowProc(int hwnd, int uMsg, int wParam, int lParam) {
   return result;
 }
 
-void main() {
+void main() => initApp(winMain);
+
+void winMain(int hInstance, List<String> args, int nShowCmd) {
   // Register the window class.
 
   final className = TEXT('WinSnakeWindowClass');

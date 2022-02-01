@@ -72,8 +72,8 @@ void main() {
       cx: 158,
       cy: 12,
       id: ID_PROGRESS,
-      windowClass: 'msctls_progress32', // progress bar
-      text: '');
+      windowClass: 'msctls_progress32' // progress bar
+      );
 
   idx += ptr.elementAt(idx).cast<DLGITEMTEMPLATE>().setDialogItem(
       style: WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_BORDER,
@@ -112,7 +112,7 @@ int dialogReturnProc(int hwndDlg, int message, int wParam, int lParam) {
         switch (LOWORD(wParam)) {
           case IDOK:
             print('OK');
-            final textPtr = calloc<Uint16>(256).cast<Utf16>();
+            final textPtr = wsalloc(256);
             GetDlgItemText(hwndDlg, ID_EDITTEXT, textPtr, 256);
             textEntered = textPtr.toDartString();
             free(textPtr);

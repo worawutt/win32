@@ -1,122 +1,78 @@
+import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/services.dart';
+import 'package:menubar/menubar.dart' as menubar;
 import 'package:path_provider/path_provider.dart';
+import 'package:win32/win32.dart';
 
-import 'volumes.dart';
+import 'models/winver.dart';
+import 'volumepanel.dart';
+import 'windowroundingselector.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ExplorerApp());
 }
 
-class MyApp extends StatelessWidget {
+class ExplorerApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        themeMode: ThemeMode.light,
-        home: Scaffold(
-          // This exists only to test that path_provider doesn't break with the
-          // latest Win32. It's entirely redundant to the point of this demo.
-          floatingActionButton: FloatingActionButton.extended(
-              onPressed: () async {
-                final appDocDir = await getApplicationDocumentsDirectory();
-                print(appDocDir.path);
-              },
-              label: Text('Paths')),
-          body: VolumeListView(),
-        ),
-      );
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: MainPage(),
+    );
+  }
 }
 
-class VolumeListView extends StatefulWidget {
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
+
   @override
-  _VolumeListViewState createState() => _VolumeListViewState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _VolumeListViewState extends State<VolumeListView> {
-  final List<Volume> _volumes = [];
+class _MainPageState extends State<MainPage> {
+  bool showRoundedCornerSwitch = false;
 
   @override
   void initState() {
-    super.initState();
+    showRoundedCornerSwitch = isWindows11();
 
-    _volumes.addAll(Volumes().getVolumes());
+    super.initState();
+  }
+
+  void showDocumentsPath() async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final hwnd = GetForegroundWindow();
+    final pMessage = 'Path: ${appDocDir.path}'.toNativeUtf16();
+    final pTitle = 'Application Documents'.toNativeUtf16();
+
+    MessageBox(hwnd, pMessage, pTitle, MB_OK);
+
+    free(pMessage);
+    free(pTitle);
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.all(5),
-        child: ListView.builder(
-          itemCount: _volumes.length,
-          itemBuilder: (context, position) => VolumeCard(
-            volume: _volumes[position],
-          ),
+  Widget build(BuildContext context) {
+    menubar.setApplicationMenu([
+      menubar.Submenu(label: 'Explore', children: [
+        // This exists only to test that path_provider doesn't break with the
+        // latest Win32. It's entirely redundant to the point of this demo.
+        menubar.MenuItem(
+          label: 'Show Docs Path...',
+          shortcut: LogicalKeySet(LogicalKeyboardKey.control,
+              LogicalKeyboardKey.shift, LogicalKeyboardKey.keyP),
+          onClicked: () async => showDocumentsPath(),
         ),
-      );
-}
+      ]),
+    ]);
 
-class VolumeCard extends StatefulWidget {
-  const VolumeCard({required this.volume});
-
-  final Volume volume;
-
-  @override
-  _VolumeCardState createState() => _VolumeCardState();
-}
-
-class _VolumeCardState extends State<VolumeCard> {
-  @override
-  Widget build(BuildContext context) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const FaIcon(FontAwesomeIcons.hdd,
-                        size: 32, color: Colors.blueGrey),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 5, 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.volume.deviceName,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          Text(
-                            widget.volume.volumeName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2!
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .caption
-                                        ?.color),
-                          ),
-                          const Divider(height: 5),
-                          Column(
-                            children: [
-                              for (var path in widget.volume.paths)
-                                Text(
-                                  path,
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+    return Scaffold(
+      body: Column(
+        children: [
+          if (showRoundedCornerSwitch) const WindowRoundingSelector(),
+          Expanded(child: VolumePanel()),
+        ],
+      ),
+    );
+  }
 }
