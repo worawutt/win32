@@ -815,6 +815,16 @@ final _GetPath = _gdi32.lookupFunction<
     int Function(
         int hdc, Pointer<POINT> apt, Pointer<Uint8> aj, int cpt)>('GetPath');
 
+/// The GetPixel function retrieves the red, green, blue (RGB) color 
+/// value of the pixel at the specified coordinates.
+///
+/// {@category gdi32}
+int GetPixel(int dc, int x, int y) => _GetPixel(dc, x, y);
+
+late final _GetPixel = _gdi32
+    .lookupFunction<Uint32 Function(IntPtr dc, Int32 x, Int32 y), 
+        int Function(int hdc, int x, int y)>('GetPixel');
+        
 /// The GetStockObject function retrieves a handle to one of the stock
 /// pens, brushes, fonts, or palettes.
 ///
